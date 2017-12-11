@@ -1,0 +1,1 @@
+from .ludaya import app
