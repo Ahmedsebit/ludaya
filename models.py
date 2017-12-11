@@ -1,4 +1,4 @@
-from app import db
+from ludaya.ludaya import db
 from sqlalchemy.dialects.postgresql import JSON
 
 
