@@ -1,7 +1,7 @@
 from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 import os
-from ludaya.ludaya import app
+from ludaya.ludaya import app, db
 
 
 if __name__ == '__main__':
