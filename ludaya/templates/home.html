@@ -1,224 +1,117 @@
+{% extends "bootstrap/base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Ludaya</title>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    
-    <!-- Custom fonts for this template -->
-    <script src="https://use.fontawesome.com/9869ee428f.js"></script>
+{% block styles %}
+{{super()}}
+    <link rel="stylesheet" href="{{url_for('.static', filename='new-age.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='simple-line-icons.css')}}">
     <link rel="stylesheet" href="static/simple-line-icons.css">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+{% endblock %}
 
-    <!-- Plugin CSS -->
-    <link rel="stylesheet" href="device-mockups/device-mockups.min.css">
+{% block scripts %}
+<script src="https://use.fontawesome.com/9869ee428f.js"></script>
+{{super()}}
+{% endblock %}
 
-    <!-- Custom styles for this template -->
-    <link href="static/new-age.min.css" rel="stylesheet">
-
-  </head>
-
-  <body id="page-top">
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top"><h1>Ludaya</h1></a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          Menu
-          <i class="fa fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#download">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#features">Features</a>
-            </li>\
-            <li class="nav-item">
-                <a href="#contact" class="btn btn-outline btn-md js-scroll-trigger">Login</a>
-              </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
+{% block title %}Ludaya{% endblock %}
+<body id="page-top">
+{% block content %}
     <header class="masthead">
-      <div class="container h-100">
-        <div class="row h-100">
-          <div class="col-lg-7 my-auto">
-            <div class="header-content mx-auto">
-              <h1 class="mb-5">Gain skills and experience that will allow you stand out to potential employers as well as helping you choose the right sector to work in.!</h1>
-              <a href="#contact" class="btn btn-outline btn-xl js-scroll-trigger">SignUp Today!</a>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <a class="navbar-brand js-scroll-trigger" href="#page-top"><h1>Ludaya</h1></a>
+                    </div>
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4" style="padding-top:30px;padding-bottom:30px;">
+                        <div class="collapse navbar-collapse" id="navbarResponsive">
+                            <div class="navbar-nav ml-auto">
+                                <span class="nav-item">
+                                    <a class="btn btn-outline btn-md js-scroll-trigger" href="#download">About</a>
+                                </span>
+                                <span class="nav-item">
+                                    <a class="btn btn-outline btn-md js-scroll-trigger" href="#features">Features</a>
+                                </span>
+                                <span class="nav-item">
+                                    <a data-toggle="modal" data-target="#exampleModalLong" class="btn btn-outline btn-md js-scroll-trigger">Login</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="col-lg-5 my-auto">
-            <div class="device-container">
-              <div class="device-mockup iphone6_plus portrait white">
-                <div class="device">
-                  <div class="screen">
-                    <!-- Demo image for screen mockup, you can put an image here, some HTML, an animation, video, or anything else! -->
-                    <div style="font-size: 72px">
-                        <i class="fa fa-fire  fa-5x" aria-hidden="true" ></i>
+        </nav>
+        
+        <!-- Sign in Modal -->
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="card style_prevu_kit" style="background-color: rgba(245, 245, 245, 0.4);padding:30px;">
+                <div class="card-block">
+                    <h3>Log in</h3>
+                    <p style="font-size:14px;padding-bottom:12px;">Access your assigned tasks, career resources and networking forums</p>
+                    <form>
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" style="background-color: rgba(245, 245, 245, 0.4);">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" style="background-color: rgba(245, 245, 245, 0.4);">
+                        </div>
+                        <button type="submit" class="btn btn-default btn-xl js-scroll-trigger">Log In!</button>
+                    </form>
+                    <p class="text-muted" style="padding-top:10px;">or sign in with</p>
+                    <div class="">
+                        <ul class="list-inline list-social">
+                        <li class="list-inline-item social-twitter">
+                            <a href="#">
+                            <i class="fa fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item social-facebook">
+                            <a href="#">
+                            <i class="fa fa-facebook"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item social-google-plus">
+                            <a href="#">
+                            <i class="fa fa-google-plus"></i>
+                            </a>
+                        </li>
+                        </ul>
                     </div>
-                  </div>
-                  <div class="button">
-                    <!-- You can hook the "home button" to some JavaScript events or just remove it -->
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <section class="download bg-primary text-center" id="download">
-      <div class="container">
-        <div class="row" style="margin-top:-50px">
-          <div class="col-md-12 mx-auto">
-            <h2 class="section-heading">Increase your value!</h2>
-            <div class="row">
-                <div class="col-sm-4">
-                  <div class="card style_prevu_kit" style="background-color: rgba(245, 245, 245, 0.4);">
-                    <div class="card-block">
-                      <h3>Personal development</h3>
-                      <p class="card-text" style="padding-left:10px;padding-right:10px;">Soft and technically to help you start on the professional development path.</p> Skills you learn during work experience are the first steps towards ticking off competencies and showing diligence.</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-4">
-                  <div class="card" style="background-color: rgba(245, 245, 245, 0.4);">
-                    <div class="card-block">
-                      <h3 class="card-title">Gain Experience</h3>
-                      <p class="card-text" style="padding-left:10px;padding-right:10px;">Get gently introduced to the real sense of your chosen industry. </p> Learn the do’s and don’ts, get work place savvy, learn navigate your way through and learn how to thrive in the workplace.</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="card" style="background-color: rgba(245, 245, 245, 0.4);">
-                      <div class="card-block">
-                        <h3 class="card-title">Understand you Potential</h3>
-                        <p class="card-text" style="padding-left:10px;padding-right:10px;">Identify your skills while highlighting the areas that you need to work on.</p> Change your world view and gain good understanding of your strengths and weakness.</p>
-                      </div>
-                    </div>
-                  </div>
-              </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="features" id="features">
-      <div class="container">
-        <div class="section-heading text-center">
-          <h2>Features</h2>
-          <p class="text-muted">What you gain through our app!</p>
-          <hr>
-        </div>
-        <div class="row" style="margin-top:-50px">
-          <div class="col-lg-12 my-auto">
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col-lg-4">
-                  <div class="feature-item">
-                    <i class="fa fa-thumbs-o-up"></i>
-                    <h3>Become Marketable</h3>
-                    <p class="text-muted">Work experience increases chances during the selection process of receiving a job offer in various organisations!</p>
-                  </div>
-                </div>
-                <div class="col-lg-4">
-                  <div class="feature-item">
-                    <i class="fa fa-spinner"></i>
-                    <h3>Make Decisions</h3>
-                    <p class="text-muted">You’ll get a taste of what a job or workplace is like, so you can figure out if you’re interested in that kind of career!</p>
-                  </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="feature-item">
-                      <i class="fa fa-superpowers"></i>
-                      <h3>Biuld Confidence</h3>
-                      <p class="text-muted">Working with other people and doing your tasks well gives you experiences which helps you build self belief and confidence!</p>
-                    </div>
-                  </div>
-              </div>
-              <div class="row">
-                <div class="col-lg-4">
-                  <div class="feature-item">
-                    <i class="fa fa-file-text"></i>
-                    <h3>Spice Up you CV</h3>
-                    <p class="text-muted">Work experience shows you’re enthusiastic and ready to work hard. You can pick out particular achievements to show off!</p>
-                  </div>
-                </div>
-                <div class="col-lg-4">
-                  <div class="feature-item">
-                    <i class="fa fa-cogs"></i>
-                    <h3>Gain New Skills</h3>
-                    <p class="text-muted">Developing new skills will help set you apart in the job market as well as make you more productive and successful at your current job.!</p>
-                  </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="feature-item">
-                      <i class="fa fa-users"></i>
-                      <h3>Biuld you network</h3>
-                      <p class="text-muted">You’ll meet people at work and might attend meetings or events. You’ll make contacts that could provide a reference or help you in the future!</p>
-                    </div>
-                  </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta">
-      <div class="cta-content">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <h2>Stop waiting.<br>Start building.</h2>
-                    <a href="#contact" class="btn btn-outline btn-xl js-scroll-trigger">Let's Get Started!</a>
-                    </div> 
-                <div class="col-lg-6">
-                    
                 </div>
             </div>
         </div>
-      </div>
-      <div class="overlay"></div>
-    </section>
+        </div>
 
-    <section class="contact bg-primary" id="contact">
-      <div class="container">
-        <h2>Join Us<i class="fa fa-heart"></i>Today!</h2>
-        <div class="row">
-            <div class="col-sm-6">
+        <!-- Sign up Modal -->
+        <div class="modal fade" id="signupModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
                 <div class="card style_prevu_kit" style="background-color: rgba(245, 245, 245, 0.4);padding:30px;">
                     <div class="card-block">
-                        <h3>Log in</h3>
-                        <p style="font-size:14px;padding-bottom:12px;">Access your assigned tasks, career resources and networking forums</p>
-                        <form>
-                            <div class="form-group">
-                                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" style="background-color: rgba(245, 245, 245, 0.4);">
+                        <h3>SignUp</h3>
+                        <form  action="{{ url_for('register') }}" method="POST">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <input type="text" class="form-control" id="inputFirstName" name="firstname" placeholder=" First Name" style="background-color: rgba(245, 245, 245, 0.4);">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <input type="text" class="form-control" id="inputLastName" name="lastname" placeholder="Last Name" style="background-color: rgba(245, 245, 245, 0.4);">
+                                </div>
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" style="background-color: rgba(245, 245, 245, 0.4);">
+                                    <input type="email" class="form-control" id="inputEmail4" name="email" placeholder="Email" style="background-color: rgba(245, 245, 245, 0.4);">
                             </div>
-                            <a href="#download" class="btn btn-outline btn-xl js-scroll-trigger">Log In!</a>
+                            <div class="form-group">
+                                    <input type="password" class="form-control" id="inputPassword4" name="password" placeholder="Password" style="background-color: rgba(245, 245, 245, 0.4);">
+                            </div>
+                            <!-- <a type="submit" class="btn btn-outline btn-xl js-scroll-trigger">SignUp</a> -->
+                            <button class="btn btn-default btn-xl js-scroll-trigger" type="submit">Sign up</button>
                         </form>
-                        <p class="text-muted" style="padding-top:10px;">or sign in with</p>
+                        <p class="text-muted" style="padding-top:10px;">or sign up with</p>
                         <div class="">
                             <ul class="list-inline list-social">
                             <li class="list-inline-item social-twitter">
@@ -239,83 +132,179 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div>   
             </div>
-            <div class="col-sm-6">
-                <div class="card style_prevu_kit" style="background-color: rgba(245, 245, 245, 0.4);padding:30px;">
-                    <div class="card-block">
-                    <h3>SignUp</h3>
-                    <form>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" id="inputFirstName" placeholder=" FIrst Name" style="background-color: rgba(245, 245, 245, 0.4);">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" id="inputLastName" placeholder="Last Name" style="background-color: rgba(245, 245, 245, 0.4);">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                                <input type="email" class="form-control" id="inputEmail4" placeholder="Email" style="background-color: rgba(245, 245, 245, 0.4);">
-                        </div>
-                        <div class="form-group">
-                                <input type="password" class="form-control" id="inputPassword4" placeholder="Password" style="background-color: rgba(245, 245, 245, 0.4);">
-                        </div>
-                        <a href="#download" class="btn btn-outline btn-xl js-scroll-trigger">SignUp</a>
-                    </form>
-                    <p class="text-muted" style="padding-top:10px;">or sign up with</p>
-                    <div class="">
-                        <ul class="list-inline list-social">
-                        <li class="list-inline-item social-twitter">
-                            <a href="#">
-                            <i class="fa fa-twitter"></i>
-                            </a>
-                        </li>
-                        <li class="list-inline-item social-facebook">
-                            <a href="#">
-                            <i class="fa fa-facebook"></i>
-                            </a>
-                        </li>
-                        <li class="list-inline-item social-google-plus">
-                            <a href="#">
-                            <i class="fa fa-google-plus"></i>
-                            </a>
-                        </li>
-                        </ul>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <!-- <strong>Title</strong> --> {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+        <div class="container h-100">
+          <div class="row h-100">
+            <div class="col-lg-7 my-auto">
+              <div class="header-content mx-auto">
+                <h1 class="mb-5">Gain skills and experience that will allow you stand out to potential employers as well as helping you choose the right sector to work in.!</h1>
+                <a data-toggle="modal" data-target="#signupModalLong"  class="btn btn-outline btn-xl js-scroll-trigger">SignUp Today!</a>
+              </div>
+            </div>
+            <div class="col-lg-5 my-auto">
+              <div class="device-container">
+                <div class="device-mockup iphone6_plus portrait white">
+                  <div class="device">
+                    <div class="screen">
+                      <!-- Demo image for screen mockup, you can put an image here, some HTML, an animation, video, or anything else! -->
+                      <div style="font-size: 72px">
+                          <i class="fa fa-fire  fa-5x" aria-hidden="true" ></i>
+                      </div>
                     </div>
-                </div>    
+                    <div class="button">
+                      <!-- You can hook the "home button" to some JavaScript events or just remove it -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </header>
+    
+    <section class="download bg-primary text-center" id="download">
+        <div class="container">
+            <div class="row" style="margin-top:-50px">
+            <div class="col-md-12 mx-auto">
+                <h2 class="section-heading">Increase your value!</h2>
+                <div class="row">
+                    <div class="col-sm-4">
+                    <div class="card style_prevu_kit" style="background-color: rgba(245, 245, 245, 0.4);">
+                        <div class="card-block">
+                        <h3>Personal development</h3>
+                        <p class="card-text" style="padding-left:10px;padding-right:10px;">Soft and technically to help you start on the professional development path.</p> Skills you learn during work experience are the first steps towards ticking off competencies and showing diligence.</p>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-sm-4">
+                    <div class="card" style="background-color: rgba(245, 245, 245, 0.4);">
+                        <div class="card-block">
+                        <h3 class="card-title">Gain Experience</h3>
+                        <p class="card-text" style="padding-left:10px;padding-right:10px;">Get gently introduced to the real sense of your chosen industry. </p> Learn the do’s and don’ts, get work place savvy, learn navigate your way through and learn how to thrive in the workplace.</p>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card" style="background-color: rgba(245, 245, 245, 0.4);">
+                        <div class="card-block">
+                            <h3 class="card-title">Understand you Potential</h3>
+                            <p class="card-text" style="padding-left:10px;padding-right:10px;">Identify your skills while highlighting the areas that you need to work on.</p> Change your world view and gain good understanding of your strengths and weakness.</p>
+                        </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             </div>
         </div>
-      </div>
+        </section>
+    
+        <section class="features" id="features">
+        <div class="container">
+            <div class="section-heading text-center">
+            <h2>Features</h2>
+            <p class="text-muted">What you gain through our app!</p>
+            <hr>
+            </div>
+            <div class="row" style="margin-top:-50px">
+            <div class="col-lg-12 my-auto">
+                <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-4">
+                    <div class="feature-item">
+                        <i class="fa fa-thumbs-o-up"></i>
+                        <h3>Become Marketable</h3>
+                        <p class="text-muted">Work experience increases chances during the selection process of receiving a job offer in various organisations!</p>
+                    </div>
+                    </div>
+                    <div class="col-lg-4">
+                    <div class="feature-item">
+                        <i class="fa fa-spinner"></i>
+                        <h3>Make Decisions</h3>
+                        <p class="text-muted">You’ll get a taste of what a job or workplace is like, so you can figure out if you’re interested in that kind of career!</p>
+                    </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="feature-item">
+                        <i class="fa fa-superpowers"></i>
+                        <h3>Biuld Confidence</h3>
+                        <p class="text-muted">Working with other people and doing your tasks well gives you experiences which helps you build self belief and confidence!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                    <div class="feature-item">
+                        <i class="fa fa-file-text"></i>
+                        <h3>Spice Up you CV</h3>
+                        <p class="text-muted">Work experience shows you’re enthusiastic and ready to work hard. You can pick out particular achievements to show off!</p>
+                    </div>
+                    </div>
+                    <div class="col-lg-4">
+                    <div class="feature-item">
+                        <i class="fa fa-cogs"></i>
+                        <h3>Gain New Skills</h3>
+                        <p class="text-muted">Developing new skills will help set you apart in the job market as well as make you more productive and successful at your current job.!</p>
+                    </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="feature-item">
+                        <i class="fa fa-users"></i>
+                        <h3>Biuld you network</h3>
+                        <p class="text-muted">You’ll meet people at work and might attend meetings or events. You’ll make contacts that could provide a reference or help you in the future!</p>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </section>
+    
+        <section class="cta">
+        <div class="cta-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h2>Stop waiting.<br>Start building.</h2>
+                        <a href="#contact" class="btn btn-outline btn-xl js-scroll-trigger">Lets Get Started!</a>
+                        </div> 
+                    <div class="col-lg-6">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="overlay"></div>
     </section>
-
+    
     <footer>
-      <div class="container">
-        <p>&copy; 2017 Start Bootstrap. All Rights Reserved.</p>
-        <ul class="list-inline">
-          <li class="list-inline-item">
-            <a href="#">Privacy</a>
-          </li>
-          <li class="list-inline-item">
-            <a href="#">Terms</a>
-          </li>
-          <li class="list-inline-item">
-            <a href="#">FAQ</a>
-          </li>
-        </ul>
-      </div>
+        <div class="container">
+            <p>&copy; 2017 Start Bootstrap. All Rights Reserved.</p>
+            <ul class="list-inline">
+            <li class="list-inline-item">
+                <a href="#">Privacy</a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#">Terms</a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#">FAQ</a>
+            </li>
+            </ul>
+        </div>
     </footer>
-
-    <!-- Bootstrap core JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-    <!-- Plugin JavaScript -->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for this template -->
-    <script src="js/new-age.min.js"></script>
-
-  </body>
-
-</html>
+    
+{% endblock %}
+</body>
