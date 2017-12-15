@@ -17,13 +17,14 @@ from models import User
 
 
 @app.route('/')
-def hello():
+def home():
     return render_template('home.html')
 
 
 @app.route('/register', methods=['POST'])
 def register():
     is_valid = validate_email(request.form['email'])
+    error = None
     if is_valid:
         user = User.query.filter_by(email=request.form['email']).first()
         if not user:
@@ -34,9 +35,7 @@ def register():
             password = request.form['password']
             print(firstname)
             if email is None or password is None:
-                response = {'message': 'Invalid input. Check the email and password'}
                 error = 'Empty email or password'
-                return redirect(url_for('hello_name'))
             else:
                 user = User(firstname=firstname, lastname=lastname, email=email)
                 user.hash_password(password)
@@ -44,12 +43,45 @@ def register():
                 db.session.commit()
                 response = {'message': 'Invalid input. Check the email and password'}
                 flash('You were successfully register')
-                return redirect(url_for('hello'))
+                return redirect(url_for('home'))
         else:
-            response = {'message': 'User already exists. Please login.'}
             error = 'User already exists'
-            return render_template('signup.html')
     else:
-        response = {'message': 'hello_name'}
         error = 'Invalid email'
-        return render_template('signup.html')
+    return render_template('home.html', error=error)
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    '''
+    Function for login user
+    '''
+    try:
+        user = User.query.filter_by(email=request.form['email']).first()
+        if user and user.verify_password(request.form['password']):
+            session['username'] = request.form['email']
+            session['id'] = user.id
+            return redirect(url_for('issues'))
+        else:
+            error = 'Invalid email or password, Please try again.'
+            return render_template('home.html', error=error)
+    except:
+        error = 'No email or password field!!'
+        return render_template('home.html', error=error)
+
+
+@app.route('/issues')
+def issues():
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        # items = sessions.query(Issues).filter_by(user_id=id)
+        return render_template('index.html', items='items')
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/logout')
+def logout():
+   session.pop('username', None)
+   return redirect(url_for('home'))
