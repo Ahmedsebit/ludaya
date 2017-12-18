@@ -23,6 +23,7 @@ class Task(db.Model):
     __tablename__ = 'tasks'
 
     id = db.Column(db.Integer, primary_key=True)
+    taskgroup = db.Column(db.String())
     taskname = db.Column(db.String())
 
     def __init__(self, taskname):
