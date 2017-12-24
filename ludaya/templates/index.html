@@ -38,6 +38,145 @@
               }
             }
         });
+
+        document.getElementById('overallspecialistDataset').addEventListener('click', function() {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                  labels: ["task completed", "remaining tasks"],
+                  datasets: [
+                    {
+                      label: "Population (millions)",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [4878,5267 - 4878]
+                    }
+                  ]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: ''
+                  }
+                }
+            });
+        });
+
+        document.getElementById('computersupportspecialistDataset').addEventListener('click', function() {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                  labels: ["task completed", "remaining tasks"],
+                  datasets: [
+                    {
+                      label: "Population (millions)",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [2878,5267 - 2878]
+                    }
+                  ]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: ''
+                  }
+                }
+            });
+        });
+
+        document.getElementById('informationsystemsadministratorDataset').addEventListener('click', function() {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                  labels: ["task completed", "remaining tasks"],
+                  datasets: [
+                    {
+                      label: "Population (millions)",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [2878,5267 - 2878]
+                    }
+                  ]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: ''
+                  }
+                }
+            });
+        });
+
+        document.getElementById('networkadministratorsDataset').addEventListener('click', function() {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                  labels: ["task completed", "remaining tasks"],
+                  datasets: [
+                    {
+                      label: "Population (millions)",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [2878,5267 - 2878]
+                    }
+                  ]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: ''
+                  }
+                }
+            });
+        });
+
+        document.getElementById('systemssoftwaredeveloperDataset').addEventListener('click', function() {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                  labels: ["task completed", "remaining tasks"],
+                  datasets: [
+                    {
+                      label: "Population (millions)",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [2878,5267 - 2878]
+                    }
+                  ]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: ''
+                  }
+                }
+            });
+        });
+
+        document.getElementById('databaseadministratorDataset').addEventListener('click', function() {
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                  labels: ["task completed", "remaining tasks"],
+                  datasets: [
+                    {
+                      label: "Population (millions)",
+                      backgroundColor: ["#3e95cd", "#8e5ea2"],
+                      data: [2878,5267 - 2878]
+                    }
+                  ]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: ''
+                  }
+                }
+            });
+        });
+
     </script>
 {% endblock %}
 
@@ -125,12 +264,12 @@
                     <h3 class="card-title" align="center">Task Completion</h3>
                     <div class="row">
                         <div class="col-sm-4" style="padding-top:60px;">
-                                <p><button type="button" class="btn btn-primary btn-sm" id="randomizeData">Overall Specialist</button> 
-                            <p><button type="button" class="btn btn-primary btn-sm" id="randomizeData">Computer Support Specialist</button>
-                            <p><button type="button" class="btn btn-primary btn-sm" id="addDataset">Information Systems Administrator</button>
-                            <p><button type="button" class="btn btn-primary btn-sm" id="removeDataset">Network Administrators</button>
-                            <p><button type="button" class="btn btn-primary btn-sm" id="addData">Systems Software Developer</button>
-                            <p><button type="button" class="btn btn-primary btn-sm" id="removeData">Database Administrator</button>
+                                <p><button type="button" class="btn btn-primary btn-sm" id="overallspecialistDataset">Overall Specialist</button> 
+                            <p><button type="button" class="btn btn-primary btn-sm" id="computersupportspecialistDataset">Computer Support Specialist</button>
+                            <p><button type="button" class="btn btn-primary btn-sm" id="informationsystemsadministratorDataset">Information Systems Administrator</button>
+                            <p><button type="button" class="btn btn-primary btn-sm" id="networkadministratorsDataset">Network Administrators</button>
+                            <p><button type="button" class="btn btn-primary btn-sm" id="systemssoftwaredeveloperDataset">Systems Software Developer</button>
+                            <p><button type="button" class="btn btn-primary btn-sm" id="databaseadministratorDataset">Database Administrator</button>
                         </div>
                         <div class="col-sm-8" align="center">
                             <div id="canvas-holder" style="width:60%">
