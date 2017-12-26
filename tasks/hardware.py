@@ -27,6 +27,35 @@ HARDWARE = [
         },
     {
         'name':'Computer assembly',
-        'tasklist':[]
+        'tasklist':[
+            'How to get rid off blue screen started happening in one good cold morning',
+            'How to stop itching fan sound?',
+            'How to replace system battery?',
+            'Computer Freeze',
+            'A blue screen with a memory reference x000xxxx as a boot interruption',
+            'Laptops dead',
+            'Noisy Computer',
+            'A rapid beep sounds but no display in your monitor',
+            'PC doesnt boot. a beep sound and displays nothing at all.',
+            'You hear no sound plus no display?',
+            'PC turns on, no sound and display.',
+            'When you install certain software an error pops-up?',
+            'When installing a software suddenly it stops and cannot continue.',
+            'Your PC restarts automatically?',
+            'Are files taking a longer time to transfer?',
+            'Are you seeing errors or blue screens? ',
+            'Has boot time increased significantly?',
+            'Do you hear any clicking or loud whining noises?',
+            'Does the display seem garbled',
+            'do you see artifacts on the screen that you did not see before?',
+            'Are you experiencing blue screens during graphics intensive tasks',
+            'Screen instability during graphics intensive tasks?',
+            'Corrupted Files',
+            'The system starts heating up immediately after being booted.',
+            'clicking noises can be heard from the hardware of the system',
+            'Computer fails to detect hard disk',
+            'Computer fails to detect BIOS',
+            'Unexpected computer crashes'
+        ]
     }
 ]
