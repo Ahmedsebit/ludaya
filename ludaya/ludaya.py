@@ -1,5 +1,5 @@
 from flask import Flask, render_template, session, flash, request, redirect, url_for, flash
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 import os
 import re
 from flask import Blueprint, request, session, g, redirect, url_for, abort, \

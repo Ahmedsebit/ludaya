@@ -1,3 +1,4 @@
+# coding: utf8
 '''
 COMMUNICATION Task lists
 '''
@@ -18,8 +19,8 @@ COMMUNICATION = [
             {'Project management':'Trello'},
             {'Scanner':'TinyScan'},
             {'Screen capture':'Snagit'},
-            {'Social media management':'Buffer and Hootsuite'},
-            {'Time tracking':'Chrometa'}
+            {'Time tracking':'Chrometa'},
+            {'Social media management':"Buffer and Hootsuite"},
         ]
         },
     {
@@ -84,26 +85,6 @@ COMMUNICATION = [
         },
     {
         'name':'Establish requirements modifications',
-        'tasklist':[
-            {'Accounting and Invoicing':'Wave'},
-            {'Business templates and tools':'SCORE'},
-            {'CRM':'Zoho CRM'},
-            {'Diagramming':'Draw.io'},
-            {'Email marketing':'MailChimp'},
-            {'File backup and management':'Dropbox'},
-            {'File recovery':'Recuva'},
-            {'Online meetings':'Skype'},
-            {'Outlook sync':'AkrutoSync'},
-            {'Photo editor':'PicMonkey'},
-            {'Project management':'Trello'},
-            {'Scanner':'TinyScan'},
-            {'Screen capture':'Snagit'},
-            {'Social media management':'Buffer and Hootsuite'},
-            {'Time tracking':'Chrometa'}
-        ]
-        },
-    {
-        'name':'Train end users on usage of computer hardware',
         'tasklist':[
             {'Accounting and Invoicing':'Wave'},
             {'Business templates and tools':'SCORE'},

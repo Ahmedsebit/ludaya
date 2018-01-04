@@ -1,7 +1,8 @@
+# coding: utf8
 '''
 Task lists
 '''
-NETWORKING = {
+NETWORKING = [
     {
         'name':'networking problems',
         'tasklist':[
@@ -24,10 +25,6 @@ NETWORKING = {
             'Ruserok: permission denied',
             'Unknown host'
         ]
-        },
-    {
-        'name':'Install well-functioning LAN/WAN',
-        'tasklist':[]
         },
     {
         'name':'Manage IPV4',
@@ -159,7 +156,7 @@ NETWORKING = {
             'NetBIOS name resolution',
             'NetBIOS name server (NBNS)',
             'routing table',
-            'Windows Internet Name Service (WINS)'
+            'Windows Internet Name Service (WINS)',
         ]
         },
-}
+]
