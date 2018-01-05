@@ -4,22 +4,32 @@ Task lists
 LEARNING = [
     {
         'name':'Updated on the latest computer periphery',
-        'tasklist':[]
+        'tasklist':[
+            'test'
+        ]
         },
     {
         'name':'Read trade magazines',
-        'tasklist':[]
+        'tasklist':[
+            'test'
+        ]
         },
     {
         'name':'Read technical manuals',
-        'tasklist':[]
+        'tasklist':[
+            'test'
+        ]
         },
     {
         'name':'Attend conferences on hardware',
-        'tasklist':[]
+        'tasklist':[
+            'test'
+        ]
         },
     {
         'name':'Attend conferences on software',
-        'tasklist':[]
+        'tasklist':[
+            'test'
+        ]
         }
 ]

@@ -45,73 +45,85 @@ class LudayaTestCase(unittest.TestCase):
         items = []
         for i in communication:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.communication_task(), items)
+        dic = self.assign_tasks.communication_tasks()
+        self.assertIn(dic.values()[0], items)
 
     def test_electronics_task(self):
         items = []
         for i in electronics:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.electronics_task(), items)
+        dic = self.assign_tasks.electronics_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_hardware_task(self):
         items = []
         for i in hardware:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.hardware_task(), items)
+        dic = self.assign_tasks.hardware_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_learning_task(self):
         items = []
         for i in learning:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.learning_task(), items)
+        dic = self.assign_tasks.learning_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_mac_task(self):
         items = []
         for i in mac:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.mac_task(), items)
+        dic = self.assign_tasks.mac_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_maintainance_task(self):
         items = []
         for i in maintainance:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.maintainance_task(), items)
+        dic = self.assign_tasks.maintainance_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_networking_task(self):
         items = []
         for i in networking:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.networking_task(), items)
+        dic = self.assign_tasks.networking_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_security_task(self):
         items = []
         for i in security:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.security_task(), items)
+        dic = self.assign_tasks.security_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_server_task(self):
         items = []
         for i in server:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.server_task(), items)
+        dic = self.assign_tasks.server_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_support_task(self):
         items = []
         for i in support:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.support_task(), items)
+        dic = self.assign_tasks.support_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_unix_task(self):
         items = []
         for i in unix:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.unix_task(), items)
+        dic = self.assign_tasks.unix_task()
+        self.assertIn(dic.values()[0], items)
 
     def test_windows_task(self):
         items = []
         for i in windows:
             items += i['tasklist']
-        self.assertIn(self.assign_tasks.windows_task(), items)
+        dic = self.assign_tasks.windows_task()
+        self.assertIn(dic.values()[0], items)
 
 
 # Make the tests conveniently executable
