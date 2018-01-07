@@ -12,8 +12,10 @@ from server import SERVER as servers
 from support import SUPPORT as supports
 from unix import UNIX as unixs
 from windows import WINDOWS as windows
+from users.user import Communication, Electronics, Hardware, Learning, Mac, Maintainance, Networking, Security, Server, Support, Unix, Windows
 
 from random import randrange
+
 
 class AssignTasks(object):
 
@@ -54,51 +56,60 @@ class AssignTasks(object):
 
     def communication_tasks(self):
         task = self.assign_task(communications, self.commnunication_list)
+        task['name'] = 'communication'
         return task
 
     def electronics_task(self):
         task = self.assign_task(electronics, self.electronics_list)
+        task['name'] = 'electonics'
         return task
 
     def hardware_task(self):
         task = self.assign_task(hardwares, self.hardware_list)
+        task['name'] = 'hardware'
         return task
 
     def learning_task(self):
         task = self.assign_task(learnings, self.learning_list)
+        task['name'] = 'learning'
         return task
 
     def mac_task(self):
         task = self.assign_task(macs, self.mac_list)
+        task['name'] = 'mac'
         return task
 
     def maintainance_task(self):
         task = self.assign_task(maintainances, self.maintainance_list)
+        task['name'] = 'maintainance'
         return task
 
     def networking_task(self):
         task = self.assign_task(networkings, self.networking_list)
+        task['name'] = 'networking'
         return task
 
     def security_task(self):
         task = self.assign_task(securities, self.security_list)
+        task['name'] = 'security'
         return task
 
     def server_task(self):
         task = self.assign_task(servers, self.server_list)
+        task['name'] = 'server'
         return task
 
     def support_task(self):
         task = self.assign_task(supports, self.support_list)
+        task['name'] = 'support'
         return task
 
     def unix_task(self):
         task = self.assign_task(unixs, self.unix_list)
+        task['name'] = 'unix'
         return task
 
     def windows_task(self):
         task = self.assign_task(windows, self.windows_list)
+        task['name'] = 'windows'
         return task
-
-a = AssignTasks()
-print(a.communication_tasks())

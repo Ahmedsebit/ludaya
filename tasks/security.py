@@ -6,7 +6,7 @@ SECURITY = [
     {
         'name':'computer security',
         'tasklist':[
-
+            'test'
         ]
     },
     {

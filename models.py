@@ -26,9 +26,6 @@ class Task(db.Model):
     taskgroup = db.Column(db.String())
     taskname = db.Column(db.String())
 
-    task = db.relationship(
-        'Task', order_by='Task.id', cascade="all, delete-orphan")
-
     def __init__(self, taskname):
         self.taskname = taskname
 
@@ -43,21 +40,23 @@ class AssignedTask(db.Model):
     __tablename__ = 'assignedtasks'
 
     id = db.Column(db.Integer, primary_key=True)
-    assignedtask_id = db.Column(db.Integer, db.ForeignKey('tasks.id', ondelete='CASCADE'))
     name = db.Column(db.String(255))
+    group = db.Column(db.String(255))
+    category = db.Column(db.String(255))
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime,
                               default=db.func.current_timestamp(),
                               onupdate=db.func.current_timestamp())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
 
-    def __init__(self, name, user_id, assignedtask_id):
+    def __init__(self, name, group, category, user_id):
         '''
         initialize with name, user_id and assignedtask_id
         '''
+        self.category = category
+        self.group = group
         self.name = name
         self.user_id = user_id
-        self.assignedtask_id = assignedtask_id
 
     def save(self):
         '''
