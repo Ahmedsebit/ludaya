@@ -31,3 +31,11 @@ ELECTRONICS = [
         ]
         }
 ]
+
+def electronics_list_length():
+    l = []
+    for i in ELECTRONICS:
+        for j in i.values()[0]:
+            l.append(j)
+
+    return l

@@ -29,3 +29,11 @@ MAC = [
         ]
     }
 ]
+
+def mac_list_length():
+    l = []
+    for i in MAC:
+        for j in i.values()[0]:
+            l.append(j)
+
+    return l

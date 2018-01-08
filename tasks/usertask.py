@@ -46,3 +46,10 @@ def allocate(task, user):
 
 def testing():
     print('Hello Job! The time is: %s' % datetime.now())
+
+def get_user_tasks(user_id):
+    tasks = AssignedTask.get_assignedtask(user_id)
+    lst = []
+    for task in tasks:
+        lst.append(task)
+    return lst

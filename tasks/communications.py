@@ -124,3 +124,11 @@ COMMUNICATION = [
         ]
         },
 ]
+
+def communcation_list_length():
+    l = []
+    for i in COMMUNICATION:
+        for j in i.values()[0]:
+            l.append(j)
+
+    return l

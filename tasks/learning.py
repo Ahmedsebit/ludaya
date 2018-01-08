@@ -33,3 +33,11 @@ LEARNING = [
         ]
         }
 ]
+
+def learning_list_length():
+    l = []
+    for i in LEARNING:
+        for j in i.values()[0]:
+            l.append(j)
+
+    return l

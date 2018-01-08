@@ -107,3 +107,11 @@ WINDOWS = [
         ]
     }
 ]
+
+def windows_list_length():
+    l = []
+    for i in WINDOWS:
+        for j in i.values()[0]:
+            l.append(j)
+
+    return l

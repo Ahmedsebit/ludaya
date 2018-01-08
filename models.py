@@ -79,8 +79,8 @@ class AssignedTask(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    def __repr__(self):
-        return "<AssignedTask: {}>".format(self.name)
+    # def __repr__(self):
+    #     return "<AssignedTask: {}>".format(self.name)
 
 
 class User(db.Model):

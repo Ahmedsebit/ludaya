@@ -86,3 +86,11 @@ SERVER = [
         ]
     }
 ]
+
+def server_list_length():
+    l = []
+    for i in SERVER:
+        for j in i.values()[0]:
+            l.append(j)
+
+    return l
