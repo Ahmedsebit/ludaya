@@ -4,29 +4,31 @@ from flask_sqlalchemy import SQLAlchemy
 from models import AssignedTask, User
 from ludaya.ludaya import db
 from datetime import datetime
-assign_tasks = AssignTasks()
+from tasksallocations import communication_tasks, electronics_task, hardware_task, learning_task, mac_task, maintainance_task, networking_task, security_task, server_task, support_task, unix_task, windows_task
 
 def allocate_all_user_tasks():
-    communication = assign_tasks.communication_tasks()
-    electronics = assign_tasks.electronics_task()
-    hardware = assign_tasks.hardware_task()
-    learning = assign_tasks.learning_task()
-    mac = assign_tasks.mac_task()
-    maintainance = assign_tasks.maintainance_task()
-    networking = assign_tasks.networking_task()
-    security = assign_tasks.security_task()
-    server = assign_tasks.server_task()
-    support = assign_tasks.support_task()
-    unix = assign_tasks.unix_task()
-    windows = assign_tasks.windows_task()
 
     users = User.query.all()
 
     for user in users:
+        communication = communication_tasks(user.id)
+        electronics = electronics_task(user.id)
+        hardware = hardware_task(user.id)
+        learning = learning_task(user.id)
+        mac = mac_task(user.id)
+        maintainance = maintainance_task(user.id)
+        networking = networking_task(user.id)
+        security = security_task(user.id)
+        server = server_task(user.id)
+        support = support_task(user.id)
+        unix = unix_task(user.id)
+        windows = windows_task(user.id)
+
         allocate(communication, user.id)
         allocate(electronics, user.id)
         allocate(hardware, user.id)
         allocate(learning, user.id)
+        allocate(mac, user.id)
         allocate(maintainance, user.id)
         allocate(networking, user.id)
         allocate(security, user.id)

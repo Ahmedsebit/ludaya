@@ -3,7 +3,7 @@ Task lists
 '''
 ELECTRONICS = [
     {
-        'name':'Wires electricity',
+        'name':'I currently experienceing the following electrical problem',
         'tasklist':[
             'Overlamping',
             'Uncovered Junction Box',
@@ -19,15 +19,15 @@ ELECTRONICS = [
             'Flickering light',
             'Tripping circuit breaker',
             'Electric shocks',
-            'No RCCB (Residual Current Circuit Breaker)',
+            'No RCCB - Residual Current Circuit Breaker',
             'Frequent burning out of light bulbs',
             'Overcircuited panel',
             'High electric bill',
-            'FREQUENT ELECTRICAL SURGES',
-            'CIRCUIT BREAKER TRIPPING FREQUENTLY',
-            'CIRCUIT OVERLOAD',
-            'LIGHTS TOO BRIGHT OR DIM',
-            'RECESSED LIGHT GOES OUT AND COMES BACK ON'
+            'Frequent electrical surges',
+            'Circuit breaker tripping frequently',
+            'Circuit overloading',
+            'Lights are too bright or too dim',
+            'Recessed light goes out and comes back on'
         ]
         }
 ]

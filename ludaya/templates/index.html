@@ -361,8 +361,8 @@
     <section class="features" id="features" style="margin-top:-120px;">
         <div id="mySidenav" class="sidenav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="#">About</a>
-            <a href="#">Services</a>
+            <a href="#">Previous tasks</a>
+            <a href="#">Current Tasks</a>
             <a href="#">Clients</a>
             <a href="#">Contact</a>
         </div>
@@ -374,7 +374,7 @@
                             <h3 class="card-title">Pending Tasks</h3>
                             <ul class="list-group">
                                 {% for group, count in groups.items() %}
-                                    <li class="list-group-item"><a href="#">{{group}}</a><span class="badge">{{count}}</span></li>
+                                    <li class="list-group-item"><a href="{{url_for('tasks', category=group)}}">{{group}}</a><span class="badge">{{count}}</span></li>
                                 {% endfor %}                           
                              </ul>
                         </div>
@@ -390,6 +390,21 @@
                                 <li class="list-group-item"><a href="#">Monthly Summary</a></li>
                                 <li class="list-group-item"><a href="#">Yearly Summary</a></li>
                                 <li class="list-group-item"><a href="#">Overall Summary</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    </br>
+                    <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px;">
+                        <div class="card-block">
+                            <h3 class="card-title">Latest Articles</h3>
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                  <a href="#">Daily Summary</a>
+                                  <p>test</p>
+                                </li>
+                                <li class="list-group-item"><a href="#">Weekly Summary</a>
+                                  <p>test</p>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -426,6 +441,23 @@
             </div>
         </div>
     </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2017 Start Bootstrap. All Rights Reserved.</p>
+            <ul class="list-inline">
+            <li class="list-inline-item">
+                <a href="#">Privacy</a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#">Terms</a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#">FAQ</a>
+            </li>
+            </ul>
+        </div>
+    </footer>
         
 
 {% endblock %}

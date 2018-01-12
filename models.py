@@ -48,6 +48,8 @@ class AssignedTask(db.Model):
                               default=db.func.current_timestamp(),
                               onupdate=db.func.current_timestamp())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
+    status = db.Column(db.String(255), default="not started")
+    tries = db.Column(db.Integer, default=0)
 
     def __init__(self, name, group, category, user_id):
         '''

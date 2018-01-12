@@ -20,7 +20,12 @@ from models import User, AssignedTask
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        return redirect(url_for('issues'))
+    else:
+        return render_template('home.html')
 
 
 @app.route('/register', methods=['POST'])
@@ -77,7 +82,8 @@ def issues():
     if 'username' in session:
         username = session['username']
         id = session['id']
-        items = AssignedTask.query.filter_by(user_id=id).all()
+        items = AssignedTask.query.filter_by(status="not started", user_id=id).all()
+        completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
         groups_list = []
         for i in items:
             groups_list.append(i.category)
@@ -112,18 +118,18 @@ def issues():
         return render_template('index.html',
                                items=items,
                                groups=groups,
-                               my_communication = len([x for x in items if x.category == 'communication']),
-                               my_electronics = len([x for x in items if x.category == 'electronics']),
-                               my_hardware = len([x for x in items if x.category == 'hardware']),
-                               my_learning = len([x for x in items if x.category == 'learning']),
-                               my_mac = len([x for x in items if x.category == 'communication']),
-                               my_maintainance = len([x for x in items if x.category == 'maintainance']),
-                               my_networking = len([x for x in items if x.category == 'networking']),
-                               my_security = len([x for x in items if x.category == 'security']),
-                               my_server = len([x for x in items if x.category == 'server']),
-                               my_support = len([x for x in items if x.category == 'support']),
-                               my_unix = len([x for x in items if x.category == 'unix']),
-                               my_windows = len([x for x in items if x.category == 'windows']),
+                               my_communication=len([x for x in completed_items if x.category == 'communication']),
+                               my_electronics=len([x for x in completed_items if x.category == 'electronics']),
+                               my_hardware=len([x for x in completed_items if x.category == 'hardware']),
+                               my_learning= len([x for x in completed_items if x.category == 'learning']),
+                               my_mac = len([x for x in completed_items if x.category == 'communication']),
+                               my_maintainance = len([x for x in completed_items if x.category == 'maintainance']),
+                               my_networking = len([x for x in completed_items if x.category == 'networking']),
+                               my_security = len([x for x in completed_items if x.category == 'security']),
+                               my_server = len([x for x in completed_items if x.category == 'server']),
+                               my_support = len([x for x in completed_items if x.category == 'support']),
+                               my_unix = len([x for x in completed_items if x.category == 'unix']),
+                               my_windows = len([x for x in completed_items if x.category == 'windows']),
                                all_communcation=len(all_communcation),
                                all_electronics = len(all_electronics),
                                all_hardware = len(all_hardware),
@@ -140,6 +146,18 @@ def issues():
     else:
         return redirect(url_for('home'))
 
+@app.route('/tasks/<string:category>')
+def tasks(category):
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
+        my_task_category = category.upper()
+        for task in tasks:
+            task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+        return render_template('tasks.html', tasks=tasks, my_task_category=my_task_category)
+    else:
+        return redirect(url_for('home'))
 
 @app.route('/logout')
 def logout():

@@ -4,7 +4,7 @@ MAC
 
 MAC = [
     {
-        'name':'MAC Administration',
+        'name':'I experiencing the following issue with my macbook',
         'tasklist':[
             'Persistent beachball',
             'Lost a file',
@@ -16,9 +16,7 @@ MAC = [
             'Mac starts, but stops',
             'Kernel panic',
             'An application is playing up',
-            'I cant eject a disc',
             'My hard disk is full',
-            'My optical drive wont read',
             'Flash drive wont read',
             'Something just seems funny',
             'Forgotten password',
