@@ -1,8 +1,8 @@
 # coding: utf8
 '''
-COMMUNICATION Task lists
+SOFTWARE Task lists
 '''
-COMMUNICATION = [
+SOFTWARE = [
     {
         'name':'Kindly prepare evaluations for this software which we are planning to use',
         'tasklist':[
@@ -43,26 +43,26 @@ COMMUNICATION = [
             'Social media management-Buffer and Hootsuite',
         ]
         },
-    # {
-    #     'name':'Recommend improvements or upgrades',
-    #     'tasklist':[
-    #         'Accounting and Invoicing-Wave',
-    #         'Business templates and tools-SCORE',
-    #         'CRM-Zoho CRM',
-    #         'Diagramming-Draw.io',
-    #         'Email marketing-MailChimp',
-    #         'File backup and management-Dropbox',
-    #         'File recovery-Recuva',
-    #         'Online meetings-Skype',
-    #         'Outlook sync-AkrutoSync',
-    #         'Photo editor-PicMonkey',
-    #         'Project management-Trello',
-    #         'Scanner-TinyScan',
-    #         'Screen capture-Snagit',
-    #         'Time tracking-Chrometa',
-    #         'Social media management-Buffer and Hootsuite',
-    #     ]
-    #     },
+    {
+        'name':'Recommend improvements or upgrades',
+        'tasklist':[
+            'Accounting and Invoicing-Wave',
+            'Business templates and tools-SCORE',
+            'CRM-Zoho CRM',
+            'Diagramming-Draw.io',
+            'Email marketing-MailChimp',
+            'File backup and management-Dropbox',
+            'File recovery-Recuva',
+            'Online meetings-Skype',
+            'Outlook sync-AkrutoSync',
+            'Photo editor-PicMonkey',
+            'Project management-Trello',
+            'Scanner-TinyScan',
+            'Screen capture-Snagit',
+            'Time tracking-Chrometa',
+            'Social media management-Buffer and Hootsuite',
+        ]
+        },
     {
         'name':'Kindly establish requirements for a new system  which we are planning to acquire for:',
         'tasklist':[
@@ -123,11 +123,32 @@ COMMUNICATION = [
             'Social media management-Buffer and Hootsuite',
         ]
         },
+
+    {
+        'name':'Configure software',
+        'tasklist':[
+            'Accounting and Invoicing-Wave',
+            'Business templates and tools-SCORE',
+            'CRM-Zoho CRM',
+            'Diagramming-Draw.io',
+            'Email marketing-MailChimp',
+            'File backup and management-Dropbox',
+            'File recovery-Recuva',
+            'Online meetings-Skype',
+            'Outlook sync-AkrutoSync',
+            'Photo editor-PicMonkey',
+            'Project management-Trello',
+            'Scanner-TinyScan',
+            'Screen capture-Snagit',
+            'Time tracking-Chrometa',
+            'Social media management-Buffer and Hootsuite',
+        ]
+        },
 ]
 
-def communcation_list_length():
+def software_list_length():
     l = []
-    for i in COMMUNICATION:
+    for i in SOFTWARE:
         for j in i.values()[0]:
             l.append(j)
 

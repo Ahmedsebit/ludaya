@@ -3,7 +3,7 @@ Task lists
 '''
 ELECTRONICS = [
     {
-        'name':'I currently experienceing the following electrical problem',
+        'name':'Experiencing the following electrical problem, kindly assist',
         'tasklist':[
             'Overlamping',
             'Uncovered Junction Box',

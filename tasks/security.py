@@ -4,12 +4,6 @@ Task lists
 '''
 SECURITY = [
     {
-        'name':'computer security',
-        'tasklist':[
-            'test'
-        ]
-    },
-    {
         'name':'network security',
         'tasklist':[
             'Denial of Service',

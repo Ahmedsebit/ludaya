@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models import AssignedTask, User
 from ludaya.ludaya import db
 
-from communications import COMMUNICATION as communications
+from software import SOFTWARE as softwares
 from electronics import ELECTRONICS as electronics
 from hardware import HARDWARE as hardwares
 from learning import LEARNING as learnings
@@ -60,9 +60,9 @@ def assign_task(user_id, category_name, category):
         new_task = {task_category:selected_task}
     return new_task
 
-def communication_tasks(user_id):
-    task = assign_task(user_id, 'commnunications', communications)
-    task['name'] = 'communication'
+def software_tasks(user_id):
+    task = assign_task(user_id, 'software', softwares)
+    task['name'] = 'software'
     return task
 
 def electronics_task(user_id):

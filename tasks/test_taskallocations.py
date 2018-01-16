@@ -14,7 +14,7 @@ from flask_bootstrap import Bootstrap
 from ludaya.ludaya import app, db
 from taskallocations import AssignTasks
 
-from communications import COMMUNICATION as communication
+from software import SOFTWARE as software
 from electronics import ELECTRONICS as electronics
 from hardware import HARDWARE as hardware
 from learning import LEARNING as learning
@@ -41,11 +41,11 @@ class LudayaTestCase(unittest.TestCase):
     def test_asign_task(self):
         pass
 
-    def test_communication_task(self):
+    def test_software_task(self):
         items = []
-        for i in communication:
+        for i in software:
             items += i['tasklist']
-        dic = self.assign_tasks.communication_tasks()
+        dic = self.assign_tasks.software_tasks()
         self.assertIn(dic.values()[0], items)
 
     def test_electronics_task(self):

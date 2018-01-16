@@ -18,7 +18,6 @@ MAC = [
             'An application is playing up',
             'My hard disk is full',
             'Flash drive wont read',
-            'Something just seems funny',
             'Forgotten password',
             'Screen goes weird',
             'Failed to sync',
