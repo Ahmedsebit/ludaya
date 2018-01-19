@@ -54,7 +54,7 @@ NETWORKING = [
             'View and edit of the Address Resolution Protocol (ARP) cache',
             'Display the host name of the computer',
             'Displays the current TCP/IP configuration'
-            'Manage Dynamic Host Configuration Protocol (DHCP)-allocated IPv4 address configurations', 
+            'Manage Dynamic Host Configuration Protocol (DHCP)-allocated IPv4 address configurations',
             'Display the DNS client resolver cache',
             'Flush the DNS client resolver cache',
             'Register DNS names',
@@ -152,6 +152,35 @@ NETWORKING = [
             'Address Resolution Protocol',
         ]
         },
+        {
+            'name':'I would like to do the following task on Advanced IP Scanner',
+            'tasklist':[
+                'Network Scanning'
+                'Create a Favorites List of Computers for Regular Use'
+                'Using Radmin and Advanced IP Scanner'
+                'Load the list of computers from the specified file into the Favorites list.'
+                'Set the starting IP-address as ***.***.***.0 and the end IP-address as ***.***.***.255, where "***" are the current values of the entered IP-address'
+                'Set the starting and ending IP-addresses as per the subnetwork mask of your computer.'
+                'Start a terminal window with the ping command to a remote computer'
+                'Start a terminal window with the tracert command to trace the route to the remote computer'
+                'Connect to the selected computer via SSH-Clent selected by the user'
+                'Scan each computer several times'
+                'Change the speed of the scan, as well as the processor and network load'
+                'Select the resources to be scanned'
+                'Enable automatic checks for updates'
+                'Specify the use of SSH client, Telnet client, FTP client, HTTP client'
+                'Enable the table colors alternation'
+                'Shutting down the selected computer remotely'
+                'Cancel the remote shut down of selected computers'
+                'Sends the Wake-On-LAN command to selected computers which the MAC-addresses have been identified'
+                'Open Windows Explorer showing the selected computer'
+                'Connect to the computer via HTTP protocol using a browser selected by the user'
+                'Connect to the computer via HTTPS protocol using a browser selected by the user'
+                'Connect to the selected computer via FTP protocol using a browser'
+                'Starts Radmin to connect to the selected computer'
+                'Connect to a selected computer via RDP'
+            ]
+        }
 ]
 
 def networking_list_length():
