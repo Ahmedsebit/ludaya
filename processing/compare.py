@@ -16,5 +16,11 @@ def is_ci_token_stopword_set_match(a, b, threshold=0.5):
 
     # Calculate Jaccard similarity
     ratio = len(set(tokens_a).intersection(tokens_b)) / float(len(set(tokens_a).union(tokens_b)))
-    return ratio
+    print(ratio)
+
+question = 'Uncovered Junction Box  Today or Tomorrow'
+answer = 'Uncovered Junction Box'
+
+
+is_ci_token_stopword_set_match(question,answer)
 

@@ -40,7 +40,7 @@ class AssignedTask(db.Model):
     __tablename__ = 'assignedtasks'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
+    name = db.Column(db.String(1000))
     group = db.Column(db.String(255))
     category = db.Column(db.String(255))
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
@@ -50,6 +50,8 @@ class AssignedTask(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     status = db.Column(db.String(255), default="not started")
     tries = db.Column(db.Integer, default=0)
+    user_answer = db.Column(db.String(1000))
+
 
     def __init__(self, name, group, category, user_id):
         '''
