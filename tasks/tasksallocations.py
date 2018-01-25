@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from models import AssignedTask, User
 from ludaya.ludaya import db
+from datetime import date
 
 from software import SOFTWARE as softwares
 from electronics import ELECTRONICS as electronics
@@ -22,6 +23,11 @@ from users.user import Communication, Electronics, Hardware, Learning, Mac, Main
 
 from random import randrange
 
+
+def dow(date):
+    days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+    dayNumber=date.weekday()
+    return days[dayNumber]
 
 def get_user_assigned_tasks(user_id, category):
     tasks = AssignedTask.query.filter_by(category=category, user_id=user_id)
@@ -60,62 +66,86 @@ def assign_task(user_id, category_name, category):
         new_task = {task_category:selected_task}
     return new_task
 
-def software_tasks(user_id):
-    task = assign_task(user_id, 'software', softwares)
-    task['name'] = 'software'
-    return task
+def software_task(user_id):
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'software', softwares)
+        task['name'] = 'software'
+        return task
 
 def electronics_task(user_id):
-    task = assign_task(user_id, 'electronics', electronics)
-    task['name'] = 'electonics'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'electronics', electronics)
+        task['name'] = 'electonics'
+        return task
 
 def hardware_task(user_id):
-    task = assign_task(user_id, 'hardware', hardwares)
-    task['name'] = 'hardware'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'hardware', hardwares)
+        task['name'] = 'hardware'
+        return task
 
 def learning_task(user_id):
-    task = assign_task(user_id, 'learning', learnings)
-    task['name'] = 'learning'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'learning', learnings)
+        task['name'] = 'learning'
+        return task
 
 def mac_task(user_id):
-    task = assign_task(user_id, 'mac', macs)
-    task['name'] = 'mac'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'mac', macs)
+        task['name'] = 'mac'
+        return task
 
 def maintainance_task(user_id):
-    task = assign_task(user_id, 'maintainance', maintainances)
-    task['name'] = 'maintainance'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'maintainance', maintainances)
+        task['name'] = 'maintainance'
+        return task
 
 def networking_task(user_id):
-    task = assign_task(user_id, 'networking', networkings)
-    task['name'] = 'networking'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'networking', networkings)
+        task['name'] = 'networking'
+        return task
 
 def security_task(user_id):
-    task = assign_task(user_id, 'security', securities)
-    task['name'] = 'security'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'security', securities)
+        task['name'] = 'security'
+        return task
 
 def server_task(user_id):
-    task = assign_task(user_id, 'server', servers)
-    task['name'] = 'server'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'server', servers)
+        task['name'] = 'server'
+        return task
 
 def support_task(user_id):
-    task = assign_task(user_id, 'support', supports)
-    task['name'] = 'support'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'support', supports)
+        task['name'] = 'support'
+        return task
 
 def unix_task(user_id):
-    task = assign_task(user_id, 'unix', unixs)
-    task['name'] = 'unix'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'unix', unixs)
+        task['name'] = 'unix'
+        return task
 
 def windows_task(user_id):
-    task = assign_task(user_id, 'windows', windows)
-    task['name'] = 'windows'
-    return task
+    today = dow(date.today())
+    if today != "Sunday" or today != "Saturday":
+        task = assign_task(user_id, 'windows', windows)
+        task['name'] = 'windows'
+        return task
