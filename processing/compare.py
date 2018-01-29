@@ -8,6 +8,8 @@ import nltk
 import string
 from nltk import tokenize
 
+from electronics import ELECTRONICS
+
 # Get default English stopwords and extend with punctuation
 stopwords = nltk.corpus.stopwords.words('english')
 stopwords.extend(string.punctuation)
@@ -31,25 +33,17 @@ def compare_all_user_tasks():
 
     for task in tasks:
         if task.status == 'submitted':
-            pass
-
-def compare(task, user):
-    category = task['name']
-    group = task.keys()[0]
-    name = task[group]
-
-    new_task = AssignedTask(name=name, group=group, category=category, user_id=user)
-    db.session.add(new_task)
-    db.session.commit()
-
-
-
-def get_user_tasks(user_id):
-    tasks = AssignedTask.get_assignedtask(user_id)
-    lst = []
-    for task in tasks:
-        lst.append(task)
-    return lst
-
-
-
+            for items in ELECTRONICS:
+                if task.group == items['name']:
+                    for item in items['tasklist']:
+                        if item['taskname'] == task.name:
+                            ratio = is_ci_token_stopword_set_match(task.name, item['taskanswer'])
+                            if ratio < 0.5:
+                                tasks.status == "incorect answer"
+                            if ratio > 0.4 and ratio < 0.7:
+                                tasks.status == "completed"
+                            if ratio > 0.6 and ratio < 0.9:
+                                tasks.status == "completed"
+                            if ratio > 0.8:
+                                tasks.status == "completed"
+    tasks.save()

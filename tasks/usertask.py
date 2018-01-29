@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models import AssignedTask, User
 from ludaya.ludaya import db
 from datetime import datetime
-from tasksallocations import electronics_task, hardware_task, learning_task, mac_task, maintainance_task, networking_task, security_task, server_task, software_task, support_task, unix_task, windows_task
+from tasksallocations import electronics_task, hardware_task, mac_task, maintainance_task, networking_task, security_task, server_task, software_task, support_task, unix_task, windows_task
 
 def allocate_all_user_tasks():
 
@@ -13,7 +13,6 @@ def allocate_all_user_tasks():
     for user in users:
         electronics = electronics_task(user.id)
         hardware = hardware_task(user.id)
-        learning = learning_task(user.id)
         mac = mac_task(user.id)
         maintainance = maintainance_task(user.id)
         networking = networking_task(user.id)
@@ -27,7 +26,6 @@ def allocate_all_user_tasks():
         allocate(software, user.id)
         allocate(electronics, user.id)
         allocate(hardware, user.id)
-        allocate(learning, user.id)
         allocate(mac, user.id)
         allocate(maintainance, user.id)
         allocate(networking, user.id)

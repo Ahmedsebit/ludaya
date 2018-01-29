@@ -10,7 +10,6 @@ from datetime import date
 from software import SOFTWARE as softwares
 from electronics import ELECTRONICS as electronics
 from hardware import HARDWARE as hardwares
-from learning import LEARNING as learnings
 from mac import MAC as macs
 from maintainance import MAINTAINANCE as maintainances
 from networking import NETWORKING as networkings
@@ -19,7 +18,7 @@ from server import SERVER as servers
 from support import SUPPORT as supports
 from unix import UNIX as unixs
 from windows import WINDOWS as windows
-from users.user import Communication, Electronics, Hardware, Learning, Mac, Maintainance, Networking, Security, Server, Support, Unix, Windows
+from users.user import Communication, Electronics, Hardware, Mac, Maintainance, Networking, Security, Server, Support, Unix, Windows
 
 from random import randrange
 
@@ -85,13 +84,6 @@ def hardware_task(user_id):
     if today != "Sunday" or today != "Saturday":
         task = assign_task(user_id, 'hardware', hardwares)
         task['name'] = 'hardware'
-        return task
-
-def learning_task(user_id):
-    today = dow(date.today())
-    if today != "Sunday" or today != "Saturday":
-        task = assign_task(user_id, 'learning', learnings)
-        task['name'] = 'learning'
         return task
 
 def mac_task(user_id):
