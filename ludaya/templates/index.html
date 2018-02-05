@@ -14,7 +14,7 @@
 {% block scripts %}
     {{super()}}
     <script src="https://use.fontawesome.com/9869ee428f.js"></script>
-    <script type=text/javascript src="{{url_for('static', filename='new-age.min.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='js/new-age.min.js') }}"></script>
     <script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
     <!-- <script type=text/javascript src="{{url_for('static', filename='popper.min.js') }}"></script> -->
     <script type=text/javascript>
@@ -269,29 +269,6 @@
             });
         });
 
-        document.getElementById('learninglistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_learning}},{{all_learning}} - {{my_learning}}]
-                    }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
-                }
-            });
-        });
-
         document.getElementById('securitylistDataset').addEventListener('click', function() {
             var ctx = document.getElementById("myChart").getContext('2d');
             var myChart = new Chart(ctx, {
@@ -383,13 +360,9 @@
                 <div class="col-sm-6">
                     <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px;">
                         <div class="card-block">
-                            <h3 class="card-title">Output Summary</h3>
+                            <h3 class="card-title">Reports</h3>
                             <ul class="list-group">
-                                <li class="list-group-item"><a href="#">Daily Summary</a></li>
-                                <li class="list-group-item"><a href="#">Weekly Summary</a></li>
-                                <li class="list-group-item"><a href="#">Monthly Summary</a></li>
-                                <li class="list-group-item"><a href="#">Yearly Summary</a></li>
-                                <li class="list-group-item"><a href="#">Overall Summary</a></li>
+                                <li class="list-group-item"><a href="{{url_for('reports')}}">Output Summary</a></li>
                             </ul>
                         </div>
                     </div>
@@ -402,7 +375,12 @@
                                   <a href="#">Daily Summary</a>
                                   <p>test</p>
                                 </li>
-                                <li class="list-group-item"><a href="#">Weekly Summary</a>
+                                <li class="list-group-item">
+                                  <a href="#">Weekly Summary</a>
+                                  <p>test</p>
+                                </li>
+                                <li class="list-group-item">
+                                  <a href="#">Weekly Summary</a>
                                   <p>test</p>
                                 </li>
                             </ul>
@@ -427,7 +405,6 @@
                                 <button type="button" class="btn btn-primary btn-md" id="serverlistDataset">server</button>
                                 <button type="button" class="btn btn-primary btn-md" id="hardwarelistDataset">hardware</button>
                                 <button type="button" class="btn btn-primary btn-md" id="unixlistDataset">unix</button>
-                                <button type="button" class="btn btn-primary btn-md" id="learninglistDataset">learning</button>
                                 <button type="button" class="btn btn-primary btn-md" id="overallspecialistDataset">security</button>
                             </div>
                         </div>

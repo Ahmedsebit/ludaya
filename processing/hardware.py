@@ -252,39 +252,39 @@ HARDWARE = [
                 },
         ]
     },
-    {
-        'name':'',
-        'tasklist':[
-            {
-                'taskname':'View all the hardware components that make up your Windows computer or device',
-                'taskanswer':''
-                },
-            {
-                'taskname':'View the properties of your devices',
-                'taskanswer':''
-                },
-            {
-                'taskname':'Find missing drivers for your components',
-                'taskanswer':''
-                },
-            {
-                'taskname':'Install drivers for your hardware components and peripherals',
-                'taskanswer':''
-                },
-            {
-                'taskname':'View hidden devices in Device Manager',
-                'taskanswer':''
-                },
-            {
-                'taskname':'Disable or enable devices from Device Manager',
-                'taskanswer':''
-                },
-            {
-                'taskname':'Force Windows to scan for new hardware',
-                'taskanswer':''
-                }
-        ]
-    }
+    # {
+    #     'name':'',
+    #     'tasklist':[
+    #         {
+    #             'taskname':'View all the hardware components that make up your Windows computer or device',
+    #             'taskanswer':''
+    #             },
+    #         {
+    #             'taskname':'View the properties of your devices',
+    #             'taskanswer':''
+    #             },
+    #         {
+    #             'taskname':'Find missing drivers for your components',
+    #             'taskanswer':''
+    #             },
+    #         {
+    #             'taskname':'Install drivers for your hardware components and peripherals',
+    #             'taskanswer':''
+    #             },
+    #         {
+    #             'taskname':'View hidden devices in Device Manager',
+    #             'taskanswer':''
+    #             },
+    #         {
+    #             'taskname':'Disable or enable devices from Device Manager',
+    #             'taskanswer':''
+    #             },
+    #         {
+    #             'taskname':'Force Windows to scan for new hardware',
+    #             'taskanswer':''
+    #             }
+    #     ]
+    # }
 ]
 
 def hardware_list_length():

@@ -1,0 +1,414 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+{{super()}}
+    <link rel="stylesheet" href="{{url_for('.static', filename='new-age.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='simple-line-icons.css')}}">
+    <link rel="stylesheet" href="static/simple-line-icons.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://use.fontawesome.com/9869ee428f.js"></script>
+    <script type=text/javascript src="{{url_for('static', filename='js/new-age.min.js') }}"></script>
+    <script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+    <!-- <script type=text/javascript src="{{url_for('static', filename='popper.min.js') }}"></script> -->
+    <script type=text/javascript>
+        new Chart(document.getElementById("line-chart"), {
+            type: 'line',
+            data: {
+              labels: {{ lastsixmonths|safe }},
+                datasets: [{ 
+                    data: {{ maintainancelastsixmonths|safe }},
+                    label: "maintainance",
+                    borderColor: "#3e95cd",
+                    fill: false
+                  }, { 
+                    data: {{ networkinglastsixmonths|safe }},
+                    label: "networking",
+                    borderColor: "#8e5ea2",
+                    fill: false
+                  }, { 
+                    data: {{ windowslastsixmonths|safe }},
+                    label: "windows",
+                    borderColor: "#3cba9f",
+                    fill: false
+                  }, { 
+                    data: {{ communicationlastsixmonths|safe }},
+                    label: "communication",
+                    borderColor: "#e8c3b9",
+                    fill: false
+                  }, { 
+                    data: {{ supportlastsixmonths|safe }},
+                    label: "support",
+                    borderColor: "#F1C40F",
+                    fill: false
+                  }, { 
+                      data: {{ electonicslastsixmonths|safe }},
+                      label: "electonics",
+                      borderColor: "#34495E",
+                      fill: false
+                    }, { 
+                      data: {{ serverlastsixmonths|safe }},
+                      label: "server",
+                      borderColor: "#6E2C00",
+                      fill: false
+                    }, { 
+                      data: {{ hardwarelastsixmonths|safe }},
+                      label: "hardware",
+                      borderColor: "#1B4F72",
+                      fill: false
+                    }, { 
+                      data: {{ unixlastsixmonths|safe }},
+                      label: "unix",
+                      borderColor: "#c45850",
+                      fill: false
+                    }
+                ]
+              },
+            options: {
+              title: {
+                display: true,
+                text: 'Resolution Count'
+              }
+            }
+          });
+
+          new Chart(document.getElementById("response-time-line-chart"), {
+            type: 'line',
+            data: {
+              labels: {{ lastsixmonths|safe }},
+              datasets: [{ 
+                data: {{ openedmaintainancelastsixmonths|safe }},
+                label: "maintainance",
+                borderColor: "#3e95cd",
+                fill: false
+              }, { 
+                data: {{ openednetworkinglastsixmonths|safe }},
+                label: "networking",
+                borderColor: "#8e5ea2",
+                fill: false
+              }, { 
+                data: {{ openedwindowslastsixmonths|safe }},
+                label: "windows",
+                borderColor: "#3cba9f",
+                fill: false
+              }, { 
+                data: {{ openedcommunicationlastsixmonths|safe }},
+                label: "communication",
+                borderColor: "#e8c3b9",
+                fill: false
+              }, { 
+                data: {{ openedsupportlastsixmonths|safe }},
+                label: "support",
+                borderColor: "#F1C40F",
+                fill: false
+              }, { 
+                  data: {{ openedelectonicslastsixmonths|safe }},
+                  label: "electonics",
+                  borderColor: "#34495E",
+                  fill: false
+                }, { 
+                  data: {{ openedserverlastsixmonths|safe }},
+                  label: "server",
+                  borderColor: "#6E2C00",
+                  fill: false
+                }, { 
+                  data: {{ openedhardwarelastsixmonths|safe }},
+                  label: "hardware",
+                  borderColor: "#1B4F72",
+                  fill: false
+                }, { 
+                  data: {{ openedunixlastsixmonths|safe }},
+                  label: "unix",
+                  borderColor: "#c45850",
+                  fill: false
+                }
+              ]
+            },
+          options: {
+            title: {
+              display: true,
+                text: 'Response Count'
+              }
+            }
+          });
+
+
+
+          new Chart(document.getElementById("output-quality-line-chart"), {
+            type: 'line',
+            data: {
+                labels: {{ lastsixmonths|safe }},
+                datasets: [{ 
+                  data: {{ outputmaintainancelastsixmonths|safe }},
+                  label: "maintainance",
+                  borderColor: "#3e95cd",
+                  fill: false
+                }, { 
+                  data: {{ outputnetworkinglastsixmonths|safe }},
+                  label: "networking",
+                  borderColor: "#8e5ea2",
+                  fill: false
+                }, { 
+                  data: {{ outputwindowslastsixmonths|safe }},
+                  label: "windows",
+                  borderColor: "#3cba9f",
+                  fill: false
+                }, { 
+                  data: {{ outputcommunicationlastsixmonths|safe }},
+                  label: "communication",
+                  borderColor: "#e8c3b9",
+                  fill: false
+                }, { 
+                  data: {{ outputsupportlastsixmonths|safe }},
+                  label: "support",
+                  borderColor: "#F1C40F",
+                  fill: false
+                }, { 
+                    data: {{ outputelectonicslastsixmonths|safe }},
+                    label: "electonics",
+                    borderColor: "#34495E",
+                    fill: false
+                  }, { 
+                    data: {{ outputserverlastsixmonths|safe }},
+                    label: "server",
+                    borderColor: "#6E2C00",
+                    fill: false
+                  }, { 
+                    data: {{ outputhardwarelastsixmonths|safe }},
+                    label: "hardware",
+                    borderColor: "#1B4F72",
+                    fill: false
+                  }, { 
+                    data: {{ outputunixlastsixmonths|safe }},
+                    label: "unix",
+                    borderColor: "#c45850",
+                    fill: false
+                  }
+                ]
+              },
+            options: {
+              title: {
+                display: true,
+                text: 'Output Quality'
+              }
+            }
+          });
+
+         
+          new Chart(document.getElementById("bar-chart-horizontal"), {
+            type: 'horizontalBar',
+            data: {
+              labels: ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"],
+              datasets: [
+                {
+                  label: "Population (millions)",
+                  backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
+                  data: {{ user_satisfactionavarage|safe }}
+                }
+              ]
+            },
+            options: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'Avarage Client Satisfaction'
+              }
+            }
+        });
+
+
+        new Chart(document.getElementById("bar-chart-vertical"), {
+            type: 'bar',
+            data: {
+                labels: ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"],
+                datasets: [
+                  {
+                    label: "Population (millions)",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
+                    data: {{ responsetimeavarage|safe }}
+                }
+              ]
+            },
+            options: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'Avarage Response Time'
+              }
+            }
+        });
+
+        new Chart(document.getElementById("bar-chart-time"), {
+            type: 'bar',
+            data: {
+                labels: ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"],
+                datasets: [
+                  {
+                    label: "Population (millions)",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
+                    data: {{ resolutiontimeavarage|safe }}
+                }
+              ]
+            },
+            options: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'Avarage Resolution Time'
+              }
+            }
+        });
+
+        function test_func(lastsixmonths) {
+          console.log(lastsixmonths);
+      }
+      test_func({{ lastsixmonths|safe }})
+      
+      test_func({{ responsetimeavarage|safe }})
+      test_func({{ resolutiontimeavarage|safe }})
+      test_func({{ user_satisfactionavarage|safe }})
+</script>
+{{super()}}
+{% endblock %}
+
+{% block title %}Ludaya{% endblock %}
+<body id="page-top">
+{% block content %}
+    <header class="" style="background-color:#7b4397;background:url(../img/bg-pattern.png),linear-gradient(to left,#7b4397,#dc2430)">    
+        <nav class="navbar  navbar-light">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Ludaya</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <!-- <li class="active"><a href="#">Home</a></li> -->
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a onclick="openNav()"><span class="glyphicon glyphicon-menu-hamburger"></span>Menu</a>
+                    </li>
+                    <li>
+                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#"><span class="glyphicon glyphicon-user"></span> User</a>
+                            <div class="dropdown-menu">
+                                <div style="font-size:36px;color:gold;padding:10px;">
+                                    <i class="fa fa-user-circle fa-5x" aria-hidden="true" ></i>
+                                </div>
+                                <a class="dropdown-item" href="#" style="padding:10px;">Action</a></br>
+                                <a class="dropdown-item" href="#" style="padding:10px;">Another action</a></br>
+                                <a class="dropdown-item" href="#" style="padding:10px;">Something else here</a></br>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" style="padding:10px;"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
+                            </div>
+                    </li>
+                </ul>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="features" id="features" style="margin-top:-120px;">
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Clients</a>
+            <a href="#">Contact</a>
+        </div>
+        <div id="main">
+            <div class="row">
+                <div class="col-lg-12  my-auto">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                    <div class="card style_prevu_kit" style="background-color: #20B2AA;">
+                                        <div class="card-block">
+                                        <h3 style="padding:10px;background-color: #008B8B;"><font style="color:#fff">Resolved Task</font> </h3>
+                                        <i class="fa fa-comments-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{task_count}}</font></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="col-sm-3">
+                                    <div class="card style_prevu_kit" style="background-color:#FFA500;">
+                                        <div class="card-block">
+                                                <h3 style="padding:10px;background-color: #FF8C00;"><font style="color:#fff">Response Time</h3>
+                                        <i class="fa fa-clock-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{response_avarage_time}}</font></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="col-sm-3">
+                                    <div class="card style_prevu_kit" style="background-color: #778899;">
+                                        <div class="card-block">
+                                            <h3 style="padding:10px;background-color: #708090;"><font style="color:#fff">Output Quality</h3>
+                                            <i class="fa fa-diamond fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{user_satisfaction}}</font></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="col-sm-3">
+                                <div class="card style_prevu_kit" style="background-color:  #008000;">
+                                        <div class="card-block">
+                                            <h3 style="padding:10px;background-color: #006400;"><font style="color:#fff">Resolution Time</h3>
+                                            <i class="fa fa-user-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{resolution_avarage_time}}</font></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-12  my-auto"><canvas id="line-chart" width="800" height="300"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-12  my-auto"><canvas id="response-time-line-chart" width="800" height="300"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-12  my-auto"><canvas id="output-quality-line-chart" width="800" height="300"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-6  my-auto"><canvas id="bar-chart-vertical" width="800" height="450"></canvas></div>
+                    <div class="col-lg-6  my-auto"><canvas id="bar-chart-time" width="800" height="450"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                        <div class="col-lg-12  my-auto"><canvas id="bar-chart-horizontal" width="800" height="300"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-12  my-auto">
+                      <a href="" style="text-align: center">
+                        <p align="center">This text will be center-aligned.
+                          <i class="fa fa-linkedin-square fa-2x"></i>
+                          <i class="fa fa-facebook-square fa-2x"></i>
+                      </p>
+                      </a>
+                    </div>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2017 Start Bootstrap. All Rights Reserved.</p>
+            <ul class="list-inline">
+            <li class="list-inline-item">
+                <a href="#">Privacy</a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#">Terms</a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#">FAQ</a>
+            </li>
+            </ul>
+        </div>
+    </footer>
+        
+
+{% endblock %}

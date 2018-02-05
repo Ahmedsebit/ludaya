@@ -47,9 +47,12 @@ class AssignedTask(db.Model):
     date_modified = db.Column(db.DateTime,
                               default=db.func.current_timestamp(),
                               onupdate=db.func.current_timestamp())
+    date_opened = db.Column(db.DateTime)
+    date_resolved = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     status = db.Column(db.String(255), default="not started")
     tries = db.Column(db.Integer, default=0)
+    satisfaction = db.Column(db.Integer)
     user_answer = db.Column(db.String(1000))
 
 
