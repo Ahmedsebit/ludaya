@@ -79,7 +79,7 @@ MAINTAINANCE = [
         },
     {
         'name':'Kindly direct me on how to do the following Scunia PSI task:',
-        'taskilst':[
+        'tasklist':[
             'How To Use Secunia PSI',
             'Secunia PSI Custom Settings',
             'Add a program',
@@ -92,7 +92,7 @@ MAINTAINANCE = [
     },
     {
         'name':'Kindly direct me on how to do the following WinPatrol task:',
-        'tasklit':[
+        'tasklist':[
             'Block all communication with Fingerprinting domains',
             'Remove All Data',
             'Inform Canvas Fingerprinting detection engine to ignore a site.',

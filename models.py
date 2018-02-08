@@ -2,6 +2,8 @@ from ludaya.ludaya import db
 from sqlalchemy.dialects.postgresql import JSON
 from passlib.apps import custom_app_context as pwd_context
 
+from ludaya.ludaya import ma
+
 class Result(db.Model):
     __tablename__ = 'results'
 
@@ -40,9 +42,9 @@ class AssignedTask(db.Model):
     __tablename__ = 'assignedtasks'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(1000))
-    group = db.Column(db.String(255))
-    category = db.Column(db.String(255))
+    name = db.Column(db.String(2000))
+    group = db.Column(db.String(1000))
+    category = db.Column(db.String(1000))
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_modified = db.Column(db.DateTime,
                               default=db.func.current_timestamp(),
@@ -53,7 +55,7 @@ class AssignedTask(db.Model):
     status = db.Column(db.String(255), default="not started")
     tries = db.Column(db.Integer, default=0)
     satisfaction = db.Column(db.Integer)
-    user_answer = db.Column(db.String(1000))
+    user_answer = db.Column(db.String(2000))
 
 
     def __init__(self, name, group, category, user_id):
@@ -115,3 +117,24 @@ class User(db.Model):
         function for verifying a hashed a password
         '''
         return pwd_context.verify(entered_password, self.password)
+
+
+class AssignedTaskSchema(ma.Schema):
+    class Meta:
+        # Fields to expose
+        fields = (
+            'id',
+            'name',
+            'group',
+            'category',
+            'date_created',
+            'date_modified'
+        )
+    # Smart hyperlinking
+    _links = ma.Hyperlinks({
+        'self': ma.URLFor('task_detail', id='<id>'),
+        'collection': ma.URLFor('tasks')
+    })
+
+assignedtask_schema = AssignedTaskSchema()
+assignedtasks_schema = AssignedTaskSchema(many=True)

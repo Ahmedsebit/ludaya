@@ -1,24 +1,39 @@
-from flask import Flask, render_template, session, flash, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, session, flash, request, redirect, url_for, flash, jsonify, \
+                Blueprint, g, redirect, abort, current_app
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
 import json
 import os
 import re
+import string
+import random
 import datetime as dt
-from flask import Blueprint, request, session, g, redirect, url_for, abort, \
-     render_template, flash, current_app
 from validate_email import validate_email
 from flask_bootstrap import Bootstrap
-
 from tasks.alltasks import communcation_list_length, electronics_list_length, hardware_list_length, learning_list_length, mac_list_length, maintainance_list_length, networking_list_length, security_list_length, server_list_length, support_list_length, unix_list_length, windows_list_length
+from tasks.alltasks import communication, electronics, hardware, mac, maintainance, networking, security, server, support, unix, windows
 from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction
+
+from flask_marshmallow import Marshmallow
 
 app = Flask(__name__)
 Bootstrap(app)
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+ma = Marshmallow(app)
+mail=Mail(app)
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'ahmedamedy@gmail.com'
+app.config['MAIL_PASSWORD'] = 'osmantito88'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
+
 db = SQLAlchemy(app)
 
-from models import User, AssignedTask
+from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema
 
 
 @app.route('/')
@@ -43,9 +58,11 @@ def register():
             lastname = request.form['lastname']
             email = request.form['email']
             password = request.form['password']
-            print(firstname)
+            confirmpassword = request.form['confirmpassword']
             if email is None or password is None:
                 error = 'Empty email or password'
+            elif password != confirmpassword:
+                error = 'Passwords do not match'
             else:
                 user = User(firstname=firstname, lastname=lastname, email=email)
                 user.hash_password(password)
@@ -80,6 +97,33 @@ def login():
         return render_template('home.html', error=error)
 
 
+@app.route('/forgotpassword', methods=['POST'])
+def forgotpassword():
+    '''
+    Function for user forgot password
+    '''
+    try:
+        user = User.query.filter_by(email=request.form['email']).first()
+        if user:
+            password = id_generator()
+            user.hash_password(password)
+            db.session.add(user)
+            db.session.commit()
+            heading = 'Password Reset'
+            sender = 'ahmedamedy@gmail.com'
+            recipients = [user.email]
+            message = "Your email password has been reset to: "+password
+            send_mail(heading, sender, recepients, message)
+            error = 'Password sent'
+            return render_template('home.html', error=error)
+        else:
+            error = 'Invalid email, Please try again.'
+            return render_template('home.html', error=error)
+    except:
+        error = 'No email field!!'
+        return render_template('home.html', error=error)
+
+
 @app.route('/issues')
 def issues():
     if 'username' in session:
@@ -87,11 +131,15 @@ def issues():
         id = session['id']
         items = AssignedTask.query.filter_by(status="not started", user_id=id).all()
         completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
+        opened_items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
         groups_list = []
+        groups_list_opened = []
         for i in items:
             groups_list.append(i.category)
         groups = {x:groups_list.count(x) for x in groups_list}
-
+        for i in opened_items:
+            groups_list_opened.append(i.category)
+        groups_opened = {x:groups_list_opened.count(x) for x in groups_list_opened}
         all_communcation = communcation_list_length()
         all_electronics = electronics_list_length()
         all_hardware = hardware_list_length()
@@ -118,9 +166,11 @@ def issues():
         my_unix = [x for x in items if x.category == 'unix']
         my_windows = [x for x in items if x.category == 'windows']
 
-        return render_template('index.html',
+        return render_template('issues.html',
                                items=items,
                                groups=groups,
+                               opened=groups_opened,
+                               id=id,
                                my_communication=len([x for x in completed_items if x.category == 'communication']),
                                my_electronics=len([x for x in completed_items if x.category == 'electronics']),
                                my_hardware=len([x for x in completed_items if x.category == 'hardware']),
@@ -149,8 +199,23 @@ def issues():
     else:
         return redirect(url_for('home'))
 
-@app.route('/tasks/<string:category>')
+
+@app.route('/new_tasks/<string:category>')
 def tasks(category):
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
+        my_task_category = category.upper()
+        for task in tasks:
+            task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+        return render_template('unopened_tasks.html', tasks=tasks, my_task_category=my_task_category)
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/tasks/<string:category>')
+def opened_tasks(category):
     if 'username' in session:
         username = session['username']
         id = session['id']
@@ -161,6 +226,26 @@ def tasks(category):
         return render_template('tasks.html', tasks=tasks, my_task_category=my_task_category)
     else:
         return redirect(url_for('home'))
+
+
+@app.route('/new_tasks/<int:task_id>/open', methods=['POST'])
+def open_tasks(task_id):
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        task = AssignedTask.query.filter_by(id=task_id).first()
+        tasks = AssignedTask.query.filter_by(user_id=id, category='communication').all()
+        task.status = 'opened'
+        db.session.add(task)
+        db.session.commit()
+        my_task_category = task.category.upper()
+        for task in tasks:
+            task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+        return render_template('tasks.html', tasks=tasks, my_task_category=my_task_category)
+    else:
+        return redirect(url_for('home'))
+
+
 
 @app.route('/reports')
 def reports():
@@ -182,10 +267,10 @@ def reports():
                 end_dt = dt.datetime.strptime(end, '%Y-%m-%d %H:%M:%S.%f')
                 opened_dt = dt.datetime.strptime(opened, '%Y-%m-%d %H:%M:%S.%f')
                 opened_diff = (opened_dt - start_dt) 
-                opened_total_time = diff.seconds/60 + diff.days*24*3600
-                time.append(resolution_total_time)
+                opened_total_time = opened_diff.seconds/60 + opened_diff.days*24*3600
+                time.append(opened_total_time)
                 resolution_diff = (end_dt - start_dt) 
-                resolution_total_time = diff.seconds/60 + diff.days*24*3600
+                resolution_total_time = resolution_diff.seconds/60 + resolution_diff.days*24*3600
                 time.append(resolution_total_time)
                 time.append(resolved_task.satisfaction)
         try:
@@ -248,25 +333,76 @@ def logout():
    session.pop('username', None)
    return redirect(url_for('home'))
 
-tasks = [
-    {
-        'id': 1,
-        'title': u'Buy groceries',
-        'description': u'Milk, Cheese, Pizza, Fruit, Tylenol', 
-        'done': False
-    },
-    {
-        'id': 2,
-        'title': u'Learn Python',
-        'description': u'Need to find a good Python tutorial on the web', 
-        'done': False
-    }
-]
 
-@app.route('/todo/api/v1.0/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': tasks})
+def id_generator(size=10, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
-@app.route('/api/v1.0/tasks', methods=['GET'])
-def get_task():
-    return jsonify({'tasks': tasks})
+
+def send_mail(heading, sender, recepients, message):
+   msg = Message(heading, sender = sender, recipients = recepients)
+   msg.body = message
+   mail.send(msg)
+   return "Sent"
+
+
+@app.route('/api/issues/<string:category>/<int:id>', methods=['GET'])
+def get_all_category(category, id):
+    # if 'username' in session:
+    #     username = session['username']
+    #     id = session['id']
+    completed_items = AssignedTask.query.filter_by(status="completed", category =category, user_id=id).all()
+    opened_items = AssignedTask.query.filter_by(status="opened",  category =category, user_id=id).all()
+    
+    all = list_length(category)
+    
+    return jsonify({'completed':len(completed_items),
+                    'opened':len(opened_items),
+                    'all':len(all)}
+                    )
+
+@app.route('/api/issues/<int:id>', methods=['GET'])    
+def get_issues(id):
+    items = AssignedTask.query.filter_by(status="not started", user_id=id).all()
+    items_result = assignedtasks_schema.dump(items)
+    completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
+    opened_items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
+    groups_list = []
+    groups_list_opened = []
+    for i in items:
+        groups_list.append(i.category)
+    groups = {x:groups_list.count(x) for x in groups_list}
+    for i in opened_items:
+        groups_list_opened.append(i.category)
+    groups_opened = {x:groups_list_opened.count(x) for x in groups_list_opened}
+
+
+    return jsonify({
+            'items':json.dumps(items_result.data),
+            'groups':json.dumps(groups),
+            'opened':json.dumps(groups_opened)
+    })
+
+def list_length(category):
+    all = [
+        {'communication': communication},
+        {'electronics': electronics},
+        {'hardware': hardware},
+        {'mac': mac},
+        {'maintainance': maintainance},
+        {'networking': networking},
+        {'security': security},
+        {'server': server},
+        {'support': support},
+        {'unix': unix},
+        {'windows': windows}
+    ]
+    l = []
+    for item in all:
+        for key, value in item.items():
+            if key == category:
+                for i in value:
+                    for j in i.values()[0]:
+                        l.append(j)
+
+    return l
+

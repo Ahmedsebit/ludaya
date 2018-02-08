@@ -111,7 +111,7 @@ UNIX = [
             'How do I change a password',
             'What is a shadow password',
             'How do I display the permissions for a file or directory',
-'How do I change permissions'
+            'How do I change permissions'
         ]
     }
 ]

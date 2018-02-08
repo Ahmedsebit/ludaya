@@ -367,7 +367,7 @@ SOFTWARE = [
             ]
         },
         {
-            'name':'',
+            'name':'I would like to do the following microsoft powerpoint task',
             'tasklist':[
                 'Adding Common Commands',
                 'Adding More Commands with the Customize Dialog Box',

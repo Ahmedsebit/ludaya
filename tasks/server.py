@@ -4,52 +4,6 @@ Task lists
 '''
 SERVER = [
     {
-        'name':'Server',
-        'tasklist':[
-            'What is Active Directory?',
-            'What is Tree?',
-            'What is Domain?',
-            'What is Active Directory Domain Controller (DC)?',
-            'What is Forest?',
-            'What is Schema?',
-            'Can we restore a schema partition?',
-            'Tel me about the FSMO roles?',
-            'How to check which server holds which role?',
-            'Which FSMO role is the most important? And why?',
-            'Schema Master',
-            'Domain Naming Master',
-            'Infrastructure Master',
-            'RID Master',
-            'PDC',
-            'Tel me about Active Directory Database and list the Active Directory Database files?',
-            'What RAID configuration can be used in Domain Controllers?',
-            'Can we keep OS, log files, SYSVOL, AD database on same logical Disk?',
-            'What is Active Directory Partitions?',
-            'What are all the Active Directory Partitions?',
-            'What is use Active Directory Partitions?',
-            'How to find the Active Directory Partitions and there location?',
-            'How to configure Active Directory Partitions?',
-            'How to create DNS zone in Application Directory Partition?',
-            'How to take active directory backup?',
-            'Active Directory restores types?',
-            'How perform a non-authoritative restore?',
-            'What are Active Directory Partitions can be restored?',
-            'How many domain controllers need to back up?',
-            'Which domain controllers to back up?',
-            'Can we restore backup of domain controller to other/different domain controller?',
-            'What is the SYSVOL folder and why it is used?',
-            'What is NETLOGON folder?',
-            'What is junctions point?',
-            'What other folders in Sysvol and Sysvol folder structure/ Contents?',
-            'How policies get replicated from one DC to other DC?',
-            'What is the Difference between FRS and DFS-R?',
-            'How to Force sysvol replication?',
-            'What is the Sysvol Replication change in Windows 2008?',
-            'Any Sysvol issues which I have faced in My environment?',
-            'How to D2 and D4 restore?'
-        ]
-    },
-    {
         'name':'Active Directory real time issues and solutions',
         'tasklist':[
             'DNS Entry of Domain Controller is Resolving to Incorrect value',
@@ -86,7 +40,7 @@ SERVER = [
         ]
     },
     {
-        'name':'',
+        'name':'Active Directory Questions',
         'tasklist':[
             'I have a single Active Directory domain. All domain controllers run Windows Server 2008 and are configured as DNS servers. The domain contains one Active Directory-integrated DNS zone. I need to ensure that outdated DNS records are automatically removed from the DNS zone. What should I do?',
             'My network consists of a single Active Directory domain. All domain controllers run Windows Server 2008 R2. The Audit account management policy setting and Audit directory services access setting are enabled for the entire domain. I need to ensure that changes made to Active Directory objects can be logged. The logged changes must include the old and new values of any attributes. What should I do?',

@@ -18,7 +18,6 @@ from server import SERVER as servers
 from support import SUPPORT as supports
 from unix import UNIX as unixs
 from windows import WINDOWS as windows
-from users.user import Communication, Electronics, Hardware, Mac, Maintainance, Networking, Security, Server, Support, Unix, Windows
 
 from random import randrange
 

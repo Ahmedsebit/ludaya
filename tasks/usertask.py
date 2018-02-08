@@ -35,6 +35,7 @@ def allocate_all_user_tasks():
         allocate(unix, user.id)
         allocate(windows, user.id)
 
+
 def allocate(task, user):
     category = task['name']
     group = task.keys()[0]

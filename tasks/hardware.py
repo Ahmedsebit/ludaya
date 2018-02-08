@@ -100,48 +100,7 @@ HARDWARE = [
             'Laptop - MACBOOK PRO (13 INCH, NO TOUCHBAR) 2017',
             'webcam - Logitech - C920 Pro Webcam - Black'
         ]
-        },
-    {
-        'name':'Establish requirements for:',
-        'tasklist':[
-            'The Accounting and Finance department with 6 employees managing 100 employees with output off 100 products per day who require: computers',
-            'The Accounting and Finance department with 6 employees managing 100 employees with output off 100 products per day who require: headphones',
-            'The Accounting and Finance department with 6 employees managing 100 employees with output off 100 products per day who require: graphic tablets',
-            'The Accounting and Finance department with 6 employees managing 100 employees with output off 100 products per day who require: laptops',
-            'The Accounting and Finance department with 6 employees managing 100 employees with output off 100 products per day who require: barcode readers',
-            'The Accounting and Finance department with 6 employees managing 100 employees with output off 100 products per day who require: printers',
-            'The Accounting and Finance department with 6 employees managing 100 employees with output off 100 products per day who require: projector',
-            'The Accounting and Finance department with 6 employees managing 100 employees with output off 100 products per day who require: Scanner',
-            'The production department with 20 employees with output off 100 products per day: computers',
-            'The production department with 20 employees with output off 100 products per day: laptops',
-            'The production department with 20 employees with output off 100 products per day: graphic tablets',
-            'The production department with 20 employees with output off 100 products per day: printers',
-            'The production department with 20 employees with output off 100 products per day: scanners',
-            'The production department with 20 employees with output off 100 products per day: barcode readers',
-            'The Research and Development department with 8 employees supporting production department with 20 employees with output off 100 products per day: computers',
-            'The Research and Development department with 8 employees supporting production department with 20 employees with output off 100 products per day: printers',
-            'The Research and Development department with 8 employees supporting production department with 20 employees with output off 100 products per day: projectors',
-            'The Research and Development department with 8 employees supporting production department with 20 employees with output off 100 products per day: scanners',
-            'The Research and Development department with 8 employees supporting production department with 20 employees with output off 100 products per day: graphic tablets',
-            'The supply chain management department with 8 employees supporting production department with 20 employees with output off 100 products per day: computers',
-            'The supply chain management department with 8 employees supporting production department with 20 employees with output off 100 products per day: printers',
-            'The supply chain management department with 8 employees supporting production department with 20 employees with output off 100 products per day: laptops',
-            'The supply chain management department with 8 employees supporting production department with 20 employees with output off 100 products per day: scanners',
-            'The Marketing department with 8 employees supporting output of 100 products per day: computers',
-            'The Marketing department with 8 employees supporting output of 100 products per day: laptops',
-            'The Marketing department with 8 employees supporting production department with 20 employees with output off 100 products per day: projectors',
-            'The Marketing department with 8 employees supporting production department with 20 employees with output off 100 products per day: scanners',
-            'The Marketing department with 8 employees supporting production department with 20 employees with output off 100 products per day: graphic tablets',
-            'The Human Resource Management department with 6 employees managing 100 employees who require: computers',
-            'The Human Resource Management department with 6 employees managing 100 employees who require: headphones',
-            'The Human Resource Management department with 6 employees managing 100 employees who require: graphic tablets',
-            'The Human Resource Management department with 6 employees managing 100 employees who require: laptops',
-            'The Human Resource Management department with 6 employees managing 100 employees who require: barcode readers',
-            'The Human Resource Management department with 6 employees managing 100 employees who require: printers',
-            'The Human Resource Management department with 6 employees managing 100 employees who require: projector',
-            'The Human Resource Management department with 6 employees managing 100 employees who require: Scanner',
-        ]
-        },
+        }
 ]
 
 def hardware_list_length():
