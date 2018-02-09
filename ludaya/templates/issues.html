@@ -33,15 +33,17 @@
         $(document).ready(function(){
           var query = getParameterByName('q');
           var taskList = [];
+          var taskOpenedList = [];
           var all = 0;
           
           function attachTask(taskKey, taskValue, prepend){
                   //var groups = taskValue.groups;
                   var key = taskKey;
                   var items = taskValue;
-                  var taskHTMLFormat = "<li class=\"list-group-item\"><a href=\"{{url_for('tasks', category=group)}}\">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
+                  var task_url = '/tasks/'+key
+                  var taskHTMLFormat = "<li class=\"list-group-item\"><a href="+task_url+">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
                   if(prepend ==true){
-                    $("task-list").prepend(taskHTMLFormat)
+                    $("#task-list").prepend(taskHTMLFormat)
                   }else{
                     $("#task-list").append(taskHTMLFormat)
                   }
@@ -84,10 +86,56 @@
           }
           fetchTasks()
 
-          $('#all').on('input', function( event ){
-            console.log('Hi there!');
-         });
 
+          function attachOpenedTask(taskKey, taskValue, prepend){
+                //var groups = taskValue.groups;
+                var key = taskKey;
+                var items = taskValue;
+                var task_url = '/tasks/'+key
+                var taskHTMLFormat = "<li class=\"list-group-item\"><a href="+task_url+">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
+                if(prepend ==true){
+                $("#opened-task-list").prepend(taskHTMLFormat)
+                }else{
+                $("#opened-task-list").append(taskHTMLFormat)
+                }
+            }
+
+            function parseOpenedTasks(){
+                if (taskOpenedList == 0) {
+                $("#opened-task-list").text("No assigned task.")
+                } else {
+                // tasks exist, parse & display them
+                $.each(JSON.parse(taskOpenedList), function(key, value){
+                    var taskKey = key;
+                    attachOpenedTask(key, value)
+                })
+                }
+            }
+
+            function fetchOpenedTasks(url){
+                var fetchUrl;
+                if (!url){
+                    fetchUrl = "/api/opened_issues/"+{{id}}
+                }else{
+                    fetchUrl = url
+                }
+                $.ajax({
+                url: fetchUrl,
+                data: {
+                "q": query
+                },
+                method: "GET",
+                success: function(data){
+                taskOpenedList = data.groups
+                parseOpenedTasks()
+                },
+                error: function(data){
+                console.log("error")
+                console.log(data)
+                }
+                })
+            }
+            fetchOpenedTasks()
 
           var allData = function(url) {
             var myVar = 0
@@ -229,19 +277,20 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
+
+                    <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px;">
+                        <div class="card-block">
+                            <h3 class="card-title">Opened Tasks</h3>
+                            <ul class="list-group" id="opened-task-list">
+                            </ul>
+                        </div>
+                    </div>                    
+                </br>
                     <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px;">
                         <div class="card-block">
                             <h3 class="card-title">Reports</h3>
                             <ul class="list-group">
                                 <li class="list-group-item"><a href="{{url_for('reports')}}">Output Summary</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    </br>
-                    <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px;">
-                        <div class="card-block">
-                            <h3 class="card-title">Opened Tasks</h3>
-                            <ul class="list-group">
                             </ul>
                         </div>
                     </div>
@@ -300,3 +349,32 @@
 
 
 
+
+
+
+function fetchOpenedTasks(url){
+    var fetchUrl;
+    if (!url){
+        fetchUrl = "/api/issues/"+{{id}}
+    }else{
+        fetchUrl = url
+    }
+    $.ajax({
+    url: fetchUrl,
+    data: {
+    "q": query
+    },
+    method: "GET",
+    success: function(data){
+    taskList = data.groups
+    parseTasks()
+    },
+    error: function(data){
+    console.log("error")
+    console.log(data)
+    }
+    })
+}
+fetchOpenedTasks()
+
+};

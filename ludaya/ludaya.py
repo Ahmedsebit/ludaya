@@ -246,7 +246,6 @@ def open_tasks(task_id):
         return redirect(url_for('home'))
 
 
-
 @app.route('/reports')
 def reports():
     if 'username' in session:
@@ -282,7 +281,7 @@ def reports():
             response_avarage_time = "No tasks yet"
             user_satisfaction = "No tasks yet"
 
-        lastsixmonths = last_six_months()
+            lastsixmonths = last_six_months()
         
         
         return render_template('reports.html', 
@@ -347,9 +346,6 @@ def send_mail(heading, sender, recepients, message):
 
 @app.route('/api/issues/<string:category>/<int:id>', methods=['GET'])
 def get_all_category(category, id):
-    # if 'username' in session:
-    #     username = session['username']
-    #     id = session['id']
     completed_items = AssignedTask.query.filter_by(status="completed", category =category, user_id=id).all()
     opened_items = AssignedTask.query.filter_by(status="opened",  category =category, user_id=id).all()
     
@@ -374,13 +370,47 @@ def get_issues(id):
     for i in opened_items:
         groups_list_opened.append(i.category)
     groups_opened = {x:groups_list_opened.count(x) for x in groups_list_opened}
-
-
     return jsonify({
             'items':json.dumps(items_result.data),
             'groups':json.dumps(groups),
             'opened':json.dumps(groups_opened)
     })
+
+@app.route('/api/opened_issues/<int:id>', methods=['GET'])    
+def get_opened_issues(id):
+    items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
+    items_result = assignedtasks_schema.dump(items)
+    completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
+    opened_items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
+    groups_list = []
+    groups_list_opened = []
+    for i in items:
+        groups_list.append(i.category)
+    groups = {x:groups_list.count(x) for x in groups_list}
+    for i in opened_items:
+        groups_list_opened.append(i.category)
+    groups_opened = {x:groups_list_opened.count(x) for x in groups_list_opened}
+    return jsonify({
+            'items':json.dumps(items_result.data),
+            'groups':json.dumps(groups),
+            'opened':json.dumps(groups_opened)
+    })
+
+
+@app.route('/api/tasks/<string:category>/<int:id>')
+def get_opened_tasks(category,id):
+    # if 'username' in session:
+    #     username = session['username']
+    #     id = session['id']
+    tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
+    items_result = assignedtasks_schema.dump(tasks)
+    my_task_category = category.upper()
+    for task in tasks:
+        task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+    return jsonify({
+            'items':json.dumps(items_result.data)
+    })
+
 
 def list_length(category):
     all = [
