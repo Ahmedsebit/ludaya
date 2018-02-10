@@ -140,61 +140,11 @@ def issues():
         for i in opened_items:
             groups_list_opened.append(i.category)
         groups_opened = {x:groups_list_opened.count(x) for x in groups_list_opened}
-        all_communcation = communcation_list_length()
-        all_electronics = electronics_list_length()
-        all_hardware = hardware_list_length()
-        all_learning = learning_list_length()
-        all_mac = communcation_list_length()
-        all_maintainance = maintainance_list_length()
-        all_networking = networking_list_length()
-        all_security = security_list_length()
-        all_server = server_list_length()
-        all_support = support_list_length()
-        all_unix = unix_list_length()
-        all_windows = windows_list_length()
-
-        my_communication = [x for x in items if x.category == 'communication']
-        my_electronics = [x for x in items if x.category == 'electronics']
-        my_hardware = [x for x in items if x.category == 'hardware']
-        my_learning = [x for x in items if x.category == 'learning']
-        my_mac = [x for x in items if x.category == 'communication']
-        my_maintainance = [x for x in items if x.category == 'maintainance']
-        my_networking = [x for x in items if x.category == 'networking']
-        my_security = [x for x in items if x.category == 'security']
-        my_server = [x for x in items if x.category == 'server']
-        my_support = [x for x in items if x.category == 'support']
-        my_unix = [x for x in items if x.category == 'unix']
-        my_windows = [x for x in items if x.category == 'windows']
-
         return render_template('issues.html',
                                items=items,
                                groups=groups,
                                opened=groups_opened,
                                id=id,
-                               my_communication=len([x for x in completed_items if x.category == 'communication']),
-                               my_electronics=len([x for x in completed_items if x.category == 'electronics']),
-                               my_hardware=len([x for x in completed_items if x.category == 'hardware']),
-                               my_learning= len([x for x in completed_items if x.category == 'learning']),
-                               my_mac = len([x for x in completed_items if x.category == 'communication']),
-                               my_maintainance = len([x for x in completed_items if x.category == 'maintainance']),
-                               my_networking = len([x for x in completed_items if x.category == 'networking']),
-                               my_security = len([x for x in completed_items if x.category == 'security']),
-                               my_server = len([x for x in completed_items if x.category == 'server']),
-                               my_support = len([x for x in completed_items if x.category == 'support']),
-                               my_unix = len([x for x in completed_items if x.category == 'unix']),
-                               my_windows = len([x for x in completed_items if x.category == 'windows']),
-                               all_communcation=len(all_communcation),
-                               all_electronics = len(all_electronics),
-                               all_hardware = len(all_hardware),
-                               all_learning = len(all_learning),
-                               all_mac = len(all_mac),
-                               all_maintainance = len(all_maintainance),
-                               all_networking = len(all_networking),
-                               all_security = len(all_security),
-                               all_server = len(all_server),
-                               all_support = len(all_support),
-                               all_unix = len(all_unix),
-                               all_windows = len(all_windows)
                               )
     else:
         return redirect(url_for('home'))
@@ -220,10 +170,23 @@ def opened_tasks(category):
         username = session['username']
         id = session['id']
         tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
-        my_task_category = category.upper()
+        my_task_category = category
         for task in tasks:
             task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
-        return render_template('tasks.html', tasks=tasks, my_task_category=my_task_category)
+        return render_template('tasks.html', tasks=tasks, my_task_category=my_task_category, id=id)
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/opened_tasks/<string:category>')
+def started_tasks(category):
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
+        my_task_category = category
+        for task in tasks:
+            task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+        return render_template('opened_tasks.html', tasks=tasks, my_task_category=my_task_category, id=id)
     else:
         return redirect(url_for('home'))
 
@@ -241,7 +204,25 @@ def open_tasks(task_id):
         my_task_category = task.category.upper()
         for task in tasks:
             task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
-        return render_template('tasks.html', tasks=tasks, my_task_category=my_task_category)
+        return redirect(url_for('issues'))
+    else:
+        return redirect(url_for('home'))
+
+
+@app.route('/task/respond/<int:task_id>/', methods=['GET','POST'])
+def respond_to_issue(task_id):
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        if request.method == 'POST':
+            user_id = session['id']
+            task = AssignedTask.query.filter_by(id=task_id).first()
+            task.user_answer = request.form['answer']
+            task.status = 'completed'
+            db.session.add(task)
+            db.session.commit()
+            flash("Response sent")
+            return redirect(url_for('issues'))
     else:
         return redirect(url_for('home'))
 
@@ -251,78 +232,47 @@ def reports():
     if 'username' in session:
         username = session['username']
         id = session['id']
-        resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='resolved').all()
+        resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
         opened_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
-        time = []
+        resolve_time = []
+        response_time = []
         output_quality = []
         for resolved_task in resolved_tasks:
             if resolved_task.date_resolved is None:
                 pass
             else:
-                start=resolved_task.date_resolved
-                opened=resolved_task.date_opened
-                end=resolved_task.date_created
-                start_dt = dt.datetime.strptime(start, '%Y-%m-%d %H:%M:%S.%f')
-                end_dt = dt.datetime.strptime(end, '%Y-%m-%d %H:%M:%S.%f')
-                opened_dt = dt.datetime.strptime(opened, '%Y-%m-%d %H:%M:%S.%f')
+                start_dt = dt.datetime.strptime(resolved_task.date_resolved, '%Y-%m-%d %H:%M:%S.%f')
+                end_dt = dt.datetime.strptime(resolved_task.date_created, '%Y-%m-%d %H:%M:%S.%f')
+                resolution_diff = (end_dt - start_dt)
+                resolution_total_time = resolution_diff.seconds/60 + resolution_diff.days*24*3600
+                resolve_time.append(resolution_total_time)
+
+                opened_dt = dt.datetime.strptime(resolved_task.date_opened, '%Y-%m-%d %H:%M:%S.%f')
                 opened_diff = (opened_dt - start_dt) 
                 opened_total_time = opened_diff.seconds/60 + opened_diff.days*24*3600
-                time.append(opened_total_time)
-                resolution_diff = (end_dt - start_dt) 
-                resolution_total_time = resolution_diff.seconds/60 + resolution_diff.days*24*3600
-                time.append(resolution_total_time)
-                time.append(resolved_task.satisfaction)
-        try:
-            resolution_avarage_time = sum(time) / float(len(time))
-            response_avarage_time = sum(time) / float(len(time))
-            user_satisfaction = sum(output_quality) / float(len(output_quality))
-        except:
-            resolution_avarage_time = "No tasks yet"
-            response_avarage_time = "No tasks yet"
-            user_satisfaction = "No tasks yet"
+                response_time.append(opened_total_time)
+                 
+                output_quality.append(resolved_task.satisfaction)
+        # try:
+        # resolution_avarage_time = sum(resolve_time) / float(len(resolve_time))
+        # response_avarage_time = sum(response_time) / float(len(response_time))
+        # user_satisfaction = sum(output_quality) / float(len(output_quality))
+        # except:
+        #     resolution_avarage_time = "No tasks yet"
+        #     response_avarage_time = "No tasks yet"
+        #     user_satisfaction = "No tasks yet"
 
-            lastsixmonths = last_six_months()
+        lastsixmonths = last_six_months()
+        print(resolve_time)
+        print(response_time)
         
-        
-        return render_template('reports.html', 
+        return render_template('issues_reports.html', 
                                 task_count = len(resolved_tasks), 
-                                resolution_avarage_time = resolution_avarage_time, 
-                                response_avarage_time = response_avarage_time,
-                                user_satisfaction = user_satisfaction,
+                                resolution_avarage_time = 0, 
+                                response_avarage_time = 0,
+                                user_satisfaction = 'user_satisfaction',
                                 lastsixmonths = json.dumps(lastsixmonths),
-                                maintainancelastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'maintainance')),
-                                networkinglastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'networking')),
-                                windowslastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'windows')),
-                                communicationlastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'communication')),
-                                supportlastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'support')),
-                                electonicslastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'electronics')),
-                                serverlastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'server')),
-                                hardwarelastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'hardware')),
-                                unixlastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'unix')),
-                                securitylastsixmonths = json.dumps(get_user_monthly_tasks(resolved_tasks, 'security')),
-                                openedmaintainancelastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'maintainance')),
-                                openednetworkinglastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'networking')),
-                                openedwindowslastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'windows')),
-                                openedcommunicationlastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'communication')),
-                                openedsupportlastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'support')),
-                                openedelectonicslastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'electronics')),
-                                openedserverlastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'server')),
-                                openedhardwarelastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'hardware')),
-                                openedunixlastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'unix')),
-                                openedsecuritylastsixmonths = json.dumps(get_user_monthly_tasks(opened_tasks, 'security')),
-                                outputmaintainancelastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'maintainance')),
-                                outputnetworkinglastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'networking')),
-                                outputwindowslastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'windows')),
-                                outputcommunicationlastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'communication')),
-                                outputsupportlastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'support')),
-                                outputelectonicslastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'electronics')),
-                                outputserverlastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'server')),
-                                outputhardwarelastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'hardware')),
-                                outputunixlastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'unix')),
-                                outputsecuritylastsixmonths = json.dumps(get_user_monthly_satisfaction(opened_tasks, 'security')),
-                                responsetimeavarage = json.dumps(get_user_avarage_time(resolved_tasks, 'date_opened')),
-                                resolutiontimeavarage = json.dumps(get_user_avarage_time(resolved_tasks, 'date_resolved')),
-                                user_satisfactionavarage = json.dumps(get_user_avarage_satisfaction(resolved_tasks))
+                                id=id
                                 )
     else:
         return redirect(url_for('home'))
@@ -396,19 +346,193 @@ def get_opened_issues(id):
             'opened':json.dumps(groups_opened)
     })
 
+@app.route('/api/new_tasks/<int:task_id>/open', methods=['POST'])
+def post_open_tasks(task_id):
+        task = AssignedTask.query.filter_by(id=task_id).first()
+        if task:
+            task.status = 'opened'
+            db.session.add(task)
+            db.session.commit()
+            response = jsonify({
+                                'id': task.id,
+                                'name': task.name,
+                                'date_created': task.date_created,
+                                'status':task.status
+                                })
+        else:
+            response = jsonify({'message': 'Item already exists in this bucketlist'})
+            
+        return response
 
-@app.route('/api/tasks/<string:category>/<int:id>')
+
+@app.route('/api/opened_tasks/<string:category>/<int:id>', methods=['GET'])
 def get_opened_tasks(category,id):
-    # if 'username' in session:
-    #     username = session['username']
-    #     id = session['id']
-    tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
+    tasks = AssignedTask.query.filter_by(user_id=id,  status="opened", category=category).all()
     items_result = assignedtasks_schema.dump(tasks)
     my_task_category = category.upper()
     for task in tasks:
         task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
     return jsonify({
             'items':json.dumps(items_result.data)
+    })
+
+
+@app.route('/api/tasks/<string:category>/<int:id>', methods=['GET'])
+def get_unopened_tasks(category,id):
+    tasks = AssignedTask.query.filter_by(user_id=id,  status="not started", category=category).all()
+    items_result = assignedtasks_schema.dump(tasks)
+    my_task_category = category.upper()
+    for task in tasks:
+        task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+    return jsonify({
+            'items':json.dumps(items_result.data)
+    })
+
+
+@app.route('/api/reports/<int:id>', methods=['GET'])
+def get_reports(id):
+    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='resolved').all()
+    opened_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
+    time = []
+    output_quality = []
+    for resolved_task in resolved_tasks:
+        if resolved_task.date_resolved is None:
+            pass
+        else:
+            start=resolved_task.date_resolved
+            opened=resolved_task.date_opened
+            end=resolved_task.date_created
+            start_dt = dt.datetime.strptime(start, '%Y-%m-%d %H:%M:%S.%f')
+            end_dt = dt.datetime.strptime(end, '%Y-%m-%d %H:%M:%S.%f')
+            opened_dt = dt.datetime.strptime(opened, '%Y-%m-%d %H:%M:%S.%f')
+            opened_diff = (opened_dt - start_dt) 
+            opened_total_time = opened_diff.seconds/60 + opened_diff.days*24*3600
+            time.append(opened_total_time)
+            resolution_diff = (end_dt - start_dt) 
+            resolution_total_time = resolution_diff.seconds/60 + resolution_diff.days*24*3600
+            time.append(resolution_total_time)
+            time.append(resolved_task.satisfaction)
+    try:
+        resolution_avarage_time = sum(time) / float(len(time))
+        response_avarage_time = sum(time) / float(len(time))
+        user_satisfaction = sum(output_quality) / float(len(output_quality))
+    except:
+        resolution_avarage_time = "No tasks yet"
+        response_avarage_time = "No tasks yet"
+        user_satisfaction = "No tasks yet"
+
+        lastsixmonths = last_six_months()
+    
+    
+    return jsonify({'task_count':len(resolved_tasks), 
+                    'resolution_avarage_time' : resolution_avarage_time, 
+                    'response_avarage_time' : response_avarage_time,
+                    'user_satisfaction' : user_satisfaction,
+                    'lastsixmonths' : json.dumps(lastsixmonths),
+    })
+ 
+
+@app.route('/api/resolved_reports/<int:id>', methods=['GET'])
+def resolved_report(id):
+    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='resolved').all()
+    lastsixmonths = last_six_months()
+    electronics = get_user_monthly_tasks(resolved_tasks, 'electronics')
+    hardware = get_user_monthly_tasks(resolved_tasks, 'hardware')
+    mac = get_user_monthly_tasks(resolved_tasks, 'mac')
+    maintainance = get_user_monthly_tasks(resolved_tasks, 'maintainance')
+    networking = get_user_monthly_tasks(resolved_tasks, 'networking')
+    security = get_user_monthly_tasks(resolved_tasks, 'security')
+    server = get_user_monthly_tasks(resolved_tasks, 'server')
+    support = get_user_monthly_tasks(resolved_tasks, 'support')
+    unix = get_user_monthly_tasks(resolved_tasks, 'unix')
+    windows = get_user_monthly_tasks(resolved_tasks, 'windows')
+    return jsonify({
+            'lastsixmonths' : json.dumps(last_six_months()),
+            'electronics': json.dumps(electronics),
+            'hardware': json.dumps(hardware),
+            'mac': json.dumps(mac),
+            'maintainance': json.dumps(maintainance),
+            'networking': json.dumps(networking),
+            'security': json.dumps(security),
+            'server': json.dumps(server),
+            'support': json.dumps(support),
+            'unix': json.dumps(unix),
+            'windows': json.dumps(windows)
+    })
+
+
+@app.route('/api/opened_reports/<int:id>', methods=['GET'])
+def opened_report(id):
+    opened_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
+    lastsixmonths = last_six_months()
+    electronics = get_user_monthly_tasks(opened_tasks, 'electronics')
+    hardware = get_user_monthly_tasks(opened_tasks, 'hardware')
+    mac = get_user_monthly_tasks(opened_tasks, 'mac')
+    maintainance = get_user_monthly_tasks(opened_tasks, 'maintainance')
+    networking = get_user_monthly_tasks(opened_tasks, 'networking')
+    security = get_user_monthly_tasks(opened_tasks, 'security')
+    server = get_user_monthly_tasks(opened_tasks, 'server')
+    support = get_user_monthly_tasks(opened_tasks, 'support')
+    unix = get_user_monthly_tasks(opened_tasks, 'unix')
+    windows = get_user_monthly_tasks(opened_tasks, 'windows')
+    return jsonify({
+            'lastsixmonths' : json.dumps(last_six_months()),
+            'electronics': json.dumps(electronics),
+            'hardware': json.dumps(hardware),
+            'mac': json.dumps(mac),
+            'maintainance': json.dumps(maintainance),
+            'networking': json.dumps(networking),
+            'security': json.dumps(security),
+            'server': json.dumps(server),
+            'support': json.dumps(support),
+            'unix': json.dumps(unix),
+            'windows': json.dumps(windows)
+    })
+
+@app.route('/api/satisfaction_reports/<int:id>')
+def atisfaction_report(id):
+    opened_tasks = AssignedTask.query.filter_by(user_id=id, status='closed').all()
+    electronics = get_user_monthly_satisfaction(opened_tasks, 'electronics')
+    hardware = get_user_monthly_satisfaction(opened_tasks, 'hardware')
+    mac = get_user_monthly_satisfaction(opened_tasks, 'mac')
+    maintainance = get_user_monthly_satisfaction(opened_tasks, 'maintainance')
+    networking = get_user_monthly_satisfaction(opened_tasks, 'networking')
+    security = get_user_monthly_satisfaction(opened_tasks, 'security')
+    server = get_user_monthly_satisfaction(opened_tasks, 'server')
+    support = get_user_monthly_satisfaction(opened_tasks, 'support')
+    unix = get_user_monthly_satisfaction(opened_tasks, 'unix')
+    windows = get_user_monthly_satisfaction(opened_tasks, 'windows')
+    return jsonify({
+            'lastsixmonths' : json.dumps(last_six_months()),
+            'electronics': json.dumps(electronics),
+            'hardware': json.dumps(hardware),
+            'mac': json.dumps(mac),
+            'maintainance': json.dumps(maintainance),
+            'networking': json.dumps(networking),
+            'security': json.dumps(security),
+            'server': json.dumps(server),
+            'support': json.dumps(support),
+            'unix': json.dumps(unix),
+            'windows': json.dumps(windows)
+    })
+
+    
+
+@app.route('/api/time_reports/<string:date_check>/<int:id>')
+def time_report(date_check, id):
+    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='resolved').all()
+    timeavarage = get_user_avarage_time(resolved_tasks, date_check)
+    return jsonify({
+        'timeavarage':json.dumps(timeavarage)
+    })
+
+
+@app.route('/api/user_satisfaction_reports/<int:id>')
+def user_satisfaction(id):
+    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='resolved').all()
+    user_satisfactionavarage = get_user_avarage_satisfaction(resolved_tasks)
+    return jsonify({
+        'user_satisfactionavarage':json.dumps(user_satisfactionavarage)
     })
 
 

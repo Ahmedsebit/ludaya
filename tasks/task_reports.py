@@ -29,8 +29,9 @@ def get_user_monthly_tasks(lst, task_category):
     months = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for month in months:
         for i in lst:
-            if datetime.strptime(i.resolved_date, '%y-%m-%d %H:%M:%S.%f').month == months.index(month) and i.category == task_category:
-                months[month] += 1
+            if i.date_resolved is not None :
+                 if datetime.strptime(i.date_resolved, '%y-%m-%d %H:%M:%S.%f').month == months.index(month) and i.category == task_category:
+                    months[month] += 1
     lastsixmonths = []
     currentMonth = datetime.now().month
     if currentMonth < 6:
@@ -90,7 +91,7 @@ def get_user_avarage_time(lst, date_end):
     for i in lst:
         for task in task_categories:
             if i.category == task_categories[task]:
-                start = i.date_resolved
+                start = i.date_created
                 end = i.date_end
                 start_dt = datetime.strptime(start, '%Y-%m-%d %H:%M:%S.%f')
                 end_dt = datetime.strptime(end, '%Y-%m-%d %H:%M:%S.%f')
@@ -98,43 +99,3 @@ def get_user_avarage_time(lst, date_end):
                 avarage[task] += diff
                 avarage[task] = avarage[task] / 2
     return avarage
-
-
-def six_last_month_count():
-    pass
-
-
-def software_task(user_id):
-    pass
-
-def electronics_task(user_id):
-    pass
-
-def hardware_task(user_id):
-    pass
-
-def mac_task(user_id):
-    pass
-
-def maintainance_task(user_id):
-    pass
-
-def networking_task(user_id):
-    pass
-
-def security_task(user_id):
-    pass
-
-def server_task(user_id):
-    pass
-
-def support_task(user_id):
-    pass
-
-def unix_task(user_id):
-    pass
-
-def windows_task(user_id):
-    pass
-
-last_six_months()

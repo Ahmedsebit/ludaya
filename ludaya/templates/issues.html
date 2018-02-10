@@ -49,9 +49,18 @@
                   }
           }
 
+          function attachNoTask(prepend){
+            var taskHTMLFormat = "<li class=\"list-group-item\"> No task </li>"
+            if(prepend ==true){
+            $("#task-list").prepend(taskHTMLFormat)
+            }else{
+            $("#task-list").append(taskHTMLFormat)
+            }
+        }
+
           function parseTasks(){
             if (taskList == 0) {
-              $("#task-container").text("No assigned task.")
+                attachNoTask()
             } else {
               // tasks exist, parse & display them
              $.each(JSON.parse(taskList), function(key, value){
@@ -88,11 +97,19 @@
 
 
           function attachOpenedTask(taskKey, taskValue, prepend){
-                //var groups = taskValue.groups;
                 var key = taskKey;
                 var items = taskValue;
-                var task_url = '/tasks/'+key
+                var task_url = '/opened_tasks/'+key
                 var taskHTMLFormat = "<li class=\"list-group-item\"><a href="+task_url+">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
+                if(prepend ==true){
+                $("#opened-task-list").prepend(taskHTMLFormat)
+                }else{
+                $("#opened-task-list").append(taskHTMLFormat)
+                }
+            }
+
+            function attachnoOpenedTask(prepend){
+                var taskHTMLFormat = "<li class=\"list-group-item\"> No task </li>"
                 if(prepend ==true){
                 $("#opened-task-list").prepend(taskHTMLFormat)
                 }else{
@@ -102,7 +119,7 @@
 
             function parseOpenedTasks(){
                 if (taskOpenedList == 0) {
-                $("#opened-task-list").text("No assigned task.")
+                    attachnoOpenedTask()
                 } else {
                 // tasks exist, parse & display them
                 $.each(JSON.parse(taskOpenedList), function(key, value){
@@ -346,35 +363,3 @@
         
 
 {% endblock %}
-
-
-
-
-
-
-function fetchOpenedTasks(url){
-    var fetchUrl;
-    if (!url){
-        fetchUrl = "/api/issues/"+{{id}}
-    }else{
-        fetchUrl = url
-    }
-    $.ajax({
-    url: fetchUrl,
-    data: {
-    "q": query
-    },
-    method: "GET",
-    success: function(data){
-    taskList = data.groups
-    parseTasks()
-    },
-    error: function(data){
-    console.log("error")
-    console.log(data)
-    }
-    })
-}
-fetchOpenedTasks()
-
-};

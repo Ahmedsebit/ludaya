@@ -79,8 +79,12 @@
                                         +                "</div>"   
                                         +        "</div>"
                                         +        "<div class=\"modl-footer\">"
-                                        +           "<form action=\"/new_tasks/"+items.id+"/open\" method=\"POST\">"    
-                                        +               "<button type=\"submit\" class=\"btn btn-primary\">Open</button>"
+                                        +           "<form action=\"/task/respond/"+items.id+"/\" method=\"POST\">"
+                                        +               "<div class=\"form-group\">"
+                                        +                   "<label for=\"exampleFormControlTextarea1\">Example textarea</label>"
+                                        +                   "<textarea class=\"form-control\" id=\"exampleFormControlTextarea1\"  name=\"answer\" rows=\"3\"></textarea>"
+                                        +               "</div>"  
+                                        +               "<button type=\"submit\" class=\"btn btn-primary\">Submit</button>"
                                         +           "</form>"
                                         +        "</div>"
                                         +    "</div>"
@@ -109,7 +113,7 @@
           function fetchTasks(url){
             var fetchUrl;
             if (!url){
-                fetchUrl = '/api/tasks/{{my_task_category}}/{{id}}'
+                fetchUrl = '/api/opened_tasks/{{my_task_category}}/{{id}}'
             }else{
                 fetchUrl = url
             }
