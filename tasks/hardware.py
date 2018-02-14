@@ -4,7 +4,7 @@ Task lists
 '''
 HARDWARE = [
     {
-        'name':'Experiencing the following hardware problems:',
+        'name':'Direct me on how to resolve the following hardware problem:',
         'tasklist':[
             'System Is Dead, No Cursor, No Beeps, No Fan',
             'System Beeps on start up, Fan is running, no cursor on screen',
@@ -17,19 +17,18 @@ HARDWARE = [
             'The Hard drive, Says C: drive failure insert boot disk',
             'I have no video at all',
             'Slow video performance with any card type',
-            'Picture displayed in DOS, but not in windows.',
+            'Picture displayed in DOS, but not in windows',
             'System Reboots, Power is good but voltage level is out of limit',
-            'Electrical Shocks on case.',
+            'Electrical Shocks on case',
             'System Cant Maintain correct date and Time when turned off',
             'BIOS Update fails error BIOS are not compatible',
             'Key board failure error appears when starting the system',
-            'Keys are sticking'
+            'Keys are sticking',
             'A blue screen that started happening in one good cold morning',
             'An itching fan sound',
             'Replacing system battery',
             'Computer Freeze',
             'A blue screen with a memory reference x000xxxx as a boot interruption',
-            'Laptops dead',
             'Noisy Computer',
             'A rapid beep sounds but no display in my monitor',
             'PC doesnt boot, a beep sound and displays nothing at all.',
@@ -73,34 +72,7 @@ HARDWARE = [
             'Projector has colour around the edge of the image',
             'Projector has lamp door switch broken'
         ]
-    },
-    {
-        'name':'Kindly prepare evaluations for this hardware',
-        'tasklist':[
-            'tape drives - LTO-5 Tape Drive - LTO Ultrium 5 - 3 Tb',
-            'microphones Blueair - Snowball iCE USB Cardioid Condenser Microphone',
-            'loudspeakers - Logitech Z906 5.1',
-            'headphones - Mpow 059 Bluetooth Headphones Over Ear',
-            'graphic tablets - XP-Pen Artist16 15.6 Inch IPS Drawing Monitor Pen Display Drawing Tablet',
-            'touchscreens - Microsoft Surface Studio',
-            'barcode readers - TaoTronics USB Barcode Scanner ',
-            'printers - HP PageWide Pro 477dw',
-            'projectors - Epson EX7240 Pro WXGA 3LCD Projector Pro',
-            'Mouse- Logitech MX Master 2S Wireless Mouse with Cross-Computer Control',
-            'Keyboard - Logitech - MK320 Wireless Keyboard',
-            'CD Rom - Apple - SuperDrive 8x External USB Double-Layer DVD±RW/CD-RW Drive - Silver',
-            'Scanner - Epson FastFoto FF-640',
-            'CPU - Dell New Precision 5720 All-in-One',
-            'CPU - Dell New XPS Tower Special Edition',
-            'CPU - HP Z2 Mini G3 Workstation',
-            'MAC -  Retina 4K Display 3.0GHz Processor 1TB Storage',
-            'Laptop - HP SPECTRE X360',
-            'Laptop - Dell XPS 13 Laptop',
-            'Laptop - ASUS Chromebook Flip C302 with Intel Core m3',
-            'Laptop - MACBOOK PRO (13 INCH, NO TOUCHBAR) 2017',
-            'webcam - Logitech - C920 Pro Webcam - Black'
-        ]
-        }
+    }
 ]
 
 def hardware_list_length():

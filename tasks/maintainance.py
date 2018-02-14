@@ -4,7 +4,7 @@ Task lists
 '''
 MAINTAINANCE = [
     {
-        'name':'Kindly direct me on how to:',
+        'name':'Direct me on how to do the following task:',
         'tasklist':[
             'Delete Temporary Files on windows 10',
             'Scandisk on windows 10',
@@ -14,33 +14,30 @@ MAINTAINANCE = [
             'Defragment on windows 10',
             'Clean Junk Files & Folders on windows 10',
             'Guard against malware on windows 10',
-            'Delete internet temp files'
-            'Delete Windows temp files'
-            'Clean up your email inbox'
-            'Backup'
-            'Disk cleanup'
-            'Clean registry'
-            'Find out which types of files are taking up your disk space using WinDirStat'
-            'Checks the disk for errors and attempts to repair them from the command line'
-            'Run a full file system scan via the command prompt'
-            'Run a disk error check via the user interface'
-            'Empty the desktop Recycle Bin'
-            'Delete cookies'
-            'Update your Wi-Fi router'
-            'Manually check for Windows updates'
-            'Manually check for  OS X updates'
-            'Defragging a hard drive'
-            'Disk Defrag is set to run weekly by default, but you can change it to monthly or run it manually'
-            'Guard against malware'
-            'Run Disk Cleanup'
-            'Run Disk Defragmenter'
-            'Uninstall unused programs'
-            'Clean up your web browser'
+            'Delete internet temp files',
+            'Delete Windows temp files',
+            'Clean up your email inbox',
+            'Disk cleanup',
+            'Clean registry',
+            'Find out which types of files are taking up your disk space using WinDirStat',
+            'Checks the disk for errors and attempts to repair them from the command line',
+            'Run a full file system scan via the command prompt',
+            'Run a disk error check via the user interface',
+            'Empty the desktop Recycle Bin',
+            'Delete cookies',
+            'Update your Wi-Fi router',
+            'Manually check for Windows updates',
+            'Defragging a hard drive',
+            'Guard against malware',
+            'Run Disk Cleanup',
+            'Run Disk Defragmenter',
+            'Uninstall unused programs',
+            'Clean up your web browser',
             'Uninstall unused programs and apps'
         ]
         },
     {
-        'name':'Kindly direct me on how to do the following AOL task:',
+        'name':'Direct me on how to do the following AOL task:',
         'tasklist':[
             'Scan for and update outdated drivers',
             'Start AOL Computer Checkup?',
@@ -91,7 +88,7 @@ MAINTAINANCE = [
         ]
     },
     {
-        'name':'Kindly direct me on how to do the following WinPatrol task:',
+        'name':'Direct me on how to do the following WinPatrol task:',
         'tasklist':[
             'Block all communication with Fingerprinting domains',
             'Remove All Data',
@@ -140,7 +137,7 @@ MAINTAINANCE = [
         ]
     },
     {
-        'name':'Kindly direct me on how to do the following Trucript task:',
+        'name':'Direct me on how to do the following Trucript task:',
         'tasklist':[
             'CREATING A VOLUME',
             'MOUNTING A VOLUME',
@@ -153,7 +150,7 @@ MAINTAINANCE = [
         ]
     },
     {
-        'name':'Kindly direct me on how to do the following CCLeaner task:',
+        'name':'Direct me on how to do the following CCLeaner task:',
         'tasklist':[
             'Clean your PC:',
             'Registry cleaning',
@@ -179,7 +176,7 @@ MAINTAINANCE = [
         ]
     },
     {
-        'name':'Kindly direct me on how to do the following Dropit task:',
+        'name':'Direct me on how to do the following Dropit task:',
         'tasklist':[
             'Move files/folders to the defined destination folder',
             'Copy files/folders to the defined destination folder.',
@@ -205,7 +202,7 @@ MAINTAINANCE = [
         ]
     },
     {
-        'name':'Kindly direct me on how to do the following Reveouninstall task:',
+        'name':'Direct me on how to do the following Reveouninstall task:',
         'tasklist':[
             'Remove leftovers of programs that are already uninstalled',
             'Uninstaller few programs at once',
@@ -213,7 +210,7 @@ MAINTAINANCE = [
         ]
     },
     {
-        'name':'Kindly direct me on how to do the following Backblaze task:',
+        'name':'Direct me on how to do the following Backblaze task:',
         'tasklist':[
             'Back Up Your Computer with Time Machine (Mac)'
             'Restore Files from Time Machine Backups (Mac)'
@@ -232,7 +229,7 @@ MAINTAINANCE = [
         ]
     },
     {
-        'name':'Kindly direct me on how to do the following Crashplan task:',
+        'name':'Direct me on how to do the following Crashplan task:',
         'tasklist':[
             'Create your account',
             'Choose what to back up',

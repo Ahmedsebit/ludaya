@@ -5,7 +5,7 @@ WINDOWS
 
 WINDOWS = [
     {
-        'name':'WINDOWS Administration',
+        'name':'Direct me on how to resolve the following WINDOWS task',
         'tasklist':[
             'Having enough space to install Windows 10',
             'Checking you have a powerful enough PC',

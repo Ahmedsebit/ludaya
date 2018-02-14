@@ -4,7 +4,7 @@ SOFTWARE Task lists
 '''
 SOFTWARE = [
     {
-        'name':'I would like to do the following outlook task',
+        'name':'Direct me on how to do the following outlook task',
         'tasklist':[
             'Create an e-mail signature in an Outlook',
             'Access AOL e-mail account with Outlook',
@@ -106,7 +106,7 @@ SOFTWARE = [
         ]
         },
         {
-            'name':'I would like to do the following microsoft world task',
+            'name':'Direct me on how to do the following microsoft world task',
             'tasklist':[
                 'Connect with cloud service on word 2013',
                 'Insert video in Microsoft Word 2013',
@@ -259,7 +259,7 @@ SOFTWARE = [
             ]
         },
         {
-            'name':'I would like to do the following microsoft excel task',
+            'name':'Direct me on how to do the following microsoft excel task',
             'tasklist':[
                 'Creating a Workbook',
                 'Saving a Workbook',
@@ -367,7 +367,7 @@ SOFTWARE = [
             ]
         },
         {
-            'name':'I would like to do the following microsoft powerpoint task',
+            'name':'Direct me on how to do the following microsoft powerpoint task',
             'tasklist':[
                 'Adding Common Commands',
                 'Adding More Commands with the Customize Dialog Box',

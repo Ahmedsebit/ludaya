@@ -4,7 +4,7 @@ Task lists
 '''
 NETWORKING = [
     {
-        'name':'Kindly assist in troubleshooting the following networking problems',
+        'name':'Direct me on how to resolve the following networking problem I\'m experiencing:',
         'tasklist':[
             'Wireless Network Shows Signal but wont Connect',
             'A Network Cable Is Unplugged',
@@ -34,11 +34,10 @@ NETWORKING = [
             'Slow Application Response',
             'Poor VoIP Quality',
             'A Network Cable Is Unplugged',
-            ''
         ]
         },
     {
-        'name':'I would like to do the following IPV4 task:',
+        'name':'Direct me on how to the following IPV4 task:',
         'tasklist':[
             'Knowy IP Address?',
             'Configure my IP Address',
@@ -120,7 +119,7 @@ NETWORKING = [
         ]
         },
     {
-        'name':'Manage IPV6',
+        'name':'Direct me on how to the following IPV6 task:',
         'tasklist':[
             'Verifying IPv6 connectivity.',
             'Verifying DNS name resolution for IPv6 addresses.',
@@ -153,7 +152,7 @@ NETWORKING = [
         ]
         },
         {
-            'name':'I would like to do the following task on Advanced IP Scanner',
+            'name':'Direct me on how to the following task on Advanced IP Scanner:',
             'tasklist':[
                 'Network Scanning'
                 'Create a Favorites List of Computers for Regular Use'

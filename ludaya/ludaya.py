@@ -36,6 +36,9 @@ db = SQLAlchemy(app)
 
 from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema
 
+from tasks.usertask import allocate_all_user_tasks, testing, get_user_tasks
+from tasks.tasksallocations import get_user_assigned_tasks, electronics_task, hardware_task, mac_task, maintainance_task, networking_task, security_task, server_task, software_task, support_task, unix_task, windows_task
+from random import randrange
 
 @app.route('/')
 def home():
@@ -636,3 +639,50 @@ def user_avarage_time():
     return jsonify({
         'timeavarage':json.dumps(avarage)
     })
+
+
+@app.route('/api/assign_task/')
+def assign_task():
+    main_random_index = randrange(0, len(networking))
+    task = networking[main_random_index]
+    task_category = task['name']
+    random_index = randrange(0, len(task['tasklist']))
+    selected_task = task['tasklist'][random_index]
+    new_task = {task_category:selected_task}
+
+    category_list = get_user_assigned_tasks(1, 'networking')
+    categiory_in_db_list = [i['name'] for i in category_list]
+
+    if task['name'] in categiory_in_db_list:
+        if selected_task not in task['tasklist']:
+            new_task = {task_category:selected_task}
+        else:
+            random_index = randrange(0, len(task['tasklist']))
+    else:
+        new_task = {task_category:selected_task}
+    
+    return jsonify({
+        'task_list':json.dumps(new_task)
+    })
+
+
+@app.route('/api/assigned_task/')
+def get_assigned_tasks():
+    tasks = AssignedTask.query.filter_by(category='mac', user_id=19)
+    task_list = []
+    task_name = []
+    for task in tasks:
+        task_name.append(task.group)
+        if len(task_list)>0:
+            for i in task_list:
+                if i['name'] in task_name:
+                    if i['name'] == task.group and task.name not in i['tasklist']:
+                        i['tasklist'].append(task.name)
+                else:
+                    task_list.append({'name':task.group, 'tasklist':[task.name]})
+        else:
+            task_list.append({'name':task.group, 'tasklist':[task.name]})
+    return jsonify({
+        'task_list':json.dumps(task_list)
+    })
+

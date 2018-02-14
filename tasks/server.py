@@ -4,7 +4,7 @@ Task lists
 '''
 SERVER = [
     {
-        'name':'Active Directory real time issues and solutions',
+        'name':'Direct me on how resolve the following Active Directory real time issue:',
         'tasklist':[
             'DNS Entry of Domain Controller is Resolving to Incorrect value',
             'Replsummary showing unknown for largest delta on AD replication checks',
@@ -18,7 +18,7 @@ SERVER = [
         ]
     },
     {
-        'name':'Group Policy (GPO) real time issues and solutions',
+        'name':'Direct me on how resolve the following Group Policy (GPO) issue:',
         'tasklist':[
             'Issue managing IE configuration through GPO',
             'Why we cant edit/view windows 2008 Vista and windows 7 GPO settings from windows 2003',
@@ -30,7 +30,7 @@ SERVER = [
         ]
     },
     {
-        'name':'Real time issues and solutions',
+        'name':'Direct me on how resolve the following issue:',
         'tasklist':[
             'Account lockout',
             'How to resolve the Print Spooler service crash issue (Print spooler service is not running)',
@@ -40,7 +40,7 @@ SERVER = [
         ]
     },
     {
-        'name':'Active Directory Questions',
+        'name':'Active Directory Questions:',
         'tasklist':[
             'I have a single Active Directory domain. All domain controllers run Windows Server 2008 and are configured as DNS servers. The domain contains one Active Directory-integrated DNS zone. I need to ensure that outdated DNS records are automatically removed from the DNS zone. What should I do?',
             'My network consists of a single Active Directory domain. All domain controllers run Windows Server 2008 R2. The Audit account management policy setting and Audit directory services access setting are enabled for the entire domain. I need to ensure that changes made to Active Directory objects can be logged. The logged changes must include the old and new values of any attributes. What should I do?',

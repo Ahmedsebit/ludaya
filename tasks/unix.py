@@ -5,7 +5,7 @@ UNIX
 
 UNIX = [
     {
-        'name':'UNIX Administration',
+        'name':'Direct me on how to resolve the following UNIX Administration issue:',
         'tasklist':[
             'Command not found',
             'Permission denied',
@@ -17,7 +17,6 @@ UNIX = [
             'Graphics hardware',
             'Wheres my desktop?',
             'Fix Linux wireless networking problems',
-            'Double top',
             'Open a command prompt when issuing a command',
             'Find out how much memory Linux is using',
             'Change permissions under Linux',
@@ -95,9 +94,6 @@ UNIX = [
             'Can I use wildcard searches with the ls command, as I can with Dir in DOS/Windows',
             'I want to do a wildcard search on files with ? or * in the names. How do I do that',
             'How do I create or rename a file with special characters in the name',
-            'How long can a filename be',
-            'Is there a way to find files from a command shell',
-            'Is there a way to browse through a text file from the command line',
             'Is there a command to search text files for a specific character string',
             'What are “symbolic” and hard links, and how can I identify them',
             'How do I create links',
@@ -109,7 +105,6 @@ UNIX = [
             'How do I add groups',
             'How do I add/delete users in a group',
             'How do I change a password',
-            'What is a shadow password',
             'How do I display the permissions for a file or directory',
             'How do I change permissions'
         ]
