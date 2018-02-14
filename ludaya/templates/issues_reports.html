@@ -42,9 +42,6 @@
         });
         }
 
-        function Test(){
-          console.log(taskList);
-        }
         function newChart(l,a,b,c,d,e,f,g,h){
           new Chart(document.getElementById("line-chart"), {
             type: 'line',
@@ -118,9 +115,8 @@
             var support = JSON.parse("[" + json.support + "]");
             var unix = JSON.parse("[" + json.unix + "]");
             var windows = JSON.parse("[" + json.windows + "]");
-            console.log(lastsixmonths)
-          var d = [lastsixmonths, maintainance, networking, windows, support, electronics, server, hardware, unix]
-          var e = [maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0]]
+            var d = [lastsixmonths, maintainance, networking, windows, support, electronics, server, hardware, unix]
+            var e = [maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0]]
             responseChart(lastsixmonths[0], maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0])
           }
         });
@@ -200,7 +196,6 @@
             var support = JSON.parse("[" + json.support + "]");
             var unix = JSON.parse("[" + json.unix + "]");
             var windows = JSON.parse("[" + json.windows + "]");
-            console.log(lastsixmonths)
             var d = [lastsixmonths, maintainance, networking, windows, support, electronics, server, hardware, unix]
             var e = [maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0]]
             outputChart(lastsixmonths[0], maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0])
@@ -283,7 +278,7 @@
               labels: ["maintainance", "networking", "windows", "support", "electonics", "server", "hardware", "unix", "security"],
               datasets: [
                 {
-                  label: "Population (millions)",
+                  label: "Scale (out of 1.0)",
                   backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
                   data: [a,b,c,d,e,f,g,h,i]
                 }
@@ -303,11 +298,11 @@
       
         function fetchBarResponse(){
           $.ajax({
-          'url': "/api/time_reports/date_opened/"+{{id}},
+          'url': "/api/time_reports/opened/"+{{id}},
           'success': function(json) {
             var array = JSON.parse("[" + json.timeavarage + "]")[0];
             console.log(array)
-            barChartResponseTime(array[0], array[0], array[0], array[0], array[0], array[0], array[0], array[0], array[0])
+            barChartResponseTime(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8])
           }
         });
         }
@@ -318,7 +313,7 @@
                 labels: ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"],
                 datasets: [
                   {
-                    label: "Population (millions)",
+                    label: "time (hrs)",
                     backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
                     data: [a,b,c,d,e,f,g,h,i]
                 }
@@ -338,11 +333,11 @@
         
         function fetchBarResolution(){
           $.ajax({
-          'url': "/api/time_reports/date_resolved/"+{{id}},
+          'url': "/api/time_reports/closed/"+{{id}},
           'success': function(json) {
             var array = JSON.parse("[" + json.timeavarage + "]")[0];
             console.log(array)
-            barChartResolutionTime(array[0], array[0], array[0], array[0], array[0], array[0], array[0], array[0], array[0])
+            barChartResolutionTime(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8])
           }
         });
         }
@@ -353,7 +348,7 @@
                 labels: ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"],
                 datasets: [
                   {
-                    label: "Population (millions)",
+                    label: "time (hrs)",
                     backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
                     data: [a,b,c,d,e,f,g,h,i]
                 }
@@ -369,10 +364,7 @@
         });
         }
         fetchBarResolution()
-        
-          
-        
-        
+
       });
 </script>
 {{super()}}
@@ -442,7 +434,7 @@
                                     <div class="card style_prevu_kit" style="background-color:#FFA500;">
                                         <div class="card-block">
                                                 <h3 style="padding:10px;background-color: #FF8C00;"><font style="color:#fff">Response Time</h3>
-                                        <i class="fa fa-clock-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{response_avarage_time}}</font></i>
+                                        <i class="fa fa-clock-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{response_avarage_time}} hrs</font></i>
                                         </div>
                                     </div>
                                 </div>
@@ -458,7 +450,7 @@
                                 <div class="card style_prevu_kit" style="background-color:  #008000;">
                                         <div class="card-block">
                                             <h3 style="padding:10px;background-color: #006400;"><font style="color:#fff">Resolution Time</h3>
-                                            <i class="fa fa-user-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{resolution_avarage_time}}</font></i>
+                                            <i class="fa fa-user-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{resolution_avarage_time}} hrs</font></i>
                                     </div>
                                 </div>
                             </div>

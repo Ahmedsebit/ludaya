@@ -1,431 +1,363 @@
-{% extends "bootstrap/base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block styles %}
-{{super()}}
-    <link rel="stylesheet" href="{{url_for('.static', filename='new-age.min.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='simple-line-icons.css')}}">
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='mdb.min.css')}}"> -->
-    <link rel="stylesheet" href="static/simple-line-icons.css">
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>One Page Wonder - Start Bootstrap Template</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+    <!-- Custom fonts for this template -->
     <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
-{% endblock %}
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
 
-{% block scripts %}
-    {{super()}}
-    <script src="https://use.fontawesome.com/9869ee428f.js"></script>
-    <script type=text/javascript src="{{url_for('static', filename='js/new-age.min.js') }}"></script>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
-    <!-- <script type=text/javascript src="{{url_for('static', filename='popper.min.js') }}"></script> -->
+    
     <script type=text/javascript>
-        var ctx = document.getElementById("myChart").getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-              labels: ["task completed", "remaining tasks"],
-              datasets: [
-                {
-                  label: "Population (millions)",
-                  backgroundColor: ["#3e95cd", "#8e5ea2"],
-                  data: [4878,5267 - 4878]
+            function getParameterByName(name, url) {
+                if (!url) {
+                  url = window.location.href;
                 }
-              ]
-            },
-            options: {
-              title: {
-                display: true,
-                text: ''
-              }
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
             }
-        });
-
-        document.getElementById('overallspecialistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [4878,5267 - 4878]
-                    }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
+    
+            $(document).ready(function(){
+              var query = getParameterByName('q');
+              var taskList = [];
+              var taskOpenedList = [];
+              var all = 0;
+              
+              function attachTask(taskKey, taskValue, prepend){
+                      //var groups = taskValue.groups;
+                      var key = taskKey;
+                      var items = taskValue;
+                      var task_url = '/tasks/'+key
+                      var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><a href="+task_url+">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
+                      if(prepend ==true){
+                        $("#task-list").prepend(taskHTMLFormat)
+                      }else{
+                        $("#task-list").append(taskHTMLFormat)
+                      }
+              }
+    
+              function attachNoTask(prepend){
+                var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"> No task </li>"
+                if(prepend ==true){
+                $("#task-list").prepend(taskHTMLFormat)
+                }else{
+                $("#task-list").append(taskHTMLFormat)
                 }
-            });
-        });
-
-        document.getElementById('maintainancelistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_maintainance}},{{all_maintainance}} - {{my_maintainance}}]
-                    }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
+            }
+    
+              function parseTasks(){
+                if (taskList == 0) {
+                    attachNoTask()
+                } else {
+                  // tasks exist, parse & display them
+                 $.each(JSON.parse(taskList), function(key, value){
+                      var taskKey = key;
+                      attachTask(key, value)
+                  })
                 }
-            });
-        });
-
-        document.getElementById('networkinglistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_networking}},{{all_networking}} - {{my_networking}}]
-                    }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
+              }
+            
+              function fetchTasks(url){
+                var fetchUrl;
+                if (!url){
+                    fetchUrl = "/api/issues/"+{{id}}
+                }else{
+                    fetchUrl = url
                 }
-            });
-        });
-
-        document.getElementById('windowslistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_windows}},{{all_windows}} - {{my_windows}}]
+                $.ajax({
+                    url: fetchUrl,
+                    data: {
+                    "q": query
+                    },
+                    method: "GET",
+                    success: function(data){
+                    taskList = data.groups
+                    parseTasks()
+                    },
+                    error: function(data){
+                    console.log("error")
+                    console.log(data)
                     }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
-                }
-            });
-        });
+                })
+              }
 
-        document.getElementById('communicationlistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_communication}},{{all_communcation}} - {{my_communication}}]
+              fetchTasks()
+    
+    
+              function attachOpenedTask(taskKey, taskValue, prepend){
+                    var key = taskKey;
+                    var items = taskValue;
+                    var task_url = '/opened_tasks/'+key
+                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><a href="+task_url+">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
+                    if(prepend ==true){
+                    $("#opened-task-list").prepend(taskHTMLFormat)
+                    }else{
+                    $("#opened-task-list").append(taskHTMLFormat)
                     }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
                 }
-            });
-        });
-
-        document.getElementById('supportlistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_support}},{{all_support}} - {{my_support}}]
+    
+                function attachnoOpenedTask(prepend){
+                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"> No task </li>"
+                    if(prepend ==true){
+                    $("#opened-task-list").prepend(taskHTMLFormat)
+                    }else{
+                    $("#opened-task-list").append(taskHTMLFormat)
                     }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
                 }
-            });
-        });
-
-        document.getElementById('electronicslistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_electronics}},{{all_electronics}} - {{my_electronics}}]
+    
+                function parseOpenedTasks(){
+                    if (taskOpenedList == 0) {
+                        attachnoOpenedTask()
+                    } else {
+                    // tasks exist, parse & display them
+                    $.each(JSON.parse(taskOpenedList), function(key, value){
+                        var taskKey = key;
+                        attachOpenedTask(key, value)
+                    })
                     }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
                 }
-            });
-        });
-
-        document.getElementById('serverlistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_server}},{{all_server}} - {{my_server}}]
+    
+                function fetchOpenedTasks(url){
+                    var fetchUrl;
+                    if (!url){
+                        fetchUrl = "/api/opened_issues/"+{{id}}
+                    }else{
+                        fetchUrl = url
                     }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
-                }
-            });
-        });
-
-        document.getElementById('hardwarelistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_hardware}},{{all_hardware}} - {{my_hardware}}]
+                    $.ajax({
+                    url: fetchUrl,
+                    data: {
+                    "q": query
+                    },
+                    method: "GET",
+                    success: function(data){
+                    taskOpenedList = data.groups
+                    parseOpenedTasks()
+                    },
+                    error: function(data){
+                    console.log("error")
+                    console.log(data)
                     }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
+                    })
                 }
+                fetchOpenedTasks()
+    
+              var allData = function(url) {
+                var myVar = 0
+                
+                fetchUrl = $.getJSON(url)
+                fetchUrl.then(function(data, textStatus, jqxhr) {
+                    $("#all").val(jqxhr.responseJSON.all);
+                    $("#completed").val(jqxhr.responseJSON.completed);
+                    var ctx = document.getElementById("myChart").getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                        labels: ["task completed", "remaining tasks"],
+                        datasets: [
+                            {
+                            label: "Population (millions)",
+                            backgroundColor: ["#3e95cd", "#8e5ea2"],
+                            data: [
+                                jqxhr.responseJSON.all,
+                                jqxhr.responseJSON.completed
+                                ]
+                            }
+                        ]
+                        },
+                        options: {
+                        title: {
+                            display: true,
+                            text: ''
+                        }
+                        }
+                    });
+                  })
+                };
+                allData("/api/issues/maintainance/"+{{id}})
+    
+                document.getElementById('overallspecialistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/maintainance/"+{{id}})
+                });
+    
+                document.getElementById('maintainancelistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/maintainance/"+{{id}})
+                });
+    
+                document.getElementById('networkinglistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/networking/"+{{id}})
+                });
+    
+                document.getElementById('windowslistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/windows/"+{{id}})
+                });
+    
+                document.getElementById('communicationlistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/communication/"+{{id}})
+                });
+    
+                document.getElementById('supportlistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/support/"+{{id}})
+                });
+    
+                document.getElementById('electronicslistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/electronics/"+{{id}})
+                });
+    
+                document.getElementById('hardwarelistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/hardware/"+{{id}})
+                });
+    
+                document.getElementById('unixlistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/unix/"+{{id}})
+                });
+    
+                document.getElementById('serverlistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/server/"+{{id}})
+                });
+    
             });
-        });
-
-        document.getElementById('unixlistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_unix}},{{all_unix}} - {{my_unix}}]
-                    }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
-                }
-            });
-        });
-
-        document.getElementById('securitylistDataset').addEventListener('click', function() {
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                  labels: ["task completed", "remaining tasks"],
-                  datasets: [
-                    {
-                      label: "Population (millions)",
-                      backgroundColor: ["#3e95cd", "#8e5ea2"],
-                      data: [{{my_security}},{{all_security}} - {{my_security}}]
-                    }
-                  ]
-                },
-                options: {
-                  title: {
-                    display: true,
-                    text: ''
-                  }
-                }
-            });
-        });
-
-
+    
+    
     </script>
-{% endblock %}
 
-{% block title %}Ludaya{% endblock %}
-<body id="page-top">
-{% block content %}
-    <header class="" style="background-color:#7b4397;background:url(../img/bg-pattern.png),linear-gradient(to left,#7b4397,#dc2430)">    
-        <nav class="navbar  navbar-light">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Ludaya</a>
-                </div>
-                <ul class="nav navbar-nav">
-                    <!-- <li class="active"><a href="#">Home</a></li> -->
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a onclick="openNav()"><span class="glyphicon glyphicon-menu-hamburger"></span>Menu</a>
-                    </li>
-                    <li>
-                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#"><span class="glyphicon glyphicon-user"></span> User</a>
-                            <div class="dropdown-menu">
-                                <div style="font-size:36px;color:gold;padding:10px;">
-                                    <i class="fa fa-user-circle fa-5x" aria-hidden="true" ></i>
-                                </div>
-                                <a class="dropdown-item" href="#" style="padding:10px;">Action</a></br>
-                                <a class="dropdown-item" href="#" style="padding:10px;">Another action</a></br>
-                                <a class="dropdown-item" href="#" style="padding:10px;">Something else here</a></br>
-                                <div class="dropdown-divider"></div>
-                                <a href="{{ url_for('logout') }}" style="padding:10px;"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
-                            </div>
+    <body>
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+            <div class="container">
+            <a class="navbar-brand" href="#">Ludaya</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle fa-2x" aria-hidden="true" ></i>{{name}}</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Change Password</a>
+                        <a class="dropdown-item" href="#">Edit Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a>
+                    </div>
                     </li>
                 </ul>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                </div>
+            </div>
             </div>
         </nav>
-    </header>
-
-    <section class="features" id="features" style="margin-top:-120px;">
-        <div id="mySidenav" class="sidenav">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="#">Previous tasks</a>
-            <a href="#">Current Tasks</a>
-            <a href="#">Clients</a>
-            <a href="#">Contact</a>
-        </div>
-        <div id="main">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px;">
-                        <div class="card-block">
-                            <h3 class="card-title">Pending Tasks</h3>
-                            <ul class="list-group">
-                                {% for group, count in groups.items() %}
-                                    <li class="list-group-item"><a href="{{url_for('tasks', category=group)}}">{{group}}</a><span class="badge">{{count}}</span></li>
-                                {% endfor %}                           
-                             </ul>
-                        </div>
+    
+        <header class="text-center" style="padding-top:100px;">
+            <div class="masthead-content">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-4" style="padding-top:50px;">
+                        <a class="btn btn-primary js-scroll-trigger" href="{{url_for('reports')}}">
+                            <h3 class="card-title">Reports <span><i class="fas fa-chart-pie"></i></span></h3>
+                        </a>
                     </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px;">
-                        <div class="card-block">
-                            <h3 class="card-title">Reports</h3>
-                            <ul class="list-group">
-                                <li class="list-group-item"><a href="{{url_for('reports')}}">Output Summary</a></li>
-                            </ul>
-                        </div>
+                    <div class="col-lg-4" style="padding-top:50px;">
+                        <a class="btn btn-primary js-scroll-trigger" href="#">
+                        <h3 class="card-title">History <span><i class="fa fa-history"></i></span></h3>
+                        </a>  
                     </div>
-                    </br>
-                    <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px;">
-                        <div class="card-block">
-                            <h3 class="card-title">Opened Tasks</h3>
-                            <ul class="list-group">
-                                {% for group, count in opened.items() %}
-                                    <li class="list-group-item"><a href="{{url_for('tasks', category=group)}}">{{group}}</a><span class="badge">{{count}}</span></li>
-                                {% endfor %} 
-                            </ul>
-                        </div>
+                    <div class="col-lg-4" style="padding-top:50px;">
+                        <a class="btn btn-primary js-scroll-trigger" href="#">
+                        <h3 class="card-title">Pending Tasks <span><i class="fa fa-history"></i></span></h3>
+                        </a>
                     </div>
-                </div>
-            </div>
-            <br>
-            <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px;">
-                <div class="card-block">
-                    <h3 class="card-title" align="center">Task Completion</h3>
-                    <div class="row">
-                        <div class="col-sm-4" style="padding-top:60px;">
-                            <div class="btn-group-vertical">
-                                <button type="button" class="btn btn-primary btn-md" id="overallspecialistDataset">Overall Tasks</button> 
-                                <button type="button" class="btn btn-primary btn-md" id="maintainancelistDataset">maintainance</button>
-                                <button type="button" class="btn btn-primary btn-md" id="networkinglistDataset">networking</button>
-                                <button type="button" class="btn btn-primary btn-md" id="windowslistDataset">windows</button>
-                                <button type="button" class="btn btn-primary btn-md" id="communicationlistDataset">communication</button>
-                                <button type="button" class="btn btn-primary btn-md" id="supportlistDataset">support</button>
-                                <button type="button" class="btn btn-primary btn-md" id="electronicslistDataset">electonics</button>
-                                <button type="button" class="btn btn-primary btn-md" id="serverlistDataset">server</button>
-                                <button type="button" class="btn btn-primary btn-md" id="hardwarelistDataset">hardware</button>
-                                <button type="button" class="btn btn-primary btn-md" id="unixlistDataset">unix</button>
-                                <button type="button" class="btn btn-primary btn-md" id="overallspecialistDataset">security</button>
-                            </div>
-                        </div>
-                        <div class="col-sm-8" align="center">
-                            <div id="canvas-holder" style="width:60%">
-                                <canvas id="myChart" width="600" height="600"></canvas>
+    
+                    <hr>
+    
+                    <div class="col-lg-6" style="padding-top:50px;">
+                        <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
+                            <div class="card-block">
+                                <h3 class="card-title">Pending Tasks <span><i class="fa fa-exclamation-triangle"></i></span></h3>
+                                    <ul class="list-group"  style="padding-top:-50px;"  id="task-list">
+                                    
+                                    </ul>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-lg-6" style="padding-top:50px;">
+                            <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
+                                <div class="card-block">
+                                    <h3 class="card-title">Opened Tasks <span><i class="fa fa-hourglass-half"></i></span></h3>
+                                    <ul class="list-group"  style="padding-top:-50px;"  id="opened-task-list">
+                                        
+                                    </ul>
+                                </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-lg-12" style="padding-top:50px; padding-bottom:50px;">
+                        <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
+                            <div class="card-block">
+                                <h3 class="card-title">Output Report <span><i class="fa fa-hourglass-half"></i></span></h3>
+                                <div class="row align-items-center">
+                                <div class="col-sm-4">
+                                        <div class="btn-group-vertical">
+                                            <button type="button" class="btn btn-primary btn-md" id="maintainancelistDataset">maintainance</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="networkinglistDataset">networking</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="windowslistDataset">windows</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="communicationlistDataset">communication</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="supportlistDataset">support</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="electronicslistDataset">electonics</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="serverlistDataset">server</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="hardwarelistDataset">hardware</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="unixlistDataset">unix</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="overallspecialistDataset">security</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div id="canvas-holder" style="width:60%">
+                                            <canvas id="myChart" width="600" height="600"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
             </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2017 Start Bootstrap. All Rights Reserved.</p>
-            <ul class="list-inline">
-            <li class="list-inline-item">
-                <a href="#">Privacy</a>
-            </li>
-            <li class="list-inline-item">
-                <a href="#">Terms</a>
-            </li>
-            <li class="list-inline-item">
-                <a href="#">FAQ</a>
-            </li>
-            </ul>
-        </div>
-    </footer>
+            </div>
+            <div class="bg-circle-1 bg-circle"></div>
+            <div class="bg-circle-2 bg-circle"></div>
+            <div class="bg-circle-3 bg-circle"></div>
+            <div class="bg-circle-4 bg-circle"></div>
+        </header>
+    
         
-
-{% endblock %}
+        <!-- Footer -->
+        <footer class="py-5 bg-black">
+            <div class="container">
+              <p class="m-0 text-center text-white small">Copyright &copy; Ludaya 2018 <a href="#">  Privacy policy</a> <i class="fab fa-facebook-f fa-2x"></i>  <i class="fab fa-twitter fa-2x"></i>
+            </div>
+            <!-- /.container -->
+          </footer>
+      
+          <!-- Bootstrap core JavaScript -->
+          <script src="vendor/jquery/jquery.min.js"></script>
+          <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      
+        </body>
+      
+      </html>
+      
+        

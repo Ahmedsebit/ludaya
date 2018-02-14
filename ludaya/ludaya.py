@@ -7,12 +7,13 @@ import os
 import re
 import string
 import random
+import math
 import datetime as dt
 from validate_email import validate_email
 from flask_bootstrap import Bootstrap
 from tasks.alltasks import communcation_list_length, electronics_list_length, hardware_list_length, learning_list_length, mac_list_length, maintainance_list_length, networking_list_length, security_list_length, server_list_length, support_list_length, unix_list_length, windows_list_length
 from tasks.alltasks import communication, electronics, hardware, mac, maintainance, networking, security, server, support, unix, windows
-from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction
+from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
 
 from flask_marshmallow import Marshmallow
 
@@ -132,6 +133,8 @@ def issues():
         items = AssignedTask.query.filter_by(status="not started", user_id=id).all()
         completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
         opened_items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
+        user = User.query.filter_by(id=id).first()
+        name = user.firstname + ' ' + user.lastname
         groups_list = []
         groups_list_opened = []
         for i in items:
@@ -140,11 +143,12 @@ def issues():
         for i in opened_items:
             groups_list_opened.append(i.category)
         groups_opened = {x:groups_list_opened.count(x) for x in groups_list_opened}
-        return render_template('issues.html',
+        return render_template('index.html',
                                items=items,
                                groups=groups,
                                opened=groups_opened,
                                id=id,
+                               name=name
                               )
     else:
         return redirect(url_for('home'))
@@ -170,10 +174,16 @@ def opened_tasks(category):
         username = session['username']
         id = session['id']
         tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
+        user = User.query.filter_by(id=id).first()
+        name = user.firstname + ' ' + user.lastname
         my_task_category = category
         for task in tasks:
             task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
-        return render_template('tasks.html', tasks=tasks, my_task_category=my_task_category, id=id)
+        return render_template('open_tasks.html',
+                                                tasks=tasks, 
+                                                my_task_category=my_task_category, 
+                                                id=id,
+                                                name=name)
     else:
         return redirect(url_for('home'))
 
@@ -183,10 +193,12 @@ def started_tasks(category):
         username = session['username']
         id = session['id']
         tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
+        user = User.query.filter_by(id=id).first()
+        name = user.firstname + ' ' + user.lastname
         my_task_category = category
         for task in tasks:
             task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
-        return render_template('opened_tasks.html', tasks=tasks, my_task_category=my_task_category, id=id)
+        return render_template('close_tasks.html', tasks=tasks, my_task_category=my_task_category, id=id, name=name)
     else:
         return redirect(url_for('home'))
 
@@ -199,6 +211,7 @@ def open_tasks(task_id):
         task = AssignedTask.query.filter_by(id=task_id).first()
         tasks = AssignedTask.query.filter_by(user_id=id, category='communication').all()
         task.status = 'opened'
+        task.date_opened = db.func.current_timestamp()
         db.session.add(task)
         db.session.commit()
         my_task_category = task.category.upper()
@@ -218,6 +231,7 @@ def respond_to_issue(task_id):
             user_id = session['id']
             task = AssignedTask.query.filter_by(id=task_id).first()
             task.user_answer = request.form['answer']
+            task.date_resolved = db.func.current_timestamp()
             task.status = 'completed'
             db.session.add(task)
             db.session.commit()
@@ -234,45 +248,54 @@ def reports():
         id = session['id']
         resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
         opened_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
+        user = User.query.filter_by(id=id).first()
+        name = user.firstname + ' ' + user.lastname
         resolve_time = []
         response_time = []
         output_quality = []
         for resolved_task in resolved_tasks:
-            if resolved_task.date_resolved is None:
-                pass
-            else:
-                start_dt = dt.datetime.strptime(resolved_task.date_resolved, '%Y-%m-%d %H:%M:%S.%f')
-                end_dt = dt.datetime.strptime(resolved_task.date_created, '%Y-%m-%d %H:%M:%S.%f')
-                resolution_diff = (end_dt - start_dt)
-                resolution_total_time = resolution_diff.seconds/60 + resolution_diff.days*24*3600
-                resolve_time.append(resolution_total_time)
+            start_dt = dt.datetime.strptime(str(resolved_task.date_resolved), '%Y-%m-%d %H:%M:%S.%f')
+            end_dt = dt.datetime.strptime(str(resolved_task.date_created), '%Y-%m-%d %H:%M:%S.%f')
+            resolution_diff = (start_dt - end_dt)
+            resolution_total_time = resolution_diff.seconds/60 + resolution_diff.days*24*3600
+            resolve_time.append(resolution_total_time/3600)
+            output_quality.append(resolved_task.satisfaction)
 
-                opened_dt = dt.datetime.strptime(resolved_task.date_opened, '%Y-%m-%d %H:%M:%S.%f')
-                opened_diff = (opened_dt - start_dt) 
-                opened_total_time = opened_diff.seconds/60 + opened_diff.days*24*3600
-                response_time.append(opened_total_time)
-                 
-                output_quality.append(resolved_task.satisfaction)
-        # try:
-        # resolution_avarage_time = sum(resolve_time) / float(len(resolve_time))
-        # response_avarage_time = sum(response_time) / float(len(response_time))
-        # user_satisfaction = sum(output_quality) / float(len(output_quality))
-        # except:
-        #     resolution_avarage_time = "No tasks yet"
-        #     response_avarage_time = "No tasks yet"
-        #     user_satisfaction = "No tasks yet"
+        for opened_task in opened_tasks:
+            opened_dt = dt.datetime.strptime(str(opened_task.date_opened), '%Y-%m-%d %H:%M:%S.%f')
+            end_dt = dt.datetime.strptime(str(resolved_task.date_created), '%Y-%m-%d %H:%M:%S.%f')
+            opened_diff = (opened_dt - end_dt) 
+            opened_total_time = opened_diff.seconds/60 + opened_diff.days*24*3600
+            response_time.append(opened_total_time/3600)
+            
+
+        if len(resolve_time) == 0:
+            resolution_avarage_time = "No tasks yet"
+        else:
+            resolution_avarage_time = sum(resolve_time) / float(len(resolve_time))
+
+        if len(response_time) == 0:
+            resolution_avarage_time = "No tasks yet"
+        else:
+            response_avarage_time = sum(response_time) / float(len(response_time))
+
+        try:
+            user_satisfaction = sum(output_quality) / float(len(output_quality))
+        except:
+            user_satisfaction = "No tasks yet"
+        
 
         lastsixmonths = last_six_months()
-        print(resolve_time)
-        print(response_time)
+
         
-        return render_template('issues_reports.html', 
+        return render_template('reports.html', 
                                 task_count = len(resolved_tasks), 
-                                resolution_avarage_time = 0, 
-                                response_avarage_time = 0,
-                                user_satisfaction = 'user_satisfaction',
+                                resolution_avarage_time = math.ceil(resolution_avarage_time), 
+                                response_avarage_time = math.ceil(response_avarage_time),
+                                user_satisfaction = user_satisfaction,
                                 lastsixmonths = json.dumps(lastsixmonths),
-                                id=id
+                                id=id,
+                                name=name
                                 )
     else:
         return redirect(url_for('home'))
@@ -351,6 +374,7 @@ def post_open_tasks(task_id):
         task = AssignedTask.query.filter_by(id=task_id).first()
         if task:
             task.status = 'opened'
+            task.date_opened = db.func.current_timestamp()
             db.session.add(task)
             db.session.commit()
             response = jsonify({
@@ -434,18 +458,18 @@ def get_reports(id):
 
 @app.route('/api/resolved_reports/<int:id>', methods=['GET'])
 def resolved_report(id):
-    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='resolved').all()
+    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
     lastsixmonths = last_six_months()
-    electronics = get_user_monthly_tasks(resolved_tasks, 'electronics')
-    hardware = get_user_monthly_tasks(resolved_tasks, 'hardware')
-    mac = get_user_monthly_tasks(resolved_tasks, 'mac')
-    maintainance = get_user_monthly_tasks(resolved_tasks, 'maintainance')
-    networking = get_user_monthly_tasks(resolved_tasks, 'networking')
-    security = get_user_monthly_tasks(resolved_tasks, 'security')
-    server = get_user_monthly_tasks(resolved_tasks, 'server')
-    support = get_user_monthly_tasks(resolved_tasks, 'support')
-    unix = get_user_monthly_tasks(resolved_tasks, 'unix')
-    windows = get_user_monthly_tasks(resolved_tasks, 'windows')
+    electronics = get_closed_user_monthly_tasks(resolved_tasks, 'electronics')
+    hardware = get_closed_user_monthly_tasks(resolved_tasks, 'hardware')
+    mac = get_closed_user_monthly_tasks(resolved_tasks, 'mac')
+    maintainance = get_closed_user_monthly_tasks(resolved_tasks, 'maintainance')
+    networking = get_closed_user_monthly_tasks(resolved_tasks, 'networking')
+    security = get_closed_user_monthly_tasks(resolved_tasks, 'security')
+    server = get_closed_user_monthly_tasks(resolved_tasks, 'server')
+    support = get_closed_user_monthly_tasks(resolved_tasks, 'support')
+    unix = get_closed_user_monthly_tasks(resolved_tasks, 'unix')
+    windows = get_closed_user_monthly_tasks(resolved_tasks, 'windows')
     return jsonify({
             'lastsixmonths' : json.dumps(last_six_months()),
             'electronics': json.dumps(electronics),
@@ -491,7 +515,7 @@ def opened_report(id):
 
 @app.route('/api/satisfaction_reports/<int:id>')
 def atisfaction_report(id):
-    opened_tasks = AssignedTask.query.filter_by(user_id=id, status='closed').all()
+    opened_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
     electronics = get_user_monthly_satisfaction(opened_tasks, 'electronics')
     hardware = get_user_monthly_satisfaction(opened_tasks, 'hardware')
     mac = get_user_monthly_satisfaction(opened_tasks, 'mac')
@@ -518,10 +542,18 @@ def atisfaction_report(id):
 
     
 
-@app.route('/api/time_reports/<string:date_check>/<int:id>')
-def time_report(date_check, id):
-    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='resolved').all()
-    timeavarage = get_user_avarage_time(resolved_tasks, date_check)
+@app.route('/api/time_reports/opened/<int:id>')
+def opened_time_report(id):
+    opened_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
+    timeavarage = get_user_avarage_time(opened_tasks)
+    return jsonify({
+        'timeavarage':json.dumps(timeavarage)
+    })
+
+@app.route('/api/time_reports/closed/<int:id>')
+def closed_time_report(id):
+    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
+    timeavarage = get_user_avarage_time_closed(resolved_tasks)
     return jsonify({
         'timeavarage':json.dumps(timeavarage)
     })
@@ -529,7 +561,7 @@ def time_report(date_check, id):
 
 @app.route('/api/user_satisfaction_reports/<int:id>')
 def user_satisfaction(id):
-    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='resolved').all()
+    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
     user_satisfactionavarage = get_user_avarage_satisfaction(resolved_tasks)
     return jsonify({
         'user_satisfactionavarage':json.dumps(user_satisfactionavarage)
@@ -560,3 +592,47 @@ def list_length(category):
 
     return l
 
+
+@app.route('/api/user_monthly_tasks/')
+def user_monthly_tasks():
+    months = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    items = AssignedTask.query.filter_by(status="opened", user_id=19).all()
+    for i in items:
+        if i.date_opened is not None :
+            if i.category == 'maintainance':
+                months[dt.datetime.strptime(str(i.date_opened), '%Y-%m-%d %H:%M:%S.%f').month-1] += 1
+    lastsixmonths = []
+    currentMonth = dt.datetime.now().month
+    if currentMonth < 6:
+        remainingmonths = 6 - currentMonth
+        for i in range(0, remainingmonths):
+            lastsixmonths.append(months[-i-1])
+        for i in range(0, currentMonth):
+            lastsixmonths.append(months[i])
+    if currentMonth == 6:
+        for i in range(0, currentMonth):
+            lastsixmonths.append(months[i])
+    if currentMonth > 6:
+        lastmonths = currentMonth - 6
+        for i in range(lastmonths, currentMonth):
+            lastsixmonths.append(months[i])
+    return jsonify({
+        'timeavarage':json.dumps(lastsixmonths)
+    })
+
+@app.route('/api/user_avarage_time/')
+def user_avarage_time():
+    items = AssignedTask.query.filter_by(status="completed", user_id=19).all()
+    task_categories = ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"]
+    avarage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for i in items:
+        start = i.date_created
+        end = i.date_resolved
+        start_dt = dt.datetime.strptime(str(start), '%Y-%m-%d %H:%M:%S.%f')
+        end_dt = dt.datetime.strptime(str(end), '%Y-%m-%d %H:%M:%S.%f')
+        diff = (end_dt - start_dt)
+        avarage[task_categories.index(i.category)] += diff.seconds/60 + diff.days*24*3600
+        avarage[task_categories.index(i.category)] = avarage[task_categories.index(i.category)] / 2
+    return jsonify({
+        'timeavarage':json.dumps(avarage)
+    })
