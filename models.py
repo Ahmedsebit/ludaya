@@ -102,9 +102,11 @@ class User(db.Model):
     firstname = db.Column(db.String(256), nullable=False, unique=True)
     lastname = db.Column(db.String(256), nullable=False, unique=True)
     email = db.Column(db.String(256), nullable=False, unique=True)
+    role = db.Column(db.String(256), nullable=False, default='team-member')
     password = db.Column(db.String(256), nullable=False)
     assignedtask = db.relationship(
         'AssignedTask', order_by='AssignedTask.id', cascade="all, delete-orphan")
+    group = db.Column(db.Integer)
 
     def hash_password(self, entered_password):
         '''
@@ -138,3 +140,47 @@ class AssignedTaskSchema(ma.Schema):
 
 assignedtask_schema = AssignedTaskSchema()
 assignedtasks_schema = AssignedTaskSchema(many=True)
+
+class Groups(db.Model):
+    '''
+    This class represents the assignedtasks table.
+    '''
+    __tablename__ = 'groups'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    current_members = db.Column(db.Integer)
+    team_lead = db.Column(db.Integer)
+    
+
+    def __init__(self, name, current_members, team_lead):
+        '''
+        initialize with name, current_members
+        '''
+        self.name = name
+        self.current_members = current_members
+
+    def save(self):
+        '''
+        Saving new assignedtask
+        '''
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_group(user_id):
+        '''
+        retrieving all groups
+        '''
+        return Groups.query.filter_by(user_id = user_id).all()
+
+    def delete(self):
+        '''
+        deleting assignedtask
+        '''
+        db.session.delete(self)
+        db.session.commit()
+
+    # def __repr__(self):
+    #     return "<AssignedTask: {}>".format(self.name)
+

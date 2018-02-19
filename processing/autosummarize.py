@@ -46,9 +46,3 @@ class FrequencySummarizer:
 
         sents_idx = nlargest(n,ranking, key = ranking.get)
         return [sent[j] for j in sents_idx]
-
-
-textOfUrl = 'The utility of performance information is limited if it is not communicated effectively and integrated back into the planning cycle. It is important to link performance measurement into the wider management processes of your Directorate. The ACT’s current reporting framework is outlined in Attachment D.Giant Fijian winger Nemani Nadolo has revealed that he was racially abused in front of family members while on a night out following a Top 14 match. The 137kg wing was enjoying a meal in Montpellier with members of his family who had flown to France to visit him. Nadolo took to Twitter to air his frustration at the ugly incident. “I’m out in Montpellier with my family who came from overseas to c me,” Nadolo posted on Twitter. “supporter who is drunk said to me ‘not bad for a monkey to win the game for MHR in Clermont’. Now he was drunk but wow.”'
-fs = FrequencySummarizer()
-text  = fs.summarize(textOfUrl.decode('utf-8'),5)
-print(text)

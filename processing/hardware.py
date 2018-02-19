@@ -82,10 +82,6 @@ HARDWARE = [
                 'taskname':'Keys are sticking',
                 'taskanswer':'Remove key tops and clean under keys, or wash out keyboard.'
                 },
-            # {
-            #     'taskname':'A blue screen that started happening in one good cold morning',
-            #     'taskanswer':''
-            #     },
             {
                 'taskname':'An itching fan sound',
                 'taskanswer':'Switch off and isolate the main supply. Open the cabinet cover so that your mother board is visible. Look around and find the processor on the mother board. Try to rotate the fan mounting screws in anti-clockwise direction. At certain position the screws hold tight to the processor and any loose fitting ends. Put back the cabinet cover. Connect and switch on the computer. Now you have solved an irritating sound problem!'
@@ -252,39 +248,6 @@ HARDWARE = [
                 },
         ]
     },
-    # {
-    #     'name':'',
-    #     'tasklist':[
-    #         {
-    #             'taskname':'View all the hardware components that make up your Windows computer or device',
-    #             'taskanswer':''
-    #             },
-    #         {
-    #             'taskname':'View the properties of your devices',
-    #             'taskanswer':''
-    #             },
-    #         {
-    #             'taskname':'Find missing drivers for your components',
-    #             'taskanswer':''
-    #             },
-    #         {
-    #             'taskname':'Install drivers for your hardware components and peripherals',
-    #             'taskanswer':''
-    #             },
-    #         {
-    #             'taskname':'View hidden devices in Device Manager',
-    #             'taskanswer':''
-    #             },
-    #         {
-    #             'taskname':'Disable or enable devices from Device Manager',
-    #             'taskanswer':''
-    #             },
-    #         {
-    #             'taskname':'Force Windows to scan for new hardware',
-    #             'taskanswer':''
-    #             }
-    #     ]
-    # }
 ]
 
 def hardware_list_length():

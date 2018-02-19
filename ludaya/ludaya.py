@@ -244,6 +244,26 @@ def respond_to_issue(task_id):
         return redirect(url_for('home'))
 
 
+@app.route('/evaluate_tasks/<string:category>')
+def evaluate_tasks(category):
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
+        user = User.query.filter_by(id=id).first()
+        name = user.firstname + ' ' + user.lastname
+        my_task_category = category
+        for task in tasks:
+            task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+        return render_template('evaluate_tasks.html',
+                                                tasks=tasks, 
+                                                my_task_category=my_task_category, 
+                                                id=id,
+                                                name=name)
+    else:
+        return redirect(url_for('home'))
+
+
 @app.route('/reports')
 def reports():
     if 'username' in session:

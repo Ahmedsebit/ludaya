@@ -4,22 +4,22 @@ Task lists
 '''
 SECURITY = [
     {
-        'name':'I would like to do the following task on HitmanPro',
+        'name':'Direct me on how to do the following task on HitmanPro',
         'tasklist':[
-            'Configure HitmanPro',
-            'Scan for threats',
-            'Clean threats',
-            'Add Files and Folders to the Whitelist',
-            'Copy Whitelist Entries',
-            'Ignore Whitelist Entries',
-            'Delete Whitelist Entries',
-            'Preview the Antimalware Health report',
+            {'Configure HitmanPro'},
+            {'Scan for threats'},
+            {'Clean threats'},
+            {'Add Files and Folders to the Whitelist'},
+            {'Copy Whitelist Entries'},
+            {'Ignore Whitelist Entries'},
+            {'Delete Whitelist Entries'},
+            {'Preview the Antimalware Health report'},
         ]
         },
     {
-        'name':'I would like to do the following task on ESET NODE Antivirus',
+        'name':'Direct me on how to do the following task on ESET NODE Antivirus',
         'tasklist':[
-            'Get information about the protection status of ESET NOD32 Antivirus',
+            {'Get information about the protection status of ESET NOD32 Antivirus'},
             'Configure scan',
             'launch a scan of your computer',
             'create a custom scan',
@@ -173,40 +173,6 @@ SECURITY = [
             'Block all network traffic'
         ]
     },
-    {
-        'name':'network security solutions',
-        'tasklist':[
-            'Enforce strong authentication strategies'
-            'Entertaining encryption strategy',
-            'Apply network segmentation',
-            'Employing Network Access Control',
-            'Filtering of packets',
-            'ACLs helps prevent Spoofing',
-            'SSL certificates',
-            'Using Public Key Infrastructures based authentications',
-            'Time testing techniques',
-            'Update your patches',
-            'Upgrading Firewalls with ACLs (Access Control Lists)',
-            'Demilitarized Zone (DMZ)',
-            'Proxy',
-            'Install Anti-Virus Software',
-            'Employ a firewall to protect networks',
-            'Filter all email traffic',
-            'Educate all users to be careful of suspicious e-mails',
-            'Implement a vulnerability management program',
-            'Make regular backups of critical data',
-            'Develop an Information Security Policy',
-            'Develop an Incident Response Plan',
-            'Steal the network ',
-            'Stateful Packet Inspection',
-            'Network Address Translation (NAT)',
-            'Closing unused ports',
-            'Install IDS/IPS with the ability to track floods (such as SYN, ICMP, etc.)',
-            'Install a firewall',
-            'Ensure that HTTP opens session’s time out at a reasonable time',
-            'Ensure that TCP also time out at a reasonable time'
-        ]
-        },
 ]
 
 def security_list_length():
