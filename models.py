@@ -102,7 +102,6 @@ class User(db.Model):
     firstname = db.Column(db.String(256), nullable=False, unique=True)
     lastname = db.Column(db.String(256), nullable=False, unique=True)
     email = db.Column(db.String(256), nullable=False, unique=True)
-    role = db.Column(db.String(256), nullable=False, default='team-member')
     password = db.Column(db.String(256), nullable=False)
     assignedtask = db.relationship(
         'AssignedTask', order_by='AssignedTask.id', cascade="all, delete-orphan")
@@ -155,10 +154,11 @@ class Groups(db.Model):
 
     def __init__(self, name, current_members, team_lead):
         '''
-        initialize with name, current_members
+        initialize with name, current_members, team_lead
         '''
         self.name = name
         self.current_members = current_members
+        self.team_lead = team_lead
 
     def save(self):
         '''
