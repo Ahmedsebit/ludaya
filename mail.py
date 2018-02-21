@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_mail import Mail, Message
+import os
+from ludaya.ludaya import app
 
-app =Flask(__name__)
 mail=Mail(app)
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
@@ -13,8 +14,8 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 
-def send_mail():
-   msg = Message('Hello', sender = 'ahmedamedy@gmail.com', recipients = ['ahmedamedy@gmail.com'])
-   msg.body = "Hello Flask message sent from Flask-Mail"
+def send_mail(heading, sender, recepients, message):
+   msg = Message(heading, sender = sender, recipients = recepients)
+   msg.body = message
    mail.send(msg)
    return "Sent"

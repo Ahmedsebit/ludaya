@@ -1,44 +1,34 @@
 from flask import Flask, render_template, session, flash, request, redirect, url_for, flash, jsonify, \
                 Blueprint, g, redirect, abort, current_app
 from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail, Message
-import json
-import os
-import re
+from mail import send_mail
 import string
 import random
-import math
-import datetime as dt
 from validate_email import validate_email
-from flask_bootstrap import Bootstrap
-from tasks.alltasks import communcation_list_length, electronics_list_length, hardware_list_length, learning_list_length, mac_list_length, maintainance_list_length, networking_list_length, security_list_length, server_list_length, support_list_length, unix_list_length, windows_list_length
-from tasks.alltasks import communication, electronics, hardware, mac, maintainance, networking, security, server, support, unix, windows
-from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
-
-from flask_marshmallow import Marshmallow
-
-app = Flask(__name__)
-Bootstrap(app)
-app.config.from_object(os.environ['APP_SETTINGS'])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-ma = Marshmallow(app)
-mail=Mail(app)
-
-app.config['MAIL_SERVER']='smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'ahmedamedy@gmail.com'
-app.config['MAIL_PASSWORD'] = 'osmantito88'
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
-mail = Mail(app)
-
-db = SQLAlchemy(app)
-
+from ludaya import app
 from models import User, Groups, AssignedTask, assignedtask_schema, assignedtasks_schema
 from random import randrange
 from groups import create_group, get_last_created_group
 
-@app.route('/register', methods=['POST'])
+user_blueprint = Blueprint(
+    'user',__name__,
+    template_folder = 'templates',
+    static_folder='static'
+)
+db = SQLAlchemy(app)
+
+
+@user_blueprint.route('/')
+def home():
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        return redirect(url_for('issues'))
+    else:
+        return render_template('home.html')
+
+
+@user_blueprint.route('/register', methods=['POST'])
 def register():
     is_valid = validate_email(request.form['email'])
     error = None
@@ -87,7 +77,7 @@ def register():
     return render_template('home.html', error=error)
 
 
-@app.route('/login', methods=['POST'])
+@user_blueprint.route('/login', methods=['POST'])
 def login():
     '''
     Function for login user
@@ -106,7 +96,7 @@ def login():
         return render_template('home.html', error=error)
 
 
-@app.route('/forgotpassword', methods=['POST'])
+@user_blueprint.route('/forgotpassword', methods=['POST'])
 def forgotpassword():
     '''
     Function for user forgot password
@@ -132,16 +122,11 @@ def forgotpassword():
         error = 'No email field!!'
         return render_template('home.html', error=error)
 
-@app.route('/logout')
+@user_blueprint.route('/logout')
 def logout():
    session.pop('username', None)
-   return redirect(url_for('home'))
+   return redirect(url_for('user.home'))
 
 def id_generator(size=10, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-def send_mail(heading, sender, recepients, message):
-   msg = Message(heading, sender = sender, recipients = recepients)
-   msg.body = message
-   mail.send(msg)
-   return "Sent"
