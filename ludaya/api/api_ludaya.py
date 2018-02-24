@@ -10,24 +10,23 @@ import random
 import math
 import datetime as dt
 from flask_bootstrap import Bootstrap
-from tasks.alltasks import communcation_list_length, electronics_list_length, hardware_list_length, learning_list_length, mac_list_length, maintainance_list_length, networking_list_length, security_list_length, server_list_length, support_list_length, unix_list_length, windows_list_length
 from tasks.alltasks import communication, electronics, hardware, mac, maintainance, networking, security, server, support, unix, windows
 from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
 
 from flask_marshmallow import Marshmallow
 from ludaya.ludaya import app
 
-db = SQLAlchemy(app)
+from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema, Groups
 
-from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema
-
-from tasks.usertask import allocate_all_user_tasks, testing, get_user_tasks
-from tasks.tasksallocations import get_user_assigned_tasks, electronics_task, hardware_task, mac_task, maintainance_task, networking_task, security_task, server_task, software_task, support_task, unix_task, windows_task
+from tasks.usertask import allocate_all_user_tasks, get_user_tasks
 from random import randrange
+
+db = SQLAlchemy(app)
 
 api_blueprint = Blueprint(
     'api',__name__
 )
+
 
 @app.route('/api/issues/<string:category>/<int:id>', methods=['GET'])
 def get_all_category(category, id):
@@ -40,6 +39,7 @@ def get_all_category(category, id):
                     'opened':len(opened_items),
                     'all':len(all)}
                     )
+
 
 @app.route('/api/issues/<int:id>', methods=['GET'])    
 def get_issues(id):
@@ -61,6 +61,7 @@ def get_issues(id):
             'opened':json.dumps(groups_opened)
     })
 
+
 @app.route('/api/opened_issues/<int:id>', methods=['GET'])    
 def get_opened_issues(id):
     items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
@@ -81,6 +82,37 @@ def get_opened_issues(id):
             'opened':json.dumps(groups_opened)
     })
 
+
+@app.route('/api/evaluate_task/<int:id>', methods=['GET'])    
+def evaluate_task(id):
+    items = AssignedTask.query.filter_by(status="completed", evaluate_id=id).all()
+    items_result = assignedtasks_schema.dump(items)
+    completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
+    opened_items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
+    groups_list = []
+    groups_list_opened = []
+    for i in items:
+        groups_list.append(i.category)
+    groups = {x:groups_list.count(x) for x in groups_list}
+    for i in opened_items:
+        groups_list_opened.append(i.category)
+    groups_opened = {x:groups_list_opened.count(x) for x in groups_list_opened}
+    return jsonify({
+            'items':json.dumps(items_result.data, sort_keys=True, default=str),
+            'groups':json.dumps(groups),
+            'opened':json.dumps(groups_opened)
+    })
+
+
+@app.route('/api/evaluate_tasks/<string:category>/<int:id>', methods=['GET'])
+def get_category_evaluate_tasks(category, id):
+    tasks = AssignedTask.query.filter_by(evaluate_id=id, category=category).all()
+    items_result = assignedtasks_schema.dump(tasks)
+    return jsonify({
+            'items':json.dumps(items_result.data)
+    })
+
+
 @app.route('/api/new_tasks/<int:task_id>/open', methods=['POST'])
 def post_open_tasks(task_id):
         task = AssignedTask.query.filter_by(id=task_id).first()
@@ -89,6 +121,28 @@ def post_open_tasks(task_id):
             task.date_opened = db.func.current_timestamp()
             db.session.add(task)
             db.session.commit()
+            response = jsonify({
+                                'id': task.id,
+                                'name': task.name,
+                                'date_created': task.date_created,
+                                'status':task.status
+                                })
+        else:
+            response = jsonify({'message': 'Item already exists in this bucketlist'})
+            
+        return response
+
+@app.route('/api/respond_tasks/<int:task_id>/open', methods=['POST'])
+def post_respond_tasks(task_id):
+        task = AssignedTask.query.filter_by(id=task_id).first()
+        group = Groups.query.filter_by(id=task.user_id).first()
+        if task:
+            response = request.form['answer']
+            task.user_answer = response
+            task.evaluate_id = group.team_leader
+            task.evaluate = 'not yet'
+            task.date_opened = db.func.current_timestamp()
+            task.save()
             response = jsonify({
                                 'id': task.id,
                                 'name': task.name,
@@ -226,7 +280,7 @@ def opened_report(id):
     })
 
 @app.route('/api/satisfaction_reports/<int:id>')
-def atisfaction_report(id):
+def satisfaction_report(id):
     opened_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
     electronics = get_user_monthly_satisfaction(opened_tasks, 'electronics')
     hardware = get_user_monthly_satisfaction(opened_tasks, 'hardware')

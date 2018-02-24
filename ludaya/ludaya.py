@@ -11,8 +11,7 @@ import math
 import datetime as dt
 from validate_email import validate_email
 from flask_bootstrap import Bootstrap
-from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
-# from mail import send_mail
+from notifications.mail import send_mail
 from flask_marshmallow import Marshmallow
 
 app = Flask(__name__)
@@ -21,14 +20,22 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 ma = Marshmallow(app)
 
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'ahmedamedy@gmail.com'
+app.config['MAIL_PASSWORD'] = 'osmantito88'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
 
 db = SQLAlchemy(app)
 
 from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema
-
-from tasks.usertask import allocate_all_user_tasks, testing, get_user_tasks
-from tasks.tasksallocations import get_user_assigned_tasks, electronics_task, hardware_task, mac_task, maintainance_task, networking_task, security_task, server_task, software_task, support_task, unix_task, windows_task
+from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
+from tasks.usertask import allocate_all_user_tasks, get_user_tasks
 from random import randrange
+
 
 
 @app.route('/issues')
@@ -128,8 +135,8 @@ def open_tasks(task_id):
         return redirect(url_for('user.home'))
 
 
-@app.route('/task/respond/<int:task_id>/', methods=['GET','POST'])
-def respond_to_issue(task_id):
+@app.route('/new_tasks/<int:task_id>/close', methods=['POST'])
+def close_task(task_id):
     if 'username' in session:
         username = session['username']
         id = session['id']
@@ -189,19 +196,21 @@ def reports():
 
         for opened_task in opened_tasks:
             opened_dt = dt.datetime.strptime(str(opened_task.date_opened), '%Y-%m-%d %H:%M:%S.%f')
-            end_dt = dt.datetime.strptime(str(resolved_task.date_created), '%Y-%m-%d %H:%M:%S.%f')
+            end_dt = dt.datetime.strptime(str(opened_task.date_created), '%Y-%m-%d %H:%M:%S.%f')
             opened_diff = (opened_dt - end_dt) 
             opened_total_time = opened_diff.seconds/60 + opened_diff.days*24*3600
             response_time.append(opened_total_time/3600)
             
+        resolution_avarage_time = 0
+        response_avarage_time = 0
 
         if len(resolve_time) == 0:
-            resolution_avarage_time = "No tasks yet"
+            resolution_avarage_time = 0
         else:
             resolution_avarage_time = sum(resolve_time) / float(len(resolve_time))
 
         if len(response_time) == 0:
-            resolution_avarage_time = "No tasks yet"
+            resolution_avarage_time = 0
         else:
             response_avarage_time = sum(response_time) / float(len(response_time))
         try:

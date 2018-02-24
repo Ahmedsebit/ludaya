@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, flash, request, redirect, url_for, flash, jsonify, \
                 Blueprint, g, redirect, abort, current_app
 from flask_sqlalchemy import SQLAlchemy
-from mail import send_mail
+from flask_mail import Mail, Message
 import string
 import random
 from validate_email import validate_email
@@ -9,6 +9,8 @@ from ludaya import app
 from models import User, Groups, AssignedTask, assignedtask_schema, assignedtasks_schema
 from random import randrange
 from groups import create_group, get_last_created_group
+from notifications.mail import send_mail
+from notifications.slack import add_user_to_channel, get_channel_id, get_user
 
 user_blueprint = Blueprint(
     'user',__name__,
@@ -50,26 +52,39 @@ def register():
                     if lastgroup.current_members == 4:
                         user = User(firstname=firstname, lastname=lastname, email=email)
                         user.hash_password(password)
-                        db.session.add(user)
-                        db.session.commit()
-                        db.session.refresh(user)
+                        user.save()
+                        user = User.query.filter_by(email=email).first()
                         new_group = create_group(user.id)
                         user.group = new_group.id
-                        db.session.add(user)
-                        db.session.commit()
+                        user.save()
+                        channel = get_channel_id(new_group.name)
+                        user = get_user(user.email)
+                        add_user_to_channel(channel, user)
                     if lastgroup.current_members < 4:
                         lastgroup.current_members += 1
-                        db.session.add(lastgroup)
-                        db.session.commit(lastgroup)
+                        lastgroup.save()
                         user = User(firstname=firstname, lastname=lastname, email=email, group=lastgroup.id)
                         user.hash_password(password)
-                        db.session.add(user)
-                        db.session.commit()     
+                        user.save()
+                        user = User.query.filter_by(email=email).first()
+                        channel = get_channel_id(lastgroup.name)
+                        user = get_user(user.email)
+                        add_user_to_channel(channel, user)
                 else:
-                    create_group(user.id)
-                response = {'message': 'Invalid input. Check the email and password'}
+                    user = User(firstname=firstname, lastname=lastname, email=email)
+                    user.hash_password(password)
+                    user.save()
+                    db.session.refresh(user)
+                    new_group = create_group(user.id)
+                    user.group = new_group.id
+                    user.save()
+                    user = User.query.filter_by(email=email).first()
+                    channel = get_channel_id(new_group.name)
+                    user = get_user(user.email)
+                    add_user_to_channel(channel, user)
+
                 flash('You were successfully register')
-                return redirect(url_for('home'))
+                return redirect(url_for('user.home'))
         else:
             error = 'User already exists'
     else:
@@ -106,8 +121,7 @@ def forgotpassword():
         if user:
             password = id_generator()
             user.hash_password(password)
-            db.session.add(user)
-            db.session.commit()
+            user.save()
             heading = 'Password Reset'
             sender = 'ahmedamedy@gmail.com'
             recipients = [user.email]
@@ -119,7 +133,7 @@ def forgotpassword():
             error = 'Invalid email, Please try again.'
             return render_template('home.html', error=error)
     except:
-        error = 'No email field!!'
+        error = 'Email not found!!'
         return render_template('home.html', error=error)
 
 @user_blueprint.route('/logout')

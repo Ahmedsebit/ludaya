@@ -40,7 +40,15 @@
                 </div>
                 </div>
             </nav>
-        
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                    {% for message in messages %}
+                    <li<{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
             <header class="masthead text-center text-white">
                 <div class="masthead-content">
                 <div class="container">
@@ -59,7 +67,7 @@
                                             </div>
                                             </div>
                                             <div class="form-group">
-                                                    <input type="email" class="form-control" id="inputEmail4" name="email" placeholder="Email" style="background-color: rgba(245, 245, 245, 0.4);">
+                                                    <input type="email" class="form-control" id="inputEmail" name="email" placeholder="Email" style="background-color: rgba(245, 245, 245, 0.4);">
                                             </div>
                                             <div class="form-group">
                                                     <input type="password" class="form-control" id="inputPassword4" name="password" placeholder="Password" style="background-color: rgba(245, 245, 245, 0.4);">

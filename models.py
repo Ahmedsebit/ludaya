@@ -53,9 +53,11 @@ class AssignedTask(db.Model):
     date_resolved = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     status = db.Column(db.String(255), default="not started")
-    tries = db.Column(db.Integer, default=0)
     satisfaction = db.Column(db.Integer)
     user_answer = db.Column(db.String(2000))
+    evaluate_id = db.Column(db.Integer, default=19)
+    evaluate_comment = db.Column(db.String(2000))
+    evaluated_status = db.Column(db.String(255), default="evaluated")
 
 
     def __init__(self, name, group, category, user_id):
@@ -118,6 +120,13 @@ class User(db.Model):
         function for verifying a hashed a password
         '''
         return pwd_context.verify(entered_password, self.password)
+    
+    def save(self):
+        '''
+        Saving new assignedtask
+        '''
+        db.session.add(self)
+        db.session.commit()
 
 
 class AssignedTaskSchema(ma.Schema):
@@ -129,7 +138,9 @@ class AssignedTaskSchema(ma.Schema):
             'group',
             'category',
             'date_created',
-            'date_modified'
+            'date_modified',
+            'status',
+            'user_answer'
         )
     # Smart hyperlinking
     _links = ma.Hyperlinks({
@@ -183,4 +194,3 @@ class Groups(db.Model):
 
     # def __repr__(self):
     #     return "<AssignedTask: {}>".format(self.name)
-
