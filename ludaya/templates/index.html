@@ -38,7 +38,9 @@
               var query = getParameterByName('q');
               var taskList = [];
               var taskOpenedList = [];
+              var taskEvaluateList = [];
               var all = 0;
+              var slack_user_id = [];
               
               function attachTask(taskKey, taskValue, prepend){
                       //var groups = taskValue.groups;
@@ -63,7 +65,7 @@
             }
     
               function parseTasks(){
-                if (taskList == 0) {
+                if (taskList == {}) {
                     attachNoTask()
                 } else {
                   // tasks exist, parse & display them
@@ -121,7 +123,7 @@
                 }
     
                 function parseOpenedTasks(){
-                    if (taskOpenedList == 0) {
+                    if (taskOpenedList == {}) {
                         attachnoOpenedTask()
                     } else {
                     // tasks exist, parse & display them
@@ -177,11 +179,11 @@
                 }
     
                 function parseEvaluateTasks(){
-                    if (taskOpenedList == 0) {
+                    if (taskEvaluateList == {}) {
                         attachnoEvaluateTask()
                     } else {
                     // tasks exist, parse & display them
-                    $.each(JSON.parse(taskOpenedList), function(key, value){
+                    $.each(JSON.parse(taskEvaluateList), function(key, value){
                         var taskKey = key;
                         attachEvaluateTask(key, value)
                     })
@@ -200,7 +202,8 @@
                     data: url,
                     method: "GET",
                     success: function(data){
-                    taskOpenedList = data.groups
+                    taskEvaluateList = data.groups
+                    console.log(taskEvaluateList.length)
                     parseEvaluateTasks()
                     },
                     error: function(data){
@@ -210,6 +213,60 @@
                     })
                 }
                 fetchEvaluateTasks()
+    
+
+                function attachSlack(taskKey, prepend){
+                    var key = taskKey;
+                    var task_url = '/opened_tasks/'+key
+                    var taskHTMLFormat = "<a type=\"button\" class=\"btn btn-primary btn-md\"> Join your team on slack <i class=\"fab fa-slack\"></i></a>"
+                    if(prepend ==true){
+                    $("#slack_id").prepend(taskHTMLFormat)
+                    }else{
+                    $("#slack_id").append(taskHTMLFormat)
+                    }
+                }
+    
+                function attachnoSlack(prepend){
+                    var taskHTMLFormat = "<a type=\"button\" class=\"btn btn-primary btn-md\"> View conversation on slack <i class=\"fab fa-slack\"></i></a>"
+                    if(prepend ==true){
+                    $("#slack_id").prepend(taskHTMLFormat)
+                    }else{
+                    $("#slack_id").append(taskHTMLFormat)
+                    }
+                }
+    
+                function parseSlack(){
+                    if (slack_user_id != "") {
+                        attachnoSlack()
+                    } else {
+                    // tasks exist, parse & display them
+                        taskKey = slack_user_id;
+                        attachSlack(slack_user_id);
+                    }
+                }
+    
+                function fetchSlack(url){
+                    var fetchUrl;
+                    if (!url){
+                        fetchUrl = "/api/user_slack_id/"+{{id}}
+                    }else{
+                        fetchUrl = url
+                    }
+                    $.ajax({
+                    url: fetchUrl,
+                    data: url,
+                    method: "GET",
+                    success: function(data){
+                    slack_user_id = data.user_slack_id
+                    parseSlack()
+                    },
+                    error: function(data){
+                    console.log("error")
+                    console.log(data)
+                    }
+                    })
+                }
+                fetchSlack()
     
 
               var allData = function(url) {
@@ -331,7 +388,9 @@
                         <p>This weeks team lead is: Team Lead</p>
                     </div>
                     <div class="col-lg-4" style="padding-top:50px;">
-                        <a type="button" class="btn btn-primary btn-md"> Join your team on slack <i class="fab fa-slack"></i></a>
+                        <ul class="list-group"  id="slack_id">
+                                    
+                        </ul>
                     </div>
                     
                     <hr>

@@ -18,6 +18,7 @@ from ludaya.ludaya import app
 
 from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema, Groups
 
+from notifications.slack import get_user, get_channel_id
 from tasks.usertask import allocate_all_user_tasks, get_user_tasks
 from random import randrange
 
@@ -87,8 +88,8 @@ def get_opened_issues(id):
 def evaluate_task(id):
     items = AssignedTask.query.filter_by(status="completed", evaluate_id=id).all()
     items_result = assignedtasks_schema.dump(items)
-    completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
-    opened_items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
+    completed_items = AssignedTask.query.filter_by(status="completed", evaluate_id=id).all()
+    opened_items = AssignedTask.query.filter_by(status="opened", evaluate_id=id).all()
     groups_list = []
     groups_list_opened = []
     for i in items:
@@ -449,3 +450,19 @@ def get_assigned_tasks():
         'task_list':json.dumps(task_list)
     })
 
+@app.route('/api/user_slack_id/<int:id>')
+def get_user_slack(id):
+    user = User.query.filter_by(id=id).first()
+    user_slack_id = get_user(user.email)
+    return jsonify({
+        'user_slack_id':json.dumps(user_slack_id)
+    })
+
+
+@app.route('/api/channel_slack_id/<int:id>')
+def get_channel_slack(id):
+    group = Group.query.filter_by(id=id).first()
+    user_slack_id = get_channel_id(group.name)
+    return jsonify({
+        'user_slack_id':json.dumps(user_slack_id)
+    })

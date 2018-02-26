@@ -14,27 +14,23 @@ from tasks.usertask import allocate_all_user_tasks
 app.register_blueprint(user_blueprint)
 app.register_blueprint(api_blueprint)
 
-def tick():
-    print('Tick! The time is: %s' % datetime.now())
 
+# sched = BackgroundScheduler()
+# # sched.add_job(tick,'interval',seconds=3)
+# sched.start()
 
-# if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
-#     scheduler = BackgroundScheduler()
-#     scheduler.add_job(allocate_all_user_tasks, 'interval', seconds=3)
-#     scheduler.start()
-#     print('Press Ctrl+{0} to exit'.format('Break' if os.name == 'nt' else 'C'))
+# @sched.scheduled_job('interval', seconds=3)
+# def tick2():
+#     sensor()
 
-#     try:
-#         # This is here to simulate application activity (which keeps the main thread alive).
-#         while True:
-#             time.sleep(2)
-#     except (KeyboardInterrupt, SystemExit):
-#         # Not strictly necessary if daemonic mode is enabled but should be done if possible
-#         scheduler.shutdown()
+# try:
+#     app
+# except (KeyboardInterrupt, SystemExit):
+#     sched.shutdown()
 
 # create_group()
 # allocate_all_user_tasks()
 
 
 if __name__ == '__main__':
-    app.run() 
+    app.run(use_reloader=False) 

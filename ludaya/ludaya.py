@@ -154,6 +154,26 @@ def close_task(task_id):
         return redirect(url_for('user.home'))
 
 
+@app.route('/new_tasks/<int:task_id>/evaluate', methods=['POST'])
+def evaluate_new_task(task_id):
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        if request.method == 'POST':
+            user_id = session['id']
+            task = AssignedTask.query.filter_by(id=task_id).first()
+            task.evaluate_comment = request.form['comment']
+            task.satisfaction = float(request.form['rating'])
+            task.date_resolved = db.func.current_timestamp()
+            task.status = 'completed'
+            db.session.add(task)
+            db.session.commit()
+            flash("Response sent")
+            return redirect(url_for('issues'))
+    else:
+        return redirect(url_for('user.home'))
+
+
 @app.route('/evaluate_tasks/<string:category>')
 def evaluate_tasks(category):
     if 'username' in session:

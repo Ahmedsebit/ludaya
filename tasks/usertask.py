@@ -1,9 +1,12 @@
+# coding: utf8
+
 from flask_sqlalchemy import SQLAlchemy
 from decorators import async
 from models import AssignedTask, User, Groups
 from ludaya.ludaya import db
 from datetime import datetime
 from tasksallocations import category_task
+from notifications.slack import send_channel_messages, send_dm
 
 def allocate_all_user_tasks():
     async_allocate_all_user_tasks()
@@ -14,11 +17,26 @@ def async_allocate_all_user_tasks():
     for user in users:
         group = Groups.query.filter_by(id = user.group).first()
         all_tasks = category_task(user.id)
+        tasks = []
         for task in all_tasks:
             if group.team_lead != user.id:
-                allocate(task, user.id)
+                task_group = task.keys()[0]
+                name = task[task_group]
+                tasks.append(name)
+                tasks.append('\n')
+                allocate(task, user.id, user.email)
 
-def allocate(task, user):
+        task_strng = ""
+        tasks_in_string =",".join(str(x) for x in tasks)
+
+        for i in tasks:
+            task_strng +=str(i)
+
+        if len(tasks) > 0:
+            message = '```'+'*'+'New Task'+'*\n'+'Asigned to:'+user.email+'\n'+tasks_in_string+'```'
+            send_channel_messages(group.name, message)
+
+def allocate(task, user, email):
     category = task['name']
     group = task.keys()[0]
     name = task[group]

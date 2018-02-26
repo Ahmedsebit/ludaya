@@ -39,33 +39,7 @@
           var query = getParameterByName('q');
           var taskList = [];
           var all = 0;
-
-          function openTask(){
-            //var fetchUrl;
-            //if (!url){
-              //  fetchUrl = '/api/tasks/{{my_task_category}}/{{id}}'
-            //}else{
-              //  fetchUrl = url
-            //}
-            //$.ajax({
-              //  url: fetchUrl,
-                //data: {
-                //"q": query
-                //},
-                //method: "GET",
-                //success: function(data){
-                //taskList = data.items
-                //parseTasks()
-                //},
-                //error: function(data){
-                //console.log("error")
-                //console.log(data)
-                //}
-            //})
-            console.log('data')
-          }
-
-          
+                    
           function attachTask(taskKey, taskValue, prepend){
                   //var groups = taskValue.groups;
                   var key = taskKey;
@@ -79,8 +53,7 @@
                                         +    "<div class=\"card card-body\">"
                                         +        "<div class=\"modal-body\">"
                                         +                "<div class=\"alert alert-info text-justify\">"
-                                        +                    "<h4 class=\"alert-heading\">" + items.category +"</h4>"
-                                        +                    "<p>" + items.group + "</p>"
+                                        +                    "<h4 class=\"alert-heading\">" + items.group +"</h4>"
                                         +                    "<p>" + items.name + "</p>"
                                         +                    "<form action=\"/new_tasks/"+items.id+"/open\" method=\"POST\">"    
                                         +                      "<button type=\"submit\" class=\"btn btn-primary\"><i class=\"fa fa-unlock\"></i> Open</button>"
