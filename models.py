@@ -137,8 +137,6 @@ class AssignedTaskSchema(ma.Schema):
             'name',
             'group',
             'category',
-            'date_created',
-            'date_modified',
             'status',
             'user_answer'
         )

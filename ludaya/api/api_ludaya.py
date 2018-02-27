@@ -107,7 +107,7 @@ def evaluate_task(id):
 
 @app.route('/api/evaluate_tasks/<string:category>/<int:id>', methods=['GET'])
 def get_category_evaluate_tasks(category, id):
-    tasks = AssignedTask.query.filter_by(evaluate_id=id, category=category).all()
+    tasks = AssignedTask.query.filter_by(evaluate_id=id, status="completed", category=category).all()
     items_result = assignedtasks_schema.dump(tasks)
     return jsonify({
             'items':json.dumps(items_result.data)

@@ -69,8 +69,3 @@ def get_channel_id(name):
         if channel['name'] == name:
             return channel['id']
 
-
-message = ">>> Testing *right now!"
-
-send_dm('ahmedamedy@gmail.com', 'test')
-send_channel_messages('ludayatesting9', message)

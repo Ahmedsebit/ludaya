@@ -31,12 +31,12 @@ mail = Mail(app)
 
 db = SQLAlchemy(app)
 
-from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema
+from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema, Groups
 from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
 from tasks.usertask import allocate_all_user_tasks, get_user_tasks
 from random import randrange
 
-
+from notifications.slack import send_channel_messages
 
 @app.route('/issues')
 def issues():
@@ -121,12 +121,18 @@ def open_tasks(task_id):
     if 'username' in session:
         username = session['username']
         id = session['id']
+        user = User.query.filter_by(id=id).first()
         task = AssignedTask.query.filter_by(id=task_id).first()
+        group = Groups.query.filter_by(id=user.group).first()
         tasks = AssignedTask.query.filter_by(user_id=id, category='communication').all()
         task.status = 'opened'
         task.date_opened = db.func.current_timestamp()
         db.session.add(task)
         db.session.commit()
+
+        message = ' *'+'Task Opened'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
+        send_channel_messages(group.name, message)
+
         my_task_category = task.category.upper()
         for task in tasks:
             task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
@@ -142,12 +148,18 @@ def close_task(task_id):
         id = session['id']
         if request.method == 'POST':
             user_id = session['id']
+            user = User.query.filter_by(id=id).first()
             task = AssignedTask.query.filter_by(id=task_id).first()
+            group = Groups.query.filter_by(id=user.group).first()
             task.user_answer = request.form['answer']
             task.date_resolved = db.func.current_timestamp()
             task.status = 'completed'
             db.session.add(task)
             db.session.commit()
+
+            message = ' *'+'Task Closed'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
+            send_channel_messages(group.name, message)
+
             flash("Response sent")
             return redirect(url_for('issues'))
     else:
@@ -161,13 +173,19 @@ def evaluate_new_task(task_id):
         id = session['id']
         if request.method == 'POST':
             user_id = session['id']
+            user = User.query.filter_by(id=id).first()
             task = AssignedTask.query.filter_by(id=task_id).first()
+            group = Groups.query.filter_by(id=user.group).first()
             task.evaluate_comment = request.form['comment']
             task.satisfaction = float(request.form['rating'])
             task.date_resolved = db.func.current_timestamp()
             task.status = 'completed'
             db.session.add(task)
             db.session.commit()
+
+            message = ' *'+'Task Evaluated'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
+            send_channel_messages(group.name, message)
+
             flash("Response sent")
             return redirect(url_for('issues'))
     else:

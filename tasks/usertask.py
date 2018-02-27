@@ -33,7 +33,7 @@ def async_allocate_all_user_tasks():
             task_strng +=str(i)
 
         if len(tasks) > 0:
-            message = '```'+'*'+'New Task'+'*\n'+'Asigned to:'+user.email+'\n'+tasks_in_string+'```'
+            message = ' *'+'New Task'+'*\n'+'```'+'Asigned to:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task_strng+'```'
             send_channel_messages(group.name, message)
 
 def allocate(task, user, email):
