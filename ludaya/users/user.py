@@ -136,6 +136,33 @@ def forgotpassword():
         error = 'Email not found!!'
         return render_template('home.html', error=error)
 
+@user_blueprint.route('/changepassword', methods=['POST'])
+def changepassword():
+    '''
+    Function for user Changing password
+    '''
+    try:
+        user = User.query.filter_by(email=request.form['email']).first()
+        if user:
+            oldpassword = request.form['oldpassword']
+            newpassword = request.form['newpassword']
+            confirmpassword = request.form['confirm']
+            if user and user.verify_password(request.form['password']):
+                if newpassword == confirmpassword:
+                    user.hash_password(newpassword)
+                    user.save()
+                    error = 'Password has been changed'
+                    return redirect(url_for('issues'))
+                else:
+                    error = 'Password dont match'
+                    return redirect(url_for('issues'))
+        else:
+            error = 'Wrong password entered'
+            return redirect(url_for('issues'))
+    except:
+        error = 'Login first!!'
+        return render_template('home.html', error=error)
+
 @user_blueprint.route('/logout')
 def logout():
    session.pop('username', None)

@@ -47,7 +47,10 @@ def issues():
         completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
         opened_items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
         user = User.query.filter_by(id=id).first()
+        user_group = Groups.query.filter_by(id=user.group).first()
+        team_leader = User.query.filter_by(id=user_group.team_lead).first()
         name = user.firstname + ' ' + user.lastname
+        team_lead_names = team_leader.firstname + ' ' + team_leader.lastname
         groups_list = []
         groups_list_opened = []
         for i in items:
@@ -61,7 +64,8 @@ def issues():
                                groups=groups,
                                opened=groups_opened,
                                id=id,
-                               name=name
+                               name=name,
+                               teamlead_name=team_lead_names,
                               )
     else:
         return redirect(url_for('user.home'))
@@ -136,6 +140,7 @@ def open_tasks(task_id):
         my_task_category = task.category.upper()
         for task in tasks:
             task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+        flash('You have opened a new task')
         return redirect(url_for('issues'))
     else:
         return redirect(url_for('user.home'))
@@ -152,16 +157,20 @@ def close_task(task_id):
             task = AssignedTask.query.filter_by(id=task_id).first()
             group = Groups.query.filter_by(id=user.group).first()
             task.user_answer = request.form['answer']
-            task.date_resolved = db.func.current_timestamp()
-            task.status = 'completed'
-            db.session.add(task)
-            db.session.commit()
+            if task.user_answer is None:
+                error = 'The solution field is empty'
+                return redirect(url_for('issues'))
+            else:
+                task.date_resolved = db.func.current_timestamp()
+                task.status = 'completed'
+                db.session.add(task)
+                db.session.commit()
 
-            message = ' *'+'Task Closed'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
-            send_channel_messages(group.name, message)
+                message = ' *'+'Task Closed'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
+                send_channel_messages(group.name, message)
 
-            flash("Response sent")
-            return redirect(url_for('issues'))
+                flash("The task is closed")
+                return redirect(url_for('issues'))
     else:
         return redirect(url_for('user.home'))
 
@@ -179,14 +188,14 @@ def evaluate_new_task(task_id):
             task.evaluate_comment = request.form['comment']
             task.satisfaction = float(request.form['rating'])
             task.date_resolved = db.func.current_timestamp()
-            task.status = 'completed'
+            task.evaluated_status = 'evaluated'
             db.session.add(task)
             db.session.commit()
 
             message = ' *'+'Task Evaluated'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
             send_channel_messages(group.name, message)
 
-            flash("Response sent")
+            flash("the task has been evaluated")
             return redirect(url_for('issues'))
     else:
         return redirect(url_for('user.home'))
@@ -204,6 +213,26 @@ def evaluate_tasks(category):
         for task in tasks:
             task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
         return render_template('evaluate_tasks.html',
+                                                tasks=tasks, 
+                                                my_task_category=my_task_category, 
+                                                id=id,
+                                                name=name)
+    else:
+        return redirect(url_for('user.home'))
+
+
+@app.route('/completed_tasks/<string:category>')
+def completed_tasks(category):
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        tasks = AssignedTask.query.filter_by(user_id=id, category=category).all()
+        user = User.query.filter_by(id=id).first()
+        name = user.firstname + ' ' + user.lastname
+        my_task_category = category
+        for task in tasks:
+            task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+        return render_template('completed_tasks.html',
                                                 tasks=tasks, 
                                                 my_task_category=my_task_category, 
                                                 id=id,
@@ -230,7 +259,10 @@ def reports():
             resolution_diff = (start_dt - end_dt)
             resolution_total_time = resolution_diff.seconds/60 + resolution_diff.days*24*3600
             resolve_time.append(resolution_total_time/3600)
-            output_quality.append(resolved_task.satisfaction)
+            if resolved_task.satisfaction is None:
+                output_quality.append(0)
+            else:
+                output_quality.append(resolved_task.satisfaction)
 
         for opened_task in opened_tasks:
             opened_dt = dt.datetime.strptime(str(opened_task.date_opened), '%Y-%m-%d %H:%M:%S.%f')
@@ -251,10 +283,10 @@ def reports():
             resolution_avarage_time = 0
         else:
             response_avarage_time = sum(response_time) / float(len(response_time))
-        try:
-            user_satisfaction = sum(output_quality) / float(len(output_quality))
-        except:
-            user_satisfaction = "No tasks yet"
+        
+        user_satisfaction = sum(output_quality) / float(len(output_quality))
+        # except:
+        #     user_satisfaction = "No tasks yet"
         lastsixmonths = last_six_months()
         return render_template('reports.html', 
                                 task_count = len(resolved_tasks), 

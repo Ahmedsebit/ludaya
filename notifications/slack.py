@@ -60,7 +60,7 @@ def get_user(email):
         for user in all_users['members']:
             if 'email' in user['profile']:
                 if user['profile']['email'] == email:
-                    return user['id']
+                    return user
 
 
 def get_channel_id(name):
@@ -69,3 +69,10 @@ def get_channel_id(name):
         if channel['name'] == name:
             return channel['id']
 
+
+def get_all_user():
+    all_users = sc.api_call('users.list')
+    return all_users['members'][1]['id']
+
+user = get_user('abyyyusuf@gmail.com')
+print(user)

@@ -51,7 +51,7 @@ def get_user_monthly_tasks(lst, task_category):
 def get_closed_user_monthly_tasks(lst, task_category):
     months = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for i in lst:
-        if i.date_resolved is not None :
+        if i.date_resolved is not None:
             if i.category == task_category:
                 months[datetime.strptime(str(i.date_resolved), '%Y-%m-%d %H:%M:%S.%f').month-1] += 1
     lastsixmonths = []
@@ -74,11 +74,19 @@ def get_closed_user_monthly_tasks(lst, task_category):
 
 def get_user_monthly_satisfaction(lst, category):
     months = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    for month in months:
-        for i in lst:
-            if datetime.strptime(str(i.date_resolved), '%Y-%m-%d %H:%M:%S.%f').month == months.index(month) and i.category == category and i.satisfaction is not None:
-                months[month] += i.satisfaction
-                months[month] = months[month]/2
+    count = 0
+    for i in lst:
+        if i.date_resolved is not None:
+            if i.category == category:
+                count += 1
+                if i.satisfaction is None:
+                    months[datetime.strptime(str(i.date_resolved), '%Y-%m-%d %H:%M:%S.%f').month-1] += 0
+                    months[datetime.strptime(str(i.date_resolved), '%Y-%m-%d %H:%M:%S.%f').month-1] = float(months[datetime.strptime(str(i.date_resolved), '%Y-%m-%d %H:%M:%S.%f').month-1])/2
+                else:
+                    months[datetime.strptime(str(i.date_resolved), '%Y-%m-%d %H:%M:%S.%f').month-1] += i.satisfaction
+                    months[datetime.strptime(str(i.date_resolved), '%Y-%m-%d %H:%M:%S.%f').month-1] = float(months[datetime.strptime(str(i.date_resolved), '%Y-%m-%d %H:%M:%S.%f').month-1])/2
+
+
     lastsixmonths = []
     currentMonth = datetime.now().month
     if currentMonth < 6:
@@ -101,8 +109,9 @@ def get_user_avarage_satisfaction(lst):
     avarage = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for item in lst:
         if item.satisfaction is not None:
-            avarage[task_categories.index(item.category)] += item.satisfaction
-            avarage[task_categories.index(item.category)] = avarage[task_categories.index(item.category)] / 2
+            for task in task_categories:
+                if task == item.category:
+                    avarage[task_categories.index(task)] += item.satisfaction
     return avarage
 
 def get_user_avarage_time(lst):

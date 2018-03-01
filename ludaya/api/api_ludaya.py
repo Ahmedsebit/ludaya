@@ -86,9 +86,9 @@ def get_opened_issues(id):
 
 @app.route('/api/evaluate_task/<int:id>', methods=['GET'])    
 def evaluate_task(id):
-    items = AssignedTask.query.filter_by(status="completed", evaluate_id=id).all()
+    items = AssignedTask.query.filter_by(status="completed", evaluated_status="not yet evaluated", evaluate_id=id).all()
     items_result = assignedtasks_schema.dump(items)
-    completed_items = AssignedTask.query.filter_by(status="completed", evaluate_id=id).all()
+    completed_items = AssignedTask.query.filter_by(status="completed", evaluated_status="not yet evaluated", evaluate_id=id).all()
     opened_items = AssignedTask.query.filter_by(status="opened", evaluate_id=id).all()
     groups_list = []
     groups_list_opened = []
@@ -107,7 +107,16 @@ def evaluate_task(id):
 
 @app.route('/api/evaluate_tasks/<string:category>/<int:id>', methods=['GET'])
 def get_category_evaluate_tasks(category, id):
-    tasks = AssignedTask.query.filter_by(evaluate_id=id, status="completed", category=category).all()
+    tasks = AssignedTask.query.filter_by(evaluate_id=id, status="completed", evaluated_status="not yet evaluated", category=category).all()
+    items_result = assignedtasks_schema.dump(tasks)
+    return jsonify({
+            'items':json.dumps(items_result.data)
+    })
+
+
+@app.route('/api/completed_tasks/<string:category>/<int:id>', methods=['GET'])
+def get_category_completed_tasks(category, id):
+    tasks = AssignedTask.query.filter_by(status="completed", evaluated_status="evaluated", category=category).all()
     items_result = assignedtasks_schema.dump(tasks)
     return jsonify({
             'items':json.dumps(items_result.data)
@@ -255,6 +264,8 @@ def resolved_report(id):
 @app.route('/api/opened_reports/<int:id>', methods=['GET'])
 def opened_report(id):
     opened_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
+    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
+    opened_tasks = opened_tasks + resolved_tasks
     lastsixmonths = last_six_months()
     electronics = get_user_monthly_tasks(opened_tasks, 'electronics')
     hardware = get_user_monthly_tasks(opened_tasks, 'hardware')

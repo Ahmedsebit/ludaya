@@ -57,7 +57,7 @@ class AssignedTask(db.Model):
     user_answer = db.Column(db.String(2000))
     evaluate_id = db.Column(db.Integer, default=19)
     evaluate_comment = db.Column(db.String(2000))
-    evaluated_status = db.Column(db.String(255), default="evaluated")
+    evaluated_status = db.Column(db.String(255), default="not yet evaluated")
 
 
     def __init__(self, name, group, category, user_id):

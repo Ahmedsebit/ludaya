@@ -41,6 +41,7 @@
               var taskEvaluateList = [];
               var all = 0;
               var slack_user_id = [];
+              var empty_dictionary = {};
               
               function attachTask(taskKey, taskValue, prepend){
                       //var groups = taskValue.groups;
@@ -56,7 +57,7 @@
               }
     
               function attachNoTask(prepend){
-                var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"> No task </li>"
+                var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><h5 style=\"color:#27AE60\"> No new task    <span><i class=\"far fa-check-circle\"></i></h5></li>"
                 if(prepend ==true){
                 $("#task-list").prepend(taskHTMLFormat)
                 }else{
@@ -65,10 +66,11 @@
             }
     
               function parseTasks(){
-                if (taskList == {}) {
+                if (taskList.length == 2) {
                     attachNoTask()
                 } else {
                   // tasks exist, parse & display them
+                  
                  $.each(JSON.parse(taskList), function(key, value){
                       var taskKey = key;
                       attachTask(key, value)
@@ -114,7 +116,7 @@
                 }
     
                 function attachnoOpenedTask(prepend){
-                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"> No task </li>"
+                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><h5 style=\"color:#27AE60\"> No opened task    <span><i class=\"far fa-check-circle\"></i></h5></li>"
                     if(prepend ==true){
                     $("#opened-task-list").prepend(taskHTMLFormat)
                     }else{
@@ -123,7 +125,7 @@
                 }
     
                 function parseOpenedTasks(){
-                    if (taskOpenedList == {}) {
+                    if (taskOpenedList.length == 2) {
                         attachnoOpenedTask()
                     } else {
                     // tasks exist, parse & display them
@@ -170,7 +172,7 @@
                 }
     
                 function attachnoEvaluateTask(prepend){
-                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"> No task </li>"
+                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><h5 style=\"color:#27AE60\"> No pending task   <span><i class=\"far fa-check-circle\"></i></span> </h5> </li>"
                     if(prepend ==true){
                     $("#evaluate-task-list").prepend(taskHTMLFormat)
                     }else{
@@ -179,7 +181,7 @@
                 }
     
                 function parseEvaluateTasks(){
-                    if (taskEvaluateList == {}) {
+                    if (taskEvaluateList.length == 2) {
                         attachnoEvaluateTask()
                     } else {
                     // tasks exist, parse & display them
@@ -203,7 +205,6 @@
                     method: "GET",
                     success: function(data){
                     taskEvaluateList = data.groups
-                    console.log(taskEvaluateList.length)
                     parseEvaluateTasks()
                     },
                     error: function(data){
@@ -220,9 +221,9 @@
                     var task_url = '/opened_tasks/'+key
                     var taskHTMLFormat = "<a type=\"button\" class=\"btn btn-primary btn-md\"> Join your team on slack <i class=\"fab fa-slack\"></i></a>"
                     if(prepend ==true){
-                    $("#slack_id").prepend(taskHTMLFormat)
+                    $("#slack_id_not_yet").prepend(taskHTMLFormat)
                     }else{
-                    $("#slack_id").append(taskHTMLFormat)
+                    $("#slack_id_not_yet").append(taskHTMLFormat)
                     }
                 }
     
@@ -236,7 +237,7 @@
                 }
     
                 function parseSlack(){
-                    if (slack_user_id != "") {
+                    if (slack_user_id == null) {
                         attachnoSlack()
                     } else {
                     // tasks exist, parse & display them
@@ -280,7 +281,7 @@
                     var myChart = new Chart(ctx, {
                         type: 'doughnut',
                         data: {
-                        labels: ["task completed", "remaining tasks"],
+                        labels: ["remaining tasks", "task completed"],
                         datasets: [
                             {
                             label: "Population (millions)",
@@ -368,7 +369,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle fa-2x" aria-hidden="true" ></i> {{name}}</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Change Password</a>
+                        <a class="dropdown-item"  data-toggle="modal" data-target="#passwordModalLong" >Change Password</a>
                         <a class="dropdown-item" href="#">Edit Profile</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ url_for('user.logout') }}">Logout</a>
@@ -382,10 +383,30 @@
         
         <header class="text-center" style="padding-top:100px;">
             <div class="masthead-content">
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-success alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <!-- <strong>Title</strong> --> {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+        
+                    {% if error %}
+                        <div class="alert alert-warning alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <!-- <strong>Title</strong> --> {{ error }}
+                        </div> 
+                    {% endif %}
+
             <div class="container">
                 <div class="row align-items-center">
                     <div class="col-lg-8" style="padding-top:50px;">
-                        <p>This weeks team lead is: Team Lead</p>
+                        <h4>This weeks team lead is: <span><font style="font-size: 1.5rem;font-weight: 200;">{{teamlead_name}}</font> </span></h4>
                     </div>
                     <div class="col-lg-4" style="padding-top:50px;">
                         <ul class="list-group"  id="slack_id">
@@ -394,6 +415,38 @@
                     </div>
                     
                     <hr>
+
+                    <!-- Change password Modal -->
+                    <div class="modal fade" id="passwordModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="alert alert-info" role="alert">
+                                        <h4 class="alert-heading">Change Password!</h4>
+                                        <p style="font-size:1em">Enter yout old and new passwords</p>
+                                    </div>
+                                    <form  action="{{ url_for('user.changepassword') }}" method="POST">
+                                        <div class="form-group">
+                                                <input type="password" class="form-control" name="oldpassword" placeholder="Old Password" style="background-color: rgba(245, 245, 245, 0.4);">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" name="newpassword" placeholder="New Password" style="background-color: rgba(245, 245, 245, 0.4);">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" name="confirm" placeholder="Confirm Password" style="background-color: rgba(245, 245, 245, 0.4);">
+                                        </div>
+                                        <button class="btn btn-primary js-scroll-trigger" type="submit">Change password</button>
+                                    </form>
+                                </div>
+                            </div>   
+                        </div>
+                    </div>
+            
     
                     <div class="col-lg-6" style="padding-top:50px;">
                         <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
