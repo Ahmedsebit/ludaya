@@ -90,9 +90,6 @@ class AssignedTask(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    # def __repr__(self):
-    #     return "<AssignedTask: {}>".format(self.name)
-
 
 class User(db.Model):
     """This class defines the users table """
@@ -101,8 +98,8 @@ class User(db.Model):
 
     # Define the columns of the users table, starting with the primary key
     id = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(256), nullable=False, unique=True)
-    lastname = db.Column(db.String(256), nullable=False, unique=True)
+    firstname = db.Column(db.String(256), nullable=False)
+    lastname = db.Column(db.String(256), nullable=False)
     email = db.Column(db.String(256), nullable=False, unique=True)
     password = db.Column(db.String(256), nullable=False)
     assignedtask = db.relationship(
@@ -151,6 +148,7 @@ class AssignedTaskSchema(ma.Schema):
 assignedtask_schema = AssignedTaskSchema()
 assignedtasks_schema = AssignedTaskSchema(many=True)
 
+
 class Groups(db.Model):
     '''
     This class represents the assignedtasks table.
@@ -191,6 +189,3 @@ class Groups(db.Model):
         '''
         db.session.delete(self)
         db.session.commit()
-
-    # def __repr__(self):
-    #     return "<AssignedTask: {}>".format(self.name)
