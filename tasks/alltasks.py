@@ -1,15 +1,15 @@
-from communications import COMMUNICATION as communication, communcation_list_length
-from electronics import ELECTRONICS as electronics, electronics_list_length
-from hardware import HARDWARE as hardware, hardware_list_length
-from learning import LEARNING as learning, learning_list_length
-from mac import MAC as mac, mac_list_length
-from maintainance import MAINTAINANCE as maintainance, maintainance_list_length
-from networking import NETWORKING as networking, networking_list_length
-from security import SECURITY as security, security_list_length
-from server import SERVER as server, server_list_length
-from support import SUPPORT as support, support_list_length
-from unix import UNIX as unix, unix_list_length
-from windows import WINDOWS as windows, windows_list_length
+from tasks.communications import COMMUNICATION as communication, communcation_list_length
+from tasks.electronics import ELECTRONICS as electronics, electronics_list_length
+from tasks.hardware import HARDWARE as hardware, hardware_list_length
+from tasks.learning import LEARNING as learning, learning_list_length
+from tasks.mac import MAC as mac, mac_list_length
+from tasks.maintainance import MAINTAINANCE as maintainance, maintainance_list_length
+from tasks.networking import NETWORKING as networking, networking_list_length
+from tasks.security import SECURITY as security, security_list_length
+from tasks.server import SERVER as server, server_list_length
+from tasks.support import SUPPORT as support, support_list_length
+from tasks.unix import UNIX as unix, unix_list_length
+from tasks.windows import WINDOWS as windows, windows_list_length
 
 ALLTASKS = [
     communication,
