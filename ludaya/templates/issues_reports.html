@@ -1,0 +1,509 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+{{super()}}
+    <link rel="stylesheet" href="{{url_for('.static', filename='new-age.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='simple-line-icons.css')}}">
+    <link rel="stylesheet" href="static/simple-line-icons.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+  <script src="https://use.fontawesome.com/9869ee428f.js"></script>
+  <script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+  <!-- <script type=text/javascript src="{{url_for('static', filename='popper.min.js') }}"></script> -->
+  <script type=text/javascript>
+      $(document).ready(function(){
+        
+        taskList = []
+        function fetchTask(){
+          $.ajax({
+          'url': "/api/resolved_reports/"+{{id}},
+          'success': function(json) {
+            var lastsixmonths = JSON.parse("[" + json.lastsixmonths + "]");
+            var electronics = JSON.parse("[" + json.electronics + "]");
+            var hardware = JSON.parse("[" + json.hardware + "]");
+            var mac = JSON.parse("[" + json.mac + "]");
+            var maintainance = JSON.parse("[" + json.maintainance + "]");
+            var networking = JSON.parse("[" + json.networking + "]");
+            var security = JSON.parse("[" + json.security + "]");
+            var server = JSON.parse("[" + json.server + "]");
+            var support = JSON.parse("[" + json.support + "]");
+            var unix = JSON.parse("[" + json.unix + "]");
+            var windows = JSON.parse("[" + json.windows + "]");
+            console.log(lastsixmonths)
+          var d = [lastsixmonths, maintainance, networking, windows, support, electronics, server, hardware, unix]
+          var e = [maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0]]
+            newChart(lastsixmonths[0], maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0])
+          }
+        });
+        }
+
+        function newChart(l,a,b,c,d,e,f,g,h){
+          new Chart(document.getElementById("line-chart"), {
+            type: 'line',
+            data: {
+              labels: l,
+                datasets: [{ 
+                  data: a,
+                  label: "maintainance",
+                  borderColor: "#3e95cd",
+                  fill: false
+                }, { 
+                  data: b,
+                  label: "networking",
+                  borderColor: "#8e5ea2",
+                  fill: false
+                }, { 
+                  data: c,
+                  label: "windows",
+                  borderColor: "#3cba9f",
+                  fill: false
+                }, { 
+                  data: d,
+                  label: "support",
+                  borderColor: "#F1C40F",
+                  fill: false
+                }, { 
+                    data: e,
+                    label: "electonics",
+                    borderColor: "#34495E",
+                    fill: false
+                }, { 
+                    data: f,
+                    label: "server",
+                    borderColor: "#6E2C00",
+                    fill: false
+                }, { 
+                    data: g,
+                    label: "hardware",
+                    borderColor: "#1B4F72",
+                    fill: false
+                }, { 
+                    data: h,
+                    label: "unix",
+                    borderColor: "#c45850",
+                    fill: false
+                    }
+                ]
+              },
+            options: {
+              title: {
+                display: true,
+                text: 'Resolution Count'
+              }
+            }
+          });
+        }
+        fetchTask()
+
+        function fetchResponse(){
+          $.ajax({
+          'url': "/api/opened_reports/"+{{id}},
+          'success': function(json) {
+            var lastsixmonths = JSON.parse("[" + json.lastsixmonths + "]");
+            var electronics = JSON.parse("[" + json.electronics + "]");
+            var hardware = JSON.parse("[" + json.hardware + "]");
+            var mac = JSON.parse("[" + json.mac + "]");
+            var maintainance = JSON.parse("[" + json.maintainance + "]");
+            var networking = JSON.parse("[" + json.networking + "]");
+            var security = JSON.parse("[" + json.security + "]");
+            var server = JSON.parse("[" + json.server + "]");
+            var support = JSON.parse("[" + json.support + "]");
+            var unix = JSON.parse("[" + json.unix + "]");
+            var windows = JSON.parse("[" + json.windows + "]");
+            var d = [lastsixmonths, maintainance, networking, windows, support, electronics, server, hardware, unix]
+            var e = [maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0]]
+            responseChart(lastsixmonths[0], maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0])
+          }
+        });
+        }
+
+        function responseChart(l,a,b,c,d,e,f,g,h){
+          new Chart(document.getElementById("response-time-line-chart"), {
+            type: 'line',
+            data: {
+              labels: l,
+              datasets: [{ 
+                data: a,
+                label: "maintainance",
+                borderColor: "#3e95cd",
+                fill: false
+              }, { 
+                data: b,
+                label: "networking",
+                borderColor: "#8e5ea2",
+                fill: false
+              }, { 
+                data: c,
+                label: "windows",
+                borderColor: "#3cba9f",
+                fill: false
+              }, { 
+                data: d,
+                label: "support",
+                borderColor: "#F1C40F",
+                fill: false
+              }, { 
+                  data: e,
+                  label: "electonics",
+                  borderColor: "#34495E",
+                  fill: false
+                }, { 
+                  data: f,
+                  label: "server",
+                  borderColor: "#6E2C00",
+                  fill: false
+                }, { 
+                  data: g,
+                  label: "hardware",
+                  borderColor: "#1B4F72",
+                  fill: false
+                }, { 
+                  data: h,
+                  label: "unix",
+                  borderColor: "#c45850",
+                  fill: false
+                  }
+              ]
+            },
+          options: {
+            title: {
+              display: true,
+                text: 'Response Count'
+              }
+            }
+          });
+        }
+        
+        fetchResponse()
+
+        function fetchOutputTask(){
+          $.ajax({
+          'url': "/api/satisfaction_reports/"+{{id}},
+          'success': function(json) {
+            var lastsixmonths = JSON.parse("[" + json.lastsixmonths + "]");
+            var electronics = JSON.parse("[" + json.electronics + "]");
+            var hardware = JSON.parse("[" + json.hardware + "]");
+            var mac = JSON.parse("[" + json.mac + "]");
+            var maintainance = JSON.parse("[" + json.maintainance + "]");
+            var networking = JSON.parse("[" + json.networking + "]");
+            var security = JSON.parse("[" + json.security + "]");
+            var server = JSON.parse("[" + json.server + "]");
+            var support = JSON.parse("[" + json.support + "]");
+            var unix = JSON.parse("[" + json.unix + "]");
+            var windows = JSON.parse("[" + json.windows + "]");
+            var d = [lastsixmonths, maintainance, networking, windows, support, electronics, server, hardware, unix]
+            var e = [maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0]]
+            outputChart(lastsixmonths[0], maintainance[0], networking[0], windows[0], support[0], electronics[0], server[0], hardware[0], unix[0])
+          }
+        });
+        }
+
+        function outputChart(l,a,b,c,d,e,f,g,h){
+          new Chart(document.getElementById("output-quality-line-chart"), {
+            type: 'line',
+            data: {
+              labels: l,
+              datasets: [{ 
+                data: a,
+                label: "maintainance",
+                borderColor: "#3e95cd",
+                fill: false
+              }, { 
+                data: b,
+                label: "networking",
+                borderColor: "#8e5ea2",
+                fill: false
+              }, { 
+                data: c,
+                label: "windows",
+                borderColor: "#3cba9f",
+                fill: false
+              }, { 
+                data: d,
+                label: "support",
+                borderColor: "#F1C40F",
+                fill: false
+              }, { 
+                  data: e,
+                  label: "electonics",
+                  borderColor: "#34495E",
+                  fill: false
+                }, { 
+                  data: f,
+                  label: "server",
+                  borderColor: "#6E2C00",
+                  fill: false
+                }, { 
+                  data: g,
+                  label: "hardware",
+                  borderColor: "#1B4F72",
+                  fill: false
+                }, { 
+                  data: h,
+                  label: "unix",
+                  borderColor: "#c45850",
+                  fill: false
+                  }
+                ]
+              },
+            options: {
+              title: {
+                display: true,
+                text: 'Output Quality'
+              }
+            }
+          });
+        }
+        fetchOutputTask()
+        
+
+        function fetchBarSatisfaction(){
+          $.ajax({
+          'url': "/api/user_satisfaction_reports/"+{{id}},
+          'success': function(json) {
+            var array = JSON.parse("[" + json.user_satisfactionavarage + "]")[0];
+            barChartSatisfaction(array[0], array[0], array[0], array[0], array[0], array[0], array[0], array[0], array[0])
+          }
+        });
+        }
+        function barChartSatisfaction(a,b,c,d,e,f,g,h,i){
+          new Chart(document.getElementById("bar-chart-horizontal"), {
+            type: 'horizontalBar',
+            data: {
+              labels: ["maintainance", "networking", "windows", "support", "electonics", "server", "hardware", "unix", "security"],
+              datasets: [
+                {
+                  label: "Scale (out of 1.0)",
+                  backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
+                  data: [a,b,c,d,e,f,g,h,i]
+                }
+              ]
+            },
+            options: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'Avarage Client Satisfaction'
+              }
+            }
+        });
+        }
+        fetchBarSatisfaction()
+        
+      
+        function fetchBarResponse(){
+          $.ajax({
+          'url': "/api/time_reports/opened/"+{{id}},
+          'success': function(json) {
+            var array = JSON.parse("[" + json.timeavarage + "]")[0];
+            console.log(array)
+            barChartResponseTime(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8])
+          }
+        });
+        }
+        function barChartResponseTime(a,b,c,d,e,f,g,h,i){
+          new Chart(document.getElementById("bar-chart-vertical"), {
+            type: 'bar',
+            data: {
+                labels: ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"],
+                datasets: [
+                  {
+                    label: "time (hrs)",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
+                    data: [a,b,c,d,e,f,g,h,i]
+                }
+              ]
+            },
+            options: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'Avarage Response Time'
+              }
+            }
+        });        
+        }
+        fetchBarResponse()
+
+        
+        function fetchBarResolution(){
+          $.ajax({
+          'url': "/api/time_reports/closed/"+{{id}},
+          'success': function(json) {
+            var array = JSON.parse("[" + json.timeavarage + "]")[0];
+            console.log(array)
+            barChartResolutionTime(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8])
+          }
+        });
+        }
+        function barChartResolutionTime(a,b,c,d,e,f,g,h,i){
+          new Chart(document.getElementById("bar-chart-time"), {
+            type: 'bar',
+            data: {
+                labels: ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"],
+                datasets: [
+                  {
+                    label: "time (hrs)",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
+                    data: [a,b,c,d,e,f,g,h,i]
+                }
+              ]
+            },
+            options: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'Avarage Resolution Time'
+              }
+            }
+        });
+        }
+        fetchBarResolution()
+
+      });
+</script>
+{{super()}}
+{% endblock %}
+
+{% block title %}Ludaya{% endblock %}
+<body id="page-top">
+{% block content %}
+    <header class="" style="background-color:#7b4397;background:url(../img/bg-pattern.png),linear-gradient(to left,#7b4397,#dc2430)">    
+        <nav class="navbar  navbar-light">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Ludaya</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <!-- <li class="active"><a href="#">Home</a></li> -->
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a onclick="openNav()"><span class="glyphicon glyphicon-menu-hamburger"></span>Menu</a>
+                    </li>
+                    <li>
+                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#"><span class="glyphicon glyphicon-user"></span> User</a>
+                            <div class="dropdown-menu">
+                                <div style="font-size:36px;color:gold;padding:10px;">
+                                    <i class="fa fa-user-circle fa-5x" aria-hidden="true" ></i>
+                                </div>
+                                <a class="dropdown-item" href="#" style="padding:10px;">Action</a></br>
+                                <a class="dropdown-item" href="#" style="padding:10px;">Another action</a></br>
+                                <a class="dropdown-item" href="#" style="padding:10px;">Something else here</a></br>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" style="padding:10px;"><span class="glyphicon glyphicon-log-in"></span> Logout</a>
+                            </div>
+                    </li>
+                </ul>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="features" id="features" style="margin-top:-120px;">
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Clients</a>
+            <a href="#">Contact</a>
+        </div>
+        <div id="main">
+            <div class="row">
+                <div class="col-lg-12  my-auto">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                    <div class="card style_prevu_kit" style="background-color: #20B2AA;">
+                                        <div class="card-block">
+                                        <h3 style="padding:10px;background-color: #008B8B;"><font style="color:#fff">Resolved Task</font> </h3>
+                                        <i class="fa fa-comments-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{task_count}}</font></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="col-sm-3">
+                                    <div class="card style_prevu_kit" style="background-color:#FFA500;">
+                                        <div class="card-block">
+                                                <h3 style="padding:10px;background-color: #FF8C00;"><font style="color:#fff">Response Time</h3>
+                                        <i class="fa fa-clock-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{response_avarage_time}} hrs</font></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="col-sm-3">
+                                    <div class="card style_prevu_kit" style="background-color: #778899;">
+                                        <div class="card-block">
+                                            <h3 style="padding:10px;background-color: #708090;"><font style="color:#fff">Output Quality</h3>
+                                            <i class="fa fa-diamond fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{user_satisfaction}}</font></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div class="col-sm-3">
+                                <div class="card style_prevu_kit" style="background-color:  #008000;">
+                                        <div class="card-block">
+                                            <h3 style="padding:10px;background-color: #006400;"><font style="color:#fff">Resolution Time</h3>
+                                            <i class="fa fa-user-o fa-4x" style="padding:10px;color:#fff"><font size="6" style="color:#fff;padding-left:20px;">{{resolution_avarage_time}} hrs</font></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-12  my-auto"><canvas id="line-chart" width="800" height="300"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-12  my-auto"><canvas id="response-time-line-chart" width="800" height="300"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-12  my-auto"><canvas id="output-quality-line-chart" width="800" height="300"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-6  my-auto"><canvas id="bar-chart-vertical" width="800" height="450"></canvas></div>
+                    <div class="col-lg-6  my-auto"><canvas id="bar-chart-time" width="800" height="450"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                        <div class="col-lg-12  my-auto"><canvas id="bar-chart-horizontal" width="800" height="300"></canvas></div>
+                </div>
+                <div class="col-lg-12  my-auto" style="padding-top:50px;">
+                    <div class="col-lg-12  my-auto">
+                      <a href="" style="text-align: center">
+                        <p align="center">This text will be center-aligned.
+                          <i class="fa fa-linkedin-square fa-2x"></i>
+                          <i class="fa fa-facebook-square fa-2x"></i>
+                      </p>
+                      </a>
+                    </div>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2017 Start Bootstrap. All Rights Reserved.</p>
+            <ul class="list-inline">
+            <li class="list-inline-item">
+                <a href="#">Privacy</a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#">Terms</a>
+            </li>
+            <li class="list-inline-item">
+                <a href="#">FAQ</a>
+            </li>
+            </ul>
+        </div>
+    </footer>
+        
+
+{% endblock %}

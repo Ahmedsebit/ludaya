@@ -1,0 +1,4 @@
+*.pyc
+ludaya.egg-info
+.vscode
+/migrations*

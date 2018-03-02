@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>One Page Wonder - Start Bootstrap Template</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{{url_for('.static', filename='style.css')}}">
+    <!-- Custom fonts for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <script type=text/javascript src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+    
+    <script type=text/javascript>
+            function getParameterByName(name, url) {
+                if (!url) {
+                  url = window.location.href;
+                }
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+    
+            $(document).ready(function(){
+              var query = getParameterByName('q');
+              var taskList = [];
+              var taskOpenedList = [];
+              var taskEvaluateList = [];
+              var all = 0;
+              var slack_user_id = [];
+              var empty_dictionary = {};
+              
+              function attachTask(taskKey, taskValue, prepend){
+                      //var groups = taskValue.groups;
+                      var key = taskKey;
+                      var items = taskValue;
+                      var task_url = '/tasks/'+key
+                      var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><a href="+task_url+">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
+                      if(prepend ==true){
+                        $("#task-list").prepend(taskHTMLFormat)
+                      }else{
+                        $("#task-list").append(taskHTMLFormat)
+                      }
+              }
+    
+              function attachNoTask(prepend){
+                var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><h5 style=\"color:#27AE60\"> No new task    <span><i class=\"far fa-check-circle\"></i></h5></li>"
+                if(prepend ==true){
+                $("#task-list").prepend(taskHTMLFormat)
+                }else{
+                $("#task-list").append(taskHTMLFormat)
+                }
+            }
+    
+              function parseTasks(){
+                if (taskList.length == 2) {
+                    attachNoTask()
+                } else {
+                  // tasks exist, parse & display them
+                  
+                 $.each(JSON.parse(taskList), function(key, value){
+                      var taskKey = key;
+                      attachTask(key, value)
+                  })
+                }
+              }
+            
+              function fetchTasks(url){
+                var fetchUrl;
+                if (!url){
+                    fetchUrl = "/api/issues/"+{{id}}
+                }else{
+                    fetchUrl = url
+                }
+                $.ajax({
+                    url: fetchUrl,
+                    data: url,
+                    method: "GET",
+                    success: function(data){
+                    taskList = data.groups
+                    parseTasks()
+                    },
+                    error: function(data){
+                    console.log("error")
+                    console.log(data)
+                    }
+                })
+              }
+
+              fetchTasks()
+    
+    
+              function attachOpenedTask(taskKey, taskValue, prepend){
+                    var key = taskKey;
+                    var items = taskValue;
+                    var task_url = '/opened_tasks/'+key
+                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><a href="+task_url+">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
+                    if(prepend ==true){
+                    $("#opened-task-list").prepend(taskHTMLFormat)
+                    }else{
+                    $("#opened-task-list").append(taskHTMLFormat)
+                    }
+                }
+    
+                function attachnoOpenedTask(prepend){
+                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><h5 style=\"color:#27AE60\"> No opened task    <span><i class=\"far fa-check-circle\"></i></h5></li>"
+                    if(prepend ==true){
+                    $("#opened-task-list").prepend(taskHTMLFormat)
+                    }else{
+                    $("#opened-task-list").append(taskHTMLFormat)
+                    }
+                }
+    
+                function parseOpenedTasks(){
+                    if (taskOpenedList.length == 2) {
+                        attachnoOpenedTask()
+                    } else {
+                    // tasks exist, parse & display them
+                    $.each(JSON.parse(taskOpenedList), function(key, value){
+                        var taskKey = key;
+                        attachOpenedTask(key, value)
+                    })
+                    }
+                }
+    
+                function fetchOpenedTasks(url){
+                    var fetchUrl;
+                    if (!url){
+                        fetchUrl = "/api/opened_issues/"+{{id}}
+                    }else{
+                        fetchUrl = url
+                    }
+                    $.ajax({
+                    url: fetchUrl,
+                    data: url,
+                    method: "GET",
+                    success: function(data){
+                    taskOpenedList = data.groups
+                    parseOpenedTasks()
+                    },
+                    error: function(data){
+                    console.log("error")
+                    console.log(data)
+                    }
+                    })
+                }
+                fetchOpenedTasks()
+    
+                function attachEvaluateTask(taskKey, taskValue, prepend){
+                    var key = taskKey;
+                    var items = taskValue;
+                    var task_url = '/evaluate_tasks/'+key
+                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><a href="+task_url+">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
+                    if(prepend ==true){
+                    $("#evaluate-task-list").prepend(taskHTMLFormat)
+                    }else{
+                    $("#evaluate-task-list").append(taskHTMLFormat)
+                    }
+                }
+    
+                function attachnoEvaluateTask(prepend){
+                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><h5 style=\"color:#27AE60\"> No pending task   <span><i class=\"far fa-check-circle\"></i></span> </h5> </li>"
+                    if(prepend ==true){
+                    $("#evaluate-task-list").prepend(taskHTMLFormat)
+                    }else{
+                    $("#evaluate-task-list").append(taskHTMLFormat)
+                    }
+                }
+    
+                function parseEvaluateTasks(){
+                    if (taskEvaluateList.length == 2) {
+                        attachnoEvaluateTask()
+                    } else {
+                    // tasks exist, parse & display them
+                    $.each(JSON.parse(taskEvaluateList), function(key, value){
+                        var taskKey = key;
+                        attachEvaluateTask(key, value)
+                    })
+                    }
+                }
+    
+                function fetchEvaluateTasks(url){
+                    var fetchUrl;
+                    if (!url){
+                        fetchUrl = "/api/evaluate_task/"+{{id}}
+                    }else{
+                        fetchUrl = url
+                    }
+                    $.ajax({
+                    url: fetchUrl,
+                    data: url,
+                    method: "GET",
+                    success: function(data){
+                    taskEvaluateList = data.groups
+                    parseEvaluateTasks()
+                    },
+                    error: function(data){
+                    console.log("error")
+                    console.log(data)
+                    }
+                    })
+                }
+                fetchEvaluateTasks()
+    
+
+                function attachSlack(taskKey, prepend){
+                    var key = taskKey;
+                    var task_url = '/opened_tasks/'+key
+                    var taskHTMLFormat = "<a type=\"button\" class=\"btn btn-primary btn-md\"> Join your team on slack <i class=\"fab fa-slack\"></i></a>"
+                    if(prepend ==true){
+                    $("#slack_id_not_yet").prepend(taskHTMLFormat)
+                    }else{
+                    $("#slack_id_not_yet").append(taskHTMLFormat)
+                    }
+                }
+    
+                function attachnoSlack(prepend){
+                    var taskHTMLFormat = "<a type=\"button\" class=\"btn btn-primary btn-md\"> View conversation on slack <i class=\"fab fa-slack\"></i></a>"
+                    if(prepend ==true){
+                    $("#slack_id").prepend(taskHTMLFormat)
+                    }else{
+                    $("#slack_id").append(taskHTMLFormat)
+                    }
+                }
+    
+                function parseSlack(){
+                    if (slack_user_id == null) {
+                        attachnoSlack()
+                    } else {
+                    // tasks exist, parse & display them
+                        taskKey = slack_user_id;
+                        attachSlack(slack_user_id);
+                    }
+                }
+    
+                function fetchSlack(url){
+                    var fetchUrl;
+                    if (!url){
+                        fetchUrl = "/api/user_slack_id/"+{{id}}
+                    }else{
+                        fetchUrl = url
+                    }
+                    $.ajax({
+                    url: fetchUrl,
+                    data: url,
+                    method: "GET",
+                    success: function(data){
+                    slack_user_id = data.user_slack_id
+                    parseSlack()
+                    },
+                    error: function(data){
+                    console.log("error")
+                    console.log(data)
+                    }
+                    })
+                }
+                fetchSlack()
+    
+
+              var allData = function(url) {
+                var myVar = 0
+                
+                fetchUrl = $.getJSON(url)
+                fetchUrl.then(function(data, textStatus, jqxhr) {
+                    $("#all").val(jqxhr.responseJSON.all);
+                    $("#completed").val(jqxhr.responseJSON.completed);
+                    var ctx = document.getElementById("myChart").getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                        labels: ["remaining tasks", "task completed"],
+                        datasets: [
+                            {
+                            label: "Population (millions)",
+                            backgroundColor: ["#3e95cd", "#8e5ea2"],
+                            data: [
+                                jqxhr.responseJSON.all,
+                                jqxhr.responseJSON.completed
+                                ]
+                            }
+                        ]
+                        },
+                        options: {
+                        title: {
+                            display: true,
+                            text: ''
+                        }
+                        }
+                    });
+                  })
+                };
+                allData("/api/issues/maintainance/"+{{id}})
+    
+                document.getElementById('overallspecialistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/maintainance/"+{{id}})
+                });
+    
+                document.getElementById('maintainancelistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/maintainance/"+{{id}})
+                });
+    
+                document.getElementById('networkinglistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/networking/"+{{id}})
+                });
+    
+                document.getElementById('windowslistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/windows/"+{{id}})
+                });
+    
+                document.getElementById('communicationlistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/communication/"+{{id}})
+                });
+    
+                document.getElementById('supportlistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/support/"+{{id}})
+                });
+    
+                document.getElementById('electronicslistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/electronics/"+{{id}})
+                });
+    
+                document.getElementById('hardwarelistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/hardware/"+{{id}})
+                });
+    
+                document.getElementById('unixlistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/unix/"+{{id}})
+                });
+    
+                document.getElementById('serverlistDataset').addEventListener('click', function() {
+                    return allData("/api/issues/server/"+{{id}})
+                });
+    
+            });
+    
+    
+    </script>
+
+    <body>
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+            <div class="container">
+            <a class="navbar-brand" href="#">Ludaya</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link  js-scroll-trigger"  href="{{url_for('reports')}}"><i class="fas fa-file fa-2x" aria-hidden="true" ></i> Reports</a>
+                </li>
+                <li class="nav-item  dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle fa-2x" aria-hidden="true" ></i> History</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/completed_tasks/maintainance">maintainance</a>
+                            <a class="dropdown-item" href="/completed_tasks/windows">windows</a>
+                            <a class="dropdown-item" href="/completed_tasks/support">support</a>
+                            <a class="dropdown-item" href="/completed_tasks/electonics">electonics</a>
+                            <a class="dropdown-item" href="/completed_tasksserver"/>server</a>
+                            <a class="dropdown-item" href="/completed_taskshardware">hardware</a>
+                            <a class="dropdown-item" href="/completed_tasksunix">unix</a>
+                            <a class="dropdown-item" href="/completed_taskssecurity">security</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-circle fa-2x" aria-hidden="true" ></i> {{name}}</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item"  data-toggle="modal" data-target="#passwordModalLong" >Change Password</a>
+                        <a class="dropdown-item" href="#">Edit Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ url_for('user.logout') }}">Logout</a>
+                    </div>
+                </li>
+                </ul>
+            </div>
+            </div>
+        </nav>
+        
+        
+        <header class="text-center" style="padding-top:100px;">
+            <div class="masthead-content">
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-success alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <!-- <strong>Title</strong> --> {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+        
+                    {% if error %}
+                        <div class="alert alert-warning alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <!-- <strong>Title</strong> --> {{ error }}
+                        </div> 
+                    {% endif %}
+
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8" style="padding-top:50px;">
+                        <h4>This weeks team lead is: <span><font style="font-size: 1.5rem;font-weight: 200;">{{teamlead_name}}</font> </span></h4>
+                    </div>
+                    <div class="col-lg-4" style="padding-top:50px;">
+                        <ul class="list-group"  id="slack_id">
+                                    
+                        </ul>
+                    </div>
+                    
+                    <hr>
+
+                    <!-- Change password Modal -->
+                    <div class="modal fade" id="passwordModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="alert alert-info" role="alert">
+                                        <h4 class="alert-heading">Change Password!</h4>
+                                        <p style="font-size:1em">Enter yout old and new passwords</p>
+                                    </div>
+                                    <form  action="{{ url_for('user.changepassword') }}" method="POST">
+                                        <div class="form-group">
+                                                <input type="password" class="form-control" name="oldpassword" placeholder="Old Password" style="background-color: rgba(245, 245, 245, 0.4);">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" name="newpassword" placeholder="New Password" style="background-color: rgba(245, 245, 245, 0.4);">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" name="confirm" placeholder="Confirm Password" style="background-color: rgba(245, 245, 245, 0.4);">
+                                        </div>
+                                        <button class="btn btn-primary js-scroll-trigger" type="submit">Change password</button>
+                                    </form>
+                                </div>
+                            </div>   
+                        </div>
+                    </div>
+            
+    
+                    <div class="col-lg-6" style="padding-top:50px;">
+                        <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
+                            <div class="card-block">
+                                <h3 class="card-title">Pending Tasks <span><i class="fa fa-exclamation-triangle"></i></span></h3>
+                                    <ul class="list-group"  style="padding-top:-50px;"  id="task-list">
+                                    
+                                    </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6" style="padding-top:50px;">
+                            <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
+                                <div class="card-block">
+                                    <h3 class="card-title">Opened Tasks <span><i class="fa fa-hourglass-half"></i></span></h3>
+                                    <ul class="list-group"  style="padding-top:-50px;"  id="opened-task-list">
+                                        
+                                    </ul>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12" style="padding-top:50px;">
+                            <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
+                                <div class="card-block">
+                                    <h3 class="card-title">Tasks to evaluate <span><i class="fa fa-hourglass-half"></i></span></h3>
+                                    <ul class="list-group"  style="padding-top:-50px;"  id="evaluate-task-list">
+                                        
+                                    </ul>
+                                </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-lg-12" style="padding-top:50px; padding-bottom:50px;">
+                        <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
+                            <div class="card-block">
+                                <h3 class="card-title">Task Coverage<span><i class="fa fa-hourglass-half"></i></span></h3>
+                                <div class="row align-items-center">
+                                <div class="col-sm-4">
+                                        <div class="btn-group-vertical">
+                                            <button type="button" class="btn btn-primary btn-md" id="maintainancelistDataset">maintainance</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="networkinglistDataset">networking</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="windowslistDataset">windows</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="communicationlistDataset">communication</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="supportlistDataset">support</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="electronicslistDataset">electonics</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="serverlistDataset">server</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="hardwarelistDataset">hardware</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="unixlistDataset">unix</button>
+                                            <button type="button" class="btn btn-primary btn-md" id="overallspecialistDataset">security</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div id="canvas-holder" style="width:60%">
+                                            <canvas id="myChart" width="600" height="600"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+            </div>
+            </div>
+            <div class="bg-circle-1 bg-circle"></div>
+            <div class="bg-circle-2 bg-circle"></div>
+            <div class="bg-circle-3 bg-circle"></div>
+            <div class="bg-circle-4 bg-circle"></div>
+        </header>
+    
+        
+        <!-- Footer -->
+        <footer class="py-5 bg-black">
+            <div class="container">
+              <p class="m-0 text-center text-white small">Copyright &copy; Ludaya 2018 <a href="#">  Privacy policy</a> <i class="fab fa-facebook-f fa-2x"></i>  <i class="fab fa-twitter fa-2x"></i>
+            </div>
+            <!-- /.container -->
+          </footer>
+      
+          <!-- Bootstrap core JavaScript -->
+          <script src="vendor/jquery/jquery.min.js"></script>
+          <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      
+        </body>
+      
+      </html>
+      
+        

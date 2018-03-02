@@ -1,0 +1,52 @@
+from flask import Flask, render_template, session, flash, request, redirect, url_for, flash, jsonify, \
+                Blueprint, g, redirect, abort, current_app
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
+import json
+import os
+import re
+import string
+import random
+import math
+import datetime as dt
+from ludaya.ludaya import app
+from decorators import async
+
+
+db = SQLAlchemy(app)
+
+from models import User, Groups, AssignedTask, assignedtask_schema, assignedtasks_schema
+from notifications.slack import create_channel
+
+
+def create_group(team_lead):
+    lastgroup = get_last_created_group()
+    name = 'LUDAYATESTING'+str(lastgroup.id)
+    group = Groups(name=name, current_members=1, team_lead=team_lead)
+    db.session.add(group)
+    db.session.commit()
+    db.session.refresh(group)
+    create_channel(name)
+    return group
+
+
+def get_last_created_group():
+    lastgroup = Groups.query.order_by('-id').first()
+    return lastgroup
+
+
+@async
+def async_change_group_leader(group_id):
+    group_users = User.query.filter_by(group=group_id).all()
+    group = Groups.query.filter_by(id=group_id).first()
+    for user in group_users:
+        if group.team_lead == user.id:
+            if group_users.index(user)+1==len(group_users):
+                group.team_lead = group_users[0].id
+                group.save()
+                break
+            else:
+                group.team_lead = group_users[group_users.index(user)+1].id
+                group.save()
+                break
+
