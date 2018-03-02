@@ -5,7 +5,7 @@ from decorators import async
 from models import AssignedTask, User, Groups
 from ludaya.ludaya import db
 from datetime import datetime
-from tasksallocations import category_task
+from tasks.tasksallocations import category_task
 from notifications.slack import send_channel_messages, send_dm
 
 def allocate_all_user_tasks():
