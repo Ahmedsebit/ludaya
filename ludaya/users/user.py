@@ -8,7 +8,7 @@ from validate_email import validate_email
 from ludaya import app
 from models import User, Groups, AssignedTask, assignedtask_schema, assignedtasks_schema
 from random import randrange
-from groups import create_group, get_last_created_group
+from users.groups import create_group, get_last_created_group
 from notifications.mail import send_mail
 from notifications.slack import add_user_to_channel, get_channel_id, get_user
 
