@@ -138,7 +138,9 @@ class AssignedTaskSchema(ma.Schema):
             'group',
             'category',
             'status',
-            'user_answer'
+            'user_answer',
+            'satisfaction',
+            'evaluate_comment'
         )
     # Smart hyperlinking
     _links = ma.Hyperlinks({

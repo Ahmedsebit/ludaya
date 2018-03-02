@@ -73,11 +73,11 @@
                                         +                    "<div class=\"input-group mb-3\">"
                                         +                    "<select class=\"custom-select\" id=\"inputGroupSelect03\" name=\"rating\"  required>"
                                         +                        "<option selected>Choose...</option>"
-                                        +                        "<option value=\"0.2\">0.2</option>"
-                                        +                        "<option value=\"0.4\">0.4</option>"
-                                        +                        "<option value=\"0.6\">0.6</option>"
-                                        +                        "<option value=\"0.8\">0.8</option>"
-                                        +                        "<option value=\"1.0\">1.0</option>"
+                                        +                        "<option value=\"2\">0.2</option>"
+                                        +                        "<option value=\"4\">0.4</option>"
+                                        +                        "<option value=\"6\">0.6</option>"
+                                        +                        "<option value=\"8\">0.8</option>"
+                                        +                        "<option value=\"10\">1.0</option>"
                                         +                    "</select>"
                                         +                    "<div class=\"input-group-append\">"
                                         +                      "<button type=\"submit\" class=\"btn btn-primary\"><i class=\"fa fa-unlock\"></i> Evaluate </button>"
@@ -98,8 +98,8 @@
 
 
           function parseTasks(){
-            if (taskList == 0) {
-              $("#task-container").text("No assigned task.")
+            if (taskList.length == 2) {
+              $("#accordion").text("No assigned task.")
             } else {
               // tasks exist, parse & display them
              $.each(JSON.parse(taskList), function(key, value){
@@ -122,6 +122,7 @@
                 method: "GET",
                 success: function(data){
                 taskList = data.items
+                console.log(taskList.length)
                 parseTasks()
                 },
                 error: function(data){

@@ -116,7 +116,7 @@ def get_category_evaluate_tasks(category, id):
 
 @app.route('/api/completed_tasks/<string:category>/<int:id>', methods=['GET'])
 def get_category_completed_tasks(category, id):
-    tasks = AssignedTask.query.filter_by(status="completed", evaluated_status="evaluated", category=category).all()
+    tasks = AssignedTask.query.filter_by(status="completed", user_id=id, category=category).all()
     items_result = assignedtasks_schema.dump(tasks)
     return jsonify({
             'items':json.dumps(items_result.data)
@@ -322,11 +322,14 @@ def satisfaction_report(id):
 
 @app.route('/api/time_reports/opened/<int:id>')
 def opened_time_report(id):
-    opened_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
-    timeavarage = get_user_avarage_time(opened_tasks)
+    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
+    response_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
+    timeavarage = get_user_avarage_time(resolved_tasks, response_tasks)
+    
     return jsonify({
         'timeavarage':json.dumps(timeavarage)
     })
+
 
 @app.route('/api/time_reports/closed/<int:id>')
 def closed_time_report(id):

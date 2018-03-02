@@ -157,20 +157,17 @@ def close_task(task_id):
             task = AssignedTask.query.filter_by(id=task_id).first()
             group = Groups.query.filter_by(id=user.group).first()
             task.user_answer = request.form['answer']
-            if task.user_answer is None:
-                error = 'The solution field is empty'
-                return redirect(url_for('issues'))
-            else:
-                task.date_resolved = db.func.current_timestamp()
-                task.status = 'completed'
-                db.session.add(task)
-                db.session.commit()
+            
+            task.date_resolved = db.func.current_timestamp()
+            task.status = 'completed'
+            db.session.add(task)
+            db.session.commit()
 
-                message = ' *'+'Task Closed'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
-                send_channel_messages(group.name, message)
+            message = ' *'+'Task Closed'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
+            send_channel_messages(group.name, message)
 
-                flash("The task is closed")
-                return redirect(url_for('issues'))
+            flash("The task is closed")
+            return redirect(url_for('issues'))
     else:
         return redirect(url_for('user.home'))
 
@@ -247,32 +244,36 @@ def reports():
         username = session['username']
         id = session['id']
         resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
+        evaluated_tasks = AssignedTask.query.filter_by(user_id=id, evaluated_status='evaluated').all()
         opened_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
         user = User.query.filter_by(id=id).first()
         name = user.firstname + ' ' + user.lastname
         resolve_time = []
         response_time = []
         output_quality = []
+
+        
         for resolved_task in resolved_tasks:
             start_dt = dt.datetime.strptime(str(resolved_task.date_resolved), '%Y-%m-%d %H:%M:%S.%f')
             end_dt = dt.datetime.strptime(str(resolved_task.date_created), '%Y-%m-%d %H:%M:%S.%f')
+            res_dt = dt.datetime.strptime(str(resolved_task.date_opened), '%Y-%m-%d %H:%M:%S.%f')
             resolution_diff = (start_dt - end_dt)
             resolution_total_time = resolution_diff.seconds/60 + resolution_diff.days*24*3600
-            resolve_time.append(resolution_total_time/3600)
-            if resolved_task.satisfaction is None:
-                output_quality.append(0)
-            else:
-                output_quality.append(resolved_task.satisfaction)
+            resolve_time.append(resolution_total_time)
+            
+            resp_diff = (res_dt - end_dt)
+            resp_total_time = resp_diff.seconds/60 + resp_diff.days*24*60
+            response_time.append(resp_total_time)
+            
+        for task in evaluated_tasks:
+            output_quality.append(task.satisfaction)
 
         for opened_task in opened_tasks:
             opened_dt = dt.datetime.strptime(str(opened_task.date_opened), '%Y-%m-%d %H:%M:%S.%f')
             end_dt = dt.datetime.strptime(str(opened_task.date_created), '%Y-%m-%d %H:%M:%S.%f')
             opened_diff = (opened_dt - end_dt) 
-            opened_total_time = opened_diff.seconds/60 + opened_diff.days*24*3600
-            response_time.append(opened_total_time/3600)
-            
-        resolution_avarage_time = 0
-        response_avarage_time = 0
+            opened_total_time = opened_diff.seconds/60 + opened_diff.days*24*60
+            response_time.append(opened_total_time)
 
         if len(resolve_time) == 0:
             resolution_avarage_time = 0
@@ -280,18 +281,20 @@ def reports():
             resolution_avarage_time = sum(resolve_time) / float(len(resolve_time))
 
         if len(response_time) == 0:
-            resolution_avarage_time = 0
+            response_avarage_time = 0
         else:
             response_avarage_time = sum(response_time) / float(len(response_time))
+
+        if len(output_quality) == 0:
+            user_satisfaction = 0
+        else:
+            user_satisfaction = sum(output_quality) / float(len(output_quality))
         
-        user_satisfaction = sum(output_quality) / float(len(output_quality))
-        # except:
-        #     user_satisfaction = "No tasks yet"
         lastsixmonths = last_six_months()
         return render_template('reports.html', 
                                 task_count = len(resolved_tasks), 
-                                resolution_avarage_time = math.ceil(resolution_avarage_time), 
-                                response_avarage_time = math.ceil(response_avarage_time),
+                                resolution_avarage_time = resolution_avarage_time, 
+                                response_avarage_time = response_avarage_time,
                                 user_satisfaction = user_satisfaction,
                                 lastsixmonths = json.dumps(lastsixmonths),
                                 id=id,

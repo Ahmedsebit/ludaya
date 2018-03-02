@@ -15,8 +15,7 @@ SECURITY = [
             'Delete Whitelist Entries',
             'Preview the Antimalware Health report',
         ]
-        },
-    {
+        },{
         'name':'Direct me on how to do the following task on ESET NODE Antivirus',
         'tasklist':[
             'Get information about the protection status of ESET NOD32 Antivirus',

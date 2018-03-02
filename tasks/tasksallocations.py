@@ -46,25 +46,25 @@ def get_user_assigned_tasks(user_id, category):
 
 def assign_task(user_id, category_name, category):
     today = dow(date.today())
-    if today != "Sunday" or today != "Saturday":
-        main_random_index = randrange(0, len(category))
-        task = category[main_random_index]
-        task_category = task['name']
-        random_index = randrange(0, len(task['tasklist']))
-        selected_task = task['tasklist'][random_index]
-        new_task = {task_category:selected_task}
+    # if today != "Sunday" or today != "Saturday":
+    main_random_index = randrange(0, len(category))
+    task = category[main_random_index]
+    task_category = task['name']
+    random_index = randrange(0, len(task['tasklist']))
+    selected_task = task['tasklist'][random_index]
+    new_task = {task_category:selected_task}
 
-        category_list = get_user_assigned_tasks(user_id, category_name)
-        categiory_in_db_list = [i['name'] for i in category_list]
+    category_list = get_user_assigned_tasks(user_id, category_name)
+    categiory_in_db_list = [i['name'] for i in category_list]
 
-        if task['name'] in categiory_in_db_list:
-            if selected_task not in task['tasklist']:
-                new_task = {task_category:selected_task}
-            else:
-                random_index = randrange(0, len(task['tasklist']))
-        else:
+    if task['name'] in categiory_in_db_list:
+        if selected_task not in task['tasklist']:
             new_task = {task_category:selected_task}
-        return new_task
+        else:
+            random_index = randrange(0, len(task['tasklist']))
+    else:
+        new_task = {task_category:selected_task}
+    return new_task
 
 
 tasks = {
@@ -80,6 +80,7 @@ tasks = {
             'unix':unixs,
             'windows':windows
         }
+
 
 def category_task(user_id):
     all_tasks = []

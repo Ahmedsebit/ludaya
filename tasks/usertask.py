@@ -1,4 +1,8 @@
 # coding: utf8
+import sys  
+
+reload(sys)  
+sys.setdefaultencoding('utf8')
 
 from flask_sqlalchemy import SQLAlchemy
 from decorators import async
@@ -27,7 +31,7 @@ def async_allocate_all_user_tasks():
                 allocate(task, user.id, user.email)
 
         task_strng = ""
-        tasks_in_string =",".join(str(x) for x in tasks)
+        # tasks_in_string =",".join(str(x) for x in tasks)
 
         for i in tasks:
             task_strng +=str(i)
@@ -36,13 +40,15 @@ def async_allocate_all_user_tasks():
             message = ' *'+'New Task'+'*\n'+'```'+'Asigned to:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task_strng+'```'
             send_channel_messages(group.name, message)
 
+
 def allocate(task, user, email):
     category = task['name']
     group = task.keys()[0]
     name = task[group]
-    new_task = AssignedTask(name=name, group=group, category=category, user_id=user)
-    db.session.add(new_task)
-    db.session.commit()
+    if category != name:
+        new_task = AssignedTask(name=name, group=group, category=category, user_id=user)
+        db.session.add(new_task)
+        db.session.commit()
 
 
 def get_user_tasks(user_id):

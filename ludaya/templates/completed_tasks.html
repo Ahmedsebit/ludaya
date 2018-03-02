@@ -61,29 +61,22 @@
                                         +                    "<div class=\"col-sm-2\">"
                                         +                    "<label for=\"staticEmail\">Team Response</label>"
                                         +                    "</div>"
-                                        
                                         +                    "<div class=\"col-sm-10\">"
                                         +                    "<p>" + items.user_answer + "</p></br>"
                                         +                    "</div>"
+                                        +                    "<div class=\"col-sm-3\">"
+                                        +                    "<label for=\"staticEmail\">Team Lead comments</label>"
+                                        +                    "</div>"
+                                        +                    "<div class=\"col-sm-9\">"
+                                        +                    "<p>" + items.evaluate_comment + "</p></br>"
+                                        +                    "</div>"
+                                        +                    "<div class=\"col-sm-3\">"
+                                        +                    "<label for=\"staticEmail\">Evaluation points</label>"
+                                        +                    "</div>"       
+                                        +                    "<div class=\"col-sm-9\">"
+                                        +                    "<p>" + items.satisfaction + "</p></br>"
+                                        +                    "</div>"
                                         +                    "</div>" 
-                                        +                    "<form action=\"/new_tasks/"+items.id+"/evaluate\" method=\"POST\">" 
-                                        +                    "<div class=\"form-group\">"
-                                        +                    "<textarea class=\"form-control\" id=\"exampleFormControlTextarea1\"  placeholder=\"add comment\"name=\"comment\" rows=\"3\"  required></textarea>"
-                                        +                    "</div>"  
-                                        +                    "<div class=\"input-group mb-3\">"
-                                        +                    "<select class=\"custom-select\" id=\"inputGroupSelect03\" name=\"rating\"  required>"
-                                        +                        "<option selected>Choose...</option>"
-                                        +                        "<option value=\"0.2\">0.2</option>"
-                                        +                        "<option value=\"0.4\">0.4</option>"
-                                        +                        "<option value=\"0.6\">0.6</option>"
-                                        +                        "<option value=\"0.8\">0.8</option>"
-                                        +                        "<option value=\"1.0\">1.0</option>"
-                                        +                    "</select>"
-                                        +                    "<div class=\"input-group-append\">"
-                                        +                      "<button type=\"submit\" class=\"btn btn-primary\"><i class=\"fa fa-unlock\"></i> Evaluate </button>"
-                                        +                    "</div>"
-                                        +                    "</div>"
-                                        +                    "</form>"
                                         +                "</div>"   
                                         +        "</div>"
                                         +    "</div>"
@@ -98,8 +91,8 @@
 
 
           function parseTasks(){
-            if (taskList == 0) {
-              $("#task-container").text("No assigned task.")
+            if (taskList.length == 2) {
+                $("#accordion").text("No task.")
             } else {
               // tasks exist, parse & display them
              $.each(JSON.parse(taskList), function(key, value){
@@ -170,7 +163,7 @@
                         <div class="col-sm-12" iv class="col-lg-12" style="padding-top:50px;padding-bottom:500px;">
                             <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
                                 <div class="card-block">
-                                    <h3 class="card-title">Pending {{my_task_category}} tasks <span><i class="fa fa-exclamation-triangle"></i></span></h3>
+                                    <h3 class="card-title">Completed {{my_task_category}} tasks <span><i class="far fa-check-circle"></i></span></h3>
                                             
                                     <div id="accordion">
                                     </div>

@@ -308,7 +308,7 @@
           'success': function(json) {
             var array = JSON.parse("[" + json.timeavarage + "]")[0];
             console.log(array)
-            barChartResponseTime(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8])
+            barChartResponseTime(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8], array[9])
           }
         });
         }
@@ -316,11 +316,11 @@
           new Chart(document.getElementById("bar-chart-vertical"), {
             type: 'bar',
             data: {
-                labels: ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"],
+                labels: ["maintainance", "networking", "windows", "mac", "support", "electronics", "server", "hardware", "unix", "security", "software"],
                 datasets: [
                   {
                     label: "time (hrs)",
-                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
+                    backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#c45850", "#c45850", "#c45850", "#c45850", "#c45850", "#c45850"],
                     data: [a,b,c,d,e,f,g,h,i]
                 }
               ]
@@ -343,7 +343,7 @@
           'success': function(json) {
             var array = JSON.parse("[" + json.timeavarage + "]")[0];
             console.log(array)
-            barChartResolutionTime(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8])
+            barChartResolutionTime(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8], array[9])
           }
         });
         }
@@ -351,11 +351,11 @@
           new Chart(document.getElementById("bar-chart-time"), {
             type: 'bar',
             data: {
-                labels: ["maintainance", "networking", "windows", "communication", "support", "electonics", "server", "hardware", "unix", "security"],
+                labels: ["maintainance", "networking", "windows", "mac", "support", "electronics", "server", "hardware", "unix", "security", "software"],
                 datasets: [
                   {
                     label: "time (hrs)",
-                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850","#c45850","#c45850","#c45850","#c45850","#c45850"],
+                    backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850", "#c45850", "#c45850", "#c45850", "#c45850", "#c45850", "#c45850"],
                     data: [a,b,c,d,e,f,g,h,i]
                 }
               ]
@@ -429,7 +429,7 @@
                                 Output Quality
                               </div>
                               <div class="card-body">
-                                {{user_satisfaction}}
+                                {{user_satisfaction}} / 10
                               </div>
                             </div>
                           </div>

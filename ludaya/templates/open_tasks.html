@@ -72,8 +72,8 @@
 
 
           function parseTasks(){
-            if (taskList == 0) {
-              $("#task-container").text("No assigned task.")
+            if (taskList.length == 2) {
+                $("#accordion").text("No opened task.")
             } else {
               // tasks exist, parse & display them
              $.each(JSON.parse(taskList), function(key, value){
