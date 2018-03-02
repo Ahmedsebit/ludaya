@@ -33,7 +33,6 @@ db = SQLAlchemy(app)
 
 from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema, Groups
 from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
-from tasks.usertask import allocate_all_user_tasks, get_user_tasks
 from random import randrange
 
 from notifications.slack import send_channel_messages
