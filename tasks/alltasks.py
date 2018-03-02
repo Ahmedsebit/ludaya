@@ -1,4 +1,3 @@
-from tasks.communications import COMMUNICATION as communication, communcation_list_length
 from tasks.electronics import ELECTRONICS as electronics, electronics_list_length
 from tasks.hardware import HARDWARE as hardware, hardware_list_length
 from tasks.learning import LEARNING as learning, learning_list_length
@@ -12,13 +11,12 @@ from tasks.unix import UNIX as unix, unix_list_length
 from tasks.windows import WINDOWS as windows, windows_list_length
 
 ALLTASKS = [
-    communication,
     electronics,
     hardware,
     learning,
     mac,
     maintainance,
-    # networking,
+    networking,
     security,
     server,
     support

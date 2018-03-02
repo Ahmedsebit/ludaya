@@ -10,7 +10,7 @@ import random
 import math
 import datetime as dt
 from flask_bootstrap import Bootstrap
-from tasks.alltasks import communication, electronics, hardware, mac, maintainance, networking, security, server, support, unix, windows
+from tasks.alltasks import electronics, hardware, mac, maintainance, networking, security, server, support, unix, windows
 from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
 
 from flask_marshmallow import Marshmallow
