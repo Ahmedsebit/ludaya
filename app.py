@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from .ludaya.users.user import user_blueprint
+# from ludaya.users.user import user_blueprint
 from ludaya.api.api_ludaya import api_blueprint
 from tasks.usertask import allocate_all_user_tasks, async_allocate_all_user_tasks
 app.register_blueprint(user_blueprint)
