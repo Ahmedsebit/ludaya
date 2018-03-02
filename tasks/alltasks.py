@@ -12,7 +12,6 @@ from tasks.windows import WINDOWS as windows, windows_list_length
 ALLTASKS = [
     electronics,
     hardware,
-    learning,
     mac,
     maintainance,
     networking,
