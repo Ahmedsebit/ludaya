@@ -1,6 +1,5 @@
 from tasks.electronics import ELECTRONICS as electronics, electronics_list_length
 from tasks.hardware import HARDWARE as hardware, hardware_list_length
-from tasks.learning import LEARNING as learning, learning_list_length
 from tasks.mac import MAC as mac, mac_list_length
 from tasks.maintainance import MAINTAINANCE as maintainance, maintainance_list_length
 from tasks.networking import NETWORKING as networking, networking_list_length
