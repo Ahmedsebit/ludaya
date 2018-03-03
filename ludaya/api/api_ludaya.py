@@ -367,7 +367,7 @@ def list_length(category):
         for key, value in item.items():
             if key == category:
                 for i in value:
-                    for j in i.values()[0]:
+                    for j in list(i.values())[0]:
                         l.append(j)
 
     return l
