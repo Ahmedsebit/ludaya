@@ -21,7 +21,7 @@ from notifications.slack import create_channel
 
 def create_group(team_lead):
     lastgroup = get_last_created_group()
-    name = 'LUDAYATESTING'+str(lastgroup.id)
+    name = 'LUDAYA_TESTING'+str(lastgroup.id)
     group = Groups(name=name, current_members=1, team_lead=team_lead)
     db.session.add(group)
     db.session.commit()
@@ -50,3 +50,8 @@ def async_change_group_leader(group_id):
                 group.save()
                 break
 
+
+def change_group_leader():
+    groups = Groups.query.all()
+    for group in groups:
+        async_change_group_leader(group.id)

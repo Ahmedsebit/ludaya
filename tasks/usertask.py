@@ -1,5 +1,6 @@
 # coding: utf8
 
+import os
 from flask_sqlalchemy import SQLAlchemy
 from decorators import async
 from models import AssignedTask, User, Groups

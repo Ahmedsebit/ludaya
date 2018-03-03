@@ -11,26 +11,19 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from ludaya.users.user import user_blueprint 
 from ludaya.api.api_ludaya import api_blueprint
 from tasks.usertask import allocate_all_user_tasks, async_allocate_all_user_tasks
+from ludaya.users.groups import change_group_leader
 app.register_blueprint(user_blueprint)
 app.register_blueprint(api_blueprint)
 
 
-# sched = BackgroundScheduler()
-# # sched.add_job(tick,'interval',seconds=3)
-# sched.start()
+sched = BackgroundScheduler()
+# sched.add_job(tick,'interval',seconds=3)
+sched.start()
 
-# @sched.scheduled_job('interval', seconds=3)
-# def tick2():
-#     sensor()
-
-# try:
-#     app
-# except (KeyboardInterrupt, SystemExit):
-#     sched.shutdown()
-
-# create_group()
-# allocate_all_user_tasks()
-# async_allocate_all_user_tasks()
+@sched.scheduled_job('interval', seconds=86400)
+def daily_schedule():
+     change_group_leader()
+     allocate_all_user_tasks()
 
 
 if __name__ == '__main__':
