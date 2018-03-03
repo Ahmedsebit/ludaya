@@ -60,7 +60,7 @@ class AssignedTask(db.Model):
     evaluated_status = db.Column(db.String(255), default="not yet evaluated")
 
 
-    def __init__(self, name, group, category, user_id):
+    def __init__(self, name, group, category, user_id, evaluate_id):
         '''
         initialize with name, user_id and assignedtask_id
         '''
@@ -68,6 +68,7 @@ class AssignedTask(db.Model):
         self.group = group
         self.name = name
         self.user_id = user_id
+        self.evaluate_id = evaluate_id
 
     def save(self):
         '''

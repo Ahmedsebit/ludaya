@@ -11,7 +11,7 @@ import math
 import datetime as dt
 from ludaya.ludaya import app
 from decorators import async
-
+from datetime import datetime, time
 
 db = SQLAlchemy(app)
 
@@ -21,13 +21,22 @@ from notifications.slack import create_channel
 
 def create_group(team_lead):
     lastgroup = get_last_created_group()
-    name = 'LUDAYA_TESTING'+str(lastgroup.id)
-    group = Groups(name=name, current_members=1, team_lead=team_lead)
-    db.session.add(group)
-    db.session.commit()
-    db.session.refresh(group)
-    create_channel(name)
-    return group
+    if lastgroup:
+        name = 'LUDAYA_TESTING'+str(lastgroup.id)
+        group = Groups(name=name, current_members=1, team_lead=team_lead)
+        db.session.add(group)
+        db.session.commit()
+        db.session.refresh(group)
+        # create_channel(name)
+        return group
+    else:
+        name = 'LUDAYA_TESTING'
+        group = Groups(name=name, current_members=1, team_lead=team_lead)
+        db.session.add(group)
+        db.session.commit()
+        db.session.refresh(group)
+        # create_channel(name)
+        return group
 
 
 def get_last_created_group():
@@ -52,6 +61,9 @@ def async_change_group_leader(group_id):
 
 
 def change_group_leader():
-    groups = Groups.query.all()
-    for group in groups:
-        async_change_group_leader(group.id)
+    now = datetime.now()
+    now_time = now.time()
+    if now_time >= time(10,30) and now_time <= time(15,30):
+        groups = Groups.query.all()
+        for group in groups:
+            async_change_group_leader(group.id)

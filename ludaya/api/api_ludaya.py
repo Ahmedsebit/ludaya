@@ -351,7 +351,6 @@ def user_satisfaction(id):
 
 def list_length(category):
     all = [
-        {'communication': communication},
         {'electronics': electronics},
         {'hardware': hardware},
         {'mac': mac},

@@ -5,12 +5,16 @@ from flask_sqlalchemy import SQLAlchemy
 from decorators import async
 from models import AssignedTask, User, Groups
 from ludaya.ludaya import db
-from datetime import datetime
+from datetime import datetime, time
 from tasks.tasksallocations import category_task
 from notifications.slack import send_channel_messages, send_dm
+from notifications.mail import send_mail
 
 def allocate_all_user_tasks():
-    async_allocate_all_user_tasks()
+    now = datetime.now()
+    now_time = now.time()
+    if now_time >= time(10,30) and now_time <= time(15,30):
+        async_allocate_all_user_tasks()
 
 @async
 def async_allocate_all_user_tasks():
@@ -25,25 +29,24 @@ def async_allocate_all_user_tasks():
                 name = task[task_group]
                 tasks.append(name)
                 tasks.append('\n')
-                allocate(task, user.id, user.email)
+                allocate(task, user.id, user.email, group.team_lead)
 
         task_strng = ""
-        # tasks_in_string =",".join(str(x) for x in tasks)
 
         for i in tasks:
             task_strng +=str(i)
 
         if len(tasks) > 0:
-            message = ' *'+'New Task'+'*\n'+'```'+'Asigned to:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task_strng+'```'
-            send_channel_messages(group.name, message)
+            # message = ' *'+'New Task'+'*\n'+'```'+'Asigned to:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task_strng+'```'
+            send_mail('New Assigned Task', 'notifications@ludaya.com', [user.email], task_strng)
 
 
-def allocate(task, user, email):
+def allocate(task, user, email, team_lead):
     category = task['name']
     group = task.keys()[0]
     name = task[group]
     if category != name:
-        new_task = AssignedTask(name=name, group=group, category=category, user_id=user)
+        new_task = AssignedTask(name=name, group=group, category=category, user_id=user, evaluate_id = team_lead)
         db.session.add(new_task)
         db.session.commit()
 
