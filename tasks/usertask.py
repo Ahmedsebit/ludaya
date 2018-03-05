@@ -66,7 +66,7 @@ def test():
 
 def allocate(task, user, email, team_lead):
     category = task['name']
-    group = task.keys()[0]
+    group = list(task.keys())[0]
     name = task[group]
     if category != name:
         new_task = AssignedTask(name=name, group=group, category=category, user_id=user, evaluate_id = team_lead)
