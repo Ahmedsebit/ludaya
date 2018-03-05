@@ -84,7 +84,7 @@ tasks = {
 
 def category_task(user_id):
     all_tasks = []
-    for key,value in tasks.iteritems():
+    for key,value in tasks.items():
         task = assign_task(user_id, key, value)
         task['name'] = key
         all_tasks.append(task)
