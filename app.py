@@ -20,10 +20,10 @@ sched = BackgroundScheduler()
 # sched.add_job(tick,'interval',seconds=3)
 sched.start()
 
-@sched.scheduled_job('interval', seconds=10800)
-def daily_schedule():
-    change_group_leader()
-    allocate_all_user_tasks()
+# @sched.scheduled_job('interval', seconds=10800)
+# def daily_schedule():
+#     change_group_leader()
+#     allocate_all_user_tasks()
 
 
 if __name__ == '__main__':
