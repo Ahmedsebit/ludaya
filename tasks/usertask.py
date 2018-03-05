@@ -49,7 +49,7 @@ def test():
         tasks = []
         for task in all_tasks:
             if group.team_lead != user.id:
-                task_group = task.keys()[0]
+                task_group = list(task.keys())[0]
                 name = task[task_group]
                 tasks.append(name)
                 tasks.append('\n')
