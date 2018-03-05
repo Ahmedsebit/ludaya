@@ -443,25 +443,21 @@ def assign_task():
     })
 
 
-@app.route('/api/assigned_task/')
-def get_assigned_tasks():
-    tasks = AssignedTask.query.filter_by(category='mac', user_id=19)
-    task_list = []
-    task_name = []
-    for task in tasks:
-        task_name.append(task.group)
-        if len(task_list)>0:
-            for i in task_list:
-                if i['name'] in task_name:
-                    if i['name'] == task.group and task.name not in i['tasklist']:
-                        i['tasklist'].append(task.name)
-                else:
-                    task_list.append({'name':task.group, 'tasklist':[task.name]})
-        else:
-            task_list.append({'name':task.group, 'tasklist':[task.name]})
+@app.route('/api/all_tasks/', methods=['GET'])
+def all_tasks():
+    tasks = AssignedTask.query.all()
+    items_result = assignedtasks_schema.dump(tasks)
     return jsonify({
-        'task_list':json.dumps(task_list)
+            'items':json.dumps(items_result.data)
     })
+
+# @app.route('/api/all_users/')
+# def get_all_usera(id):
+#     all_user = User.query.all()
+#     return jsonify({
+#         'user_slack_id':json.dumps(user_slack_id)
+#     })
+
 
 @app.route('/api/user_slack_id/<int:id>')
 def get_user_slack(id):

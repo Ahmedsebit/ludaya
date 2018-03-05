@@ -16,15 +16,16 @@ app.register_blueprint(user_blueprint)
 app.register_blueprint(api_blueprint)
 
 
-# sched = BackgroundScheduler()
-# # sched.add_job(tick,'interval',seconds=3)
-# sched.start()
+sched = BackgroundScheduler()
+# sched.add_job(tick,'interval',seconds=3)
+sched.start()
 
-# @sched.scheduled_job('interval', seconds=60)
-# def daily_schedule():
-#      change_group_leader()
-     
-allocate_all_user_tasks()
+@sched.scheduled_job('interval', seconds=60)
+def daily_schedule():
+    print("changing group leader")
+    change_group_leader()
+    print("allocating tasks")
+    allocate_all_user_tasks()
 
 
 if __name__ == '__main__':
