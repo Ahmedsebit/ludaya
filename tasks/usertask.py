@@ -13,7 +13,7 @@ from notifications.mail import send_mail
 def allocate_all_user_tasks():
     now = datetime.now()
     now_time = now.time()
-    if now_time >= time(12,30) and now_time <= time(15,30):
+    if now_time >= time(13,30) and now_time <= time(16,30):
         async_allocate_all_user_tasks()
 
 @async

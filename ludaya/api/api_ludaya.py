@@ -451,6 +451,13 @@ def all_tasks():
             'items':json.dumps(items_result.data)
     })
 
+@app.route('/api/new_all_tasks/', methods=['POST'])
+def new_all_tasks():
+    allocate_all_user_tasks()
+    response = jsonify({'message': 'Item assigned'})
+            
+    return response
+
 # @app.route('/api/all_users/')
 # def get_all_usera(id):
 #     all_user = User.query.all()
