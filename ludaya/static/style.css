@@ -175,3 +175,28 @@ body {
     padding-left: 50px;
     padding-right: 50px;
   }
+
+  a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+  }
+
+  a:hover {
+      background-color: #ddd;
+      color: black;
+  }
+
+  .previous {
+      background-color: #f1f1f1;
+      color: #1B2631;
+  }
+
+  .next {
+      background-color: #4CAF50;
+      color: white;
+  }
+
+  .round {
+      border-radius: 50%;
+}
