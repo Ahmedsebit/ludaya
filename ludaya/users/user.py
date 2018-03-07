@@ -83,7 +83,7 @@ def register():
                     # user = get_user(user.email)
                     # add_user_to_channel(channel, user)
 
-                flash('You were successfully register')
+                flash('You were successfully registered')
                 return redirect(url_for('user.home'))
         else:
             error = 'User already exists'
