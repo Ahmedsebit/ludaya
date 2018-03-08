@@ -70,6 +70,22 @@ def issues():
         return redirect(url_for('user.home'))
 
 
+@app.route('/portfolio')
+def portfolio():
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        items = AssignedTask.query.filter_by(status="not started", user_id=id).all()
+        user = User.query.filter_by(id=items.user_id)
+        
+        return render_template('portfolio.html', 
+                                id=id,
+                                firstName=user.firstname,
+                                secondName=user.lastname)
+    else:
+        return redirect(url_for('user.home'))
+
+
 @app.route('/new_tasks/<string:category>')
 def tasks(category):
     if 'username' in session:

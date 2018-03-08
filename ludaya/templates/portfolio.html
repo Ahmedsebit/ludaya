@@ -216,136 +216,7 @@
                     })
                 }
                 fetchEvaluateTasks()
-    
 
-                function attachSlack(taskKey, prepend){
-                    var key = taskKey;
-                    var task_url = '/opened_tasks/'+key
-                    var taskHTMLFormat = "<a type=\"button\" class=\"btn btn-primary btn-md\"> Join your team on slack <i class=\"fab fa-slack\"></i></a>"
-                    if(prepend ==true){
-                    $("#slack_id_not_yet").prepend(taskHTMLFormat)
-                    }else{
-                    $("#slack_id_not_yet").append(taskHTMLFormat)
-                    }
-                }
-    
-                function attachnoSlack(prepend){
-                    var taskHTMLFormat = "<a type=\"button\" class=\"btn btn-primary btn-md\"> View conversation on slack <i class=\"fab fa-slack\"></i></a>"
-                    if(prepend ==true){
-                    $("#slack_id").prepend(taskHTMLFormat)
-                    }else{
-                    $("#slack_id").append(taskHTMLFormat)
-                    }
-                }
-    
-                function parseSlack(){
-                    if (slack_user_id == null) {
-                        attachnoSlack()
-                    } else {
-                    // tasks exist, parse & display them
-                        taskKey = slack_user_id;
-                        attachSlack(slack_user_id);
-                    }
-                }
-    
-                function fetchSlack(url){
-                    var fetchUrl;
-                    if (!url){
-                        fetchUrl = "/api/user_slack_id/"+{{id}}
-                    }else{
-                        fetchUrl = url
-                    }
-                    $.ajax({
-                    url: fetchUrl,
-                    data: url,
-                    method: "GET",
-                    success: function(data){
-                    slack_user_id = data.user_slack_id
-                    parseSlack()
-                    },
-                    error: function(data){
-                    console.log("error")
-                    console.log(data)
-                    }
-                    })
-                }
-                fetchSlack()
-    
-
-              var allData = function(url) {
-                var myVar = 0
-                
-                fetchUrl = $.getJSON(url)
-                fetchUrl.then(function(data, textStatus, jqxhr) {
-                    $("#all").val(jqxhr.responseJSON.all);
-                    $("#completed").val(jqxhr.responseJSON.completed);
-                    var ctx = document.getElementById("myChart").getContext('2d');
-                    var myChart = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                        labels: ["remaining tasks", "task completed"],
-                        datasets: [
-                            {
-                            label: "Population (millions)",
-                            backgroundColor: ["#3e95cd", "#8e5ea2"],
-                            data: [
-                                jqxhr.responseJSON.all,
-                                jqxhr.responseJSON.completed
-                                ]
-                            }
-                        ]
-                        },
-                        options: {
-                        title: {
-                            display: true,
-                            text: ''
-                        }
-                        }
-                    });
-                  })
-                };
-                allData("/api/issues/maintainance/"+{{id}})
-    
-                document.getElementById('overallspecialistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/maintainance/"+{{id}})
-                });
-    
-                document.getElementById('maintainancelistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/maintainance/"+{{id}})
-                });
-    
-                document.getElementById('networkinglistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/networking/"+{{id}})
-                });
-    
-                document.getElementById('windowslistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/windows/"+{{id}})
-                });
-    
-                document.getElementById('communicationlistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/communication/"+{{id}})
-                });
-    
-                document.getElementById('supportlistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/support/"+{{id}})
-                });
-    
-                document.getElementById('electronicslistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/electronics/"+{{id}})
-                });
-    
-                document.getElementById('hardwarelistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/hardware/"+{{id}})
-                });
-    
-                document.getElementById('unixlistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/unix/"+{{id}})
-                });
-    
-                document.getElementById('serverlistDataset').addEventListener('click', function() {
-                    return allData("/api/issues/server/"+{{id}})
-                });
-    
             });
     
     
@@ -398,29 +269,10 @@
         <header class="text-center" style="padding-top:100px;">
             <div class="masthead-content">
 
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
-                        {% if messages %}
-                            {% for category, message in messages %}
-                                <div class="alert alert-success alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <!-- <strong>Title</strong> --> {{ message }}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-        
-                    {% if error %}
-                        <div class="alert alert-warning alert-dismissible" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <!-- <strong>Title</strong> --> {{ error }}
-                        </div> 
-                    {% endif %}
-
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-lg-8" style="padding-top:50px;">
-                        <h4>This weeks team lead is: <span><font style="font-size: 1.5rem;font-weight: 200;">{{teamlead_name}}</font> </span></h4>
+                    <div class="col-lg-12" style="padding-top:50px;">
+                        <h1>{{firstName}} {{lastName}}</h1>
                     </div>
                     <div class="col-lg-2" style="padding-top:50px;">
                         <ul class="list-group"  id="slack_id">       
