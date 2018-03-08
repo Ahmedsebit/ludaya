@@ -20,6 +20,7 @@ from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema
 
 from notifications.slack import get_user, get_channel_id
 from tasks.usertask import allocate_all_user_tasks, get_user_tasks, test
+from ludaya.users.groups import change_team_leader
 from random import randrange
 
 db = SQLAlchemy(app)
@@ -454,6 +455,13 @@ def all_tasks():
 @app.route('/api/new_all_tasks/', methods=['POST'])
 def new_all_tasks():
     test()
+    response = jsonify({'message': 'Item assigned'})
+            
+    return response
+
+@app.route('/api/change_team_lead/', methods=['POST'])
+def new_team_lead():
+    change_team_leader()
     response = jsonify({'message': 'Item assigned'})
             
     return response

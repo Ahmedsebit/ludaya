@@ -67,3 +67,11 @@ def change_group_leader():
         groups = Groups.query.all()
         for group in groups:
             async_change_group_leader(group.id)
+
+
+def change_team_leader():
+    now = datetime.now()
+    now_time = now.time()
+    groups = Groups.query.all()
+    for group in groups:
+        async_change_group_leader(group.id)
