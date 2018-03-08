@@ -75,7 +75,7 @@ def portfolio():
     if 'username' in session:
         username = session['username']
         id = session['id']
-        user = User.query.filter_by(id=id)
+        user = User.query.filter_by(id=id).first()
         
         return render_template('portfolio.html', 
                                 id=id,
