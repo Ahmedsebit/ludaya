@@ -43,46 +43,16 @@ def register():
             email = request.form['email']
             password = request.form['password']
             confirmpassword = request.form['confirmpassword']
+            job_description = request.form['job_description']
             if email is None or password is None:
                 error = 'Empty email or password'
             elif password != confirmpassword:
                 error = 'Passwords do not match'
             else:
-                if lastgroup:
-                    if lastgroup.current_members == 4:
-                        user = User(firstname=firstname, lastname=lastname, email=email)
-                        user.hash_password(password)
-                        user.save()
-                        user = User.query.filter_by(email=email).first()
-                        new_group = create_group(user.id)
-                        user.group = new_group.id
-                        user.save()
-                        # channel = get_channel_id(new_group.name)
-                        # user = get_user(user.email)
-                        # add_user_to_channel(channel, user)
-                    if lastgroup.current_members < 4:
-                        lastgroup.current_members += 1
-                        lastgroup.save()
-                        user = User(firstname=firstname, lastname=lastname, email=email, group=lastgroup.id)
-                        user.hash_password(password)
-                        user.save()
-                        # user = User.query.filter_by(email=email).first()
-                        # channel = get_channel_id(lastgroup.name)
-                        # user = get_user(user.email)
-                        # add_user_to_channel(channel, user)
-                else:
-                    user = User(firstname=firstname, lastname=lastname, email=email)
-                    user.hash_password(password)
-                    user.save()
-                    user = User.query.filter_by(email=email).first()
-                    new_group = create_group(user.id)
-                    user.group = new_group.id
-                    user.save()
-                    # user = User.query.filter_by(email=email).first()
-                    # channel = get_channel_id(new_group.name)
-                    # user = get_user(user.email)
-                    # add_user_to_channel(channel, user)
-
+                user = User(firstname=firstname, lastname=lastname, email=email, job_description=job_description)
+                user.hash_password(password)
+                user.save()
+                user = User.query.filter_by(email=email).first()
                 flash('You were successfully registered')
                 return redirect(url_for('user.home'))
         else:

@@ -105,6 +105,20 @@ def evaluate_task(id):
             'opened':json.dumps(groups_opened)
     })
 
+@app.route('/api/completed_task/<int:id>', methods=['GET'])    
+def completed_task(id):
+    items = AssignedTask.query.filter_by(status="completed").all()
+    items_result = assignedtasks_schema.dump(items)
+    groups_list = []
+    groups_list_opened = []
+    for i in items:
+        groups_list.append(i.category)
+    groups = {x:groups_list.count(x) for x in groups_list}
+    return jsonify({
+            'items':json.dumps(items_result.data, sort_keys=True, default=str),
+            'groups':json.dumps(groups),
+    })
+
 
 @app.route('/api/evaluate_tasks/<string:category>/<int:id>', methods=['GET'])
 def get_category_evaluate_tasks(category, id):

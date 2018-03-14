@@ -40,7 +40,7 @@
               var query = getParameterByName('q');
               var taskList = [];
               var taskOpenedList = [];
-              var taskCompletedList = [];
+              var taskEvaluateList = [];
               var all = 0;
               var slack_user_id = [];
               var empty_dictionary = {};
@@ -161,43 +161,43 @@
                 }
                 fetchOpenedTasks()
     
-                function attachCompletedTask(taskKey, taskValue, prepend){
+                function attachEvaluateTask(taskKey, taskValue, prepend){
                     var key = taskKey;
                     var items = taskValue;
-                    var task_url = '/completed_tasks/'+key
+                    var task_url = '/evaluate_tasks/'+key
                     var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><a href="+task_url+">"+ key + "</a>" + "<span class=\"badge\">"+ items +"</span>"+"</li>"
                     if(prepend ==true){
-                    $("#completed-task-list").prepend(taskHTMLFormat)
+                    $("#evaluate-task-list").prepend(taskHTMLFormat)
                     }else{
-                    $("#completed-task-list").append(taskHTMLFormat)
+                    $("#evaluate-task-list").append(taskHTMLFormat)
                     }
                 }
     
-                function attachnoCompletedTask(prepend){
-                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><h5 style=\"color:#27AE60\"> No task </h5> </li>"
+                function attachnoEvaluateTask(prepend){
+                    var taskHTMLFormat = "<li class=\"list-group-item d-flex justify-content-between align-items-center\"><h5 style=\"color:#27AE60\"> No pending task   <span><i class=\"far fa-check-circle\"></i></span> </h5> </li>"
                     if(prepend ==true){
-                    $("#completed-task-list").prepend(taskHTMLFormat)
+                    $("#evaluate-task-list").prepend(taskHTMLFormat)
                     }else{
-                    $("#completed-task-list").append(taskHTMLFormat)
+                    $("#evaluate-task-list").append(taskHTMLFormat)
                     }
                 }
     
-                function parseCompletedTasks(){
-                    if (taskCompletedList.length == 2) {
-                        attachnoCompletedTask()
+                function parseEvaluateTasks(){
+                    if (taskEvaluateList.length == 2) {
+                        attachnoEvaluateTask()
                     } else {
                     // tasks exist, parse & display them
                     $.each(JSON.parse(taskEvaluateList), function(key, value){
                         var taskKey = key;
-                        attachCompletedTask(key, value)
+                        attachEvaluateTask(key, value)
                     })
                     }
                 }
     
-                function fetchCompletedTasks(url){
+                function fetchEvaluateTasks(url){
                     var fetchUrl;
                     if (!url){
-                        fetchUrl = "/api/completed_task/"+{{id}}
+                        fetchUrl = "/api/evaluate_task/"+{{id}}
                     }else{
                         fetchUrl = url
                     }
@@ -206,8 +206,8 @@
                     data: url,
                     method: "GET",
                     success: function(data){
-                    taskCompletedList = data.groups
-                    parseCompletedTasks()
+                    taskEvaluateList = data.groups
+                    parseEvaluateTasks()
                     },
                     error: function(data){
                     console.log("error")
@@ -215,7 +215,62 @@
                     }
                     })
                 }
-                fetchCompletedTasks()
+                fetchEvaluateTasks()
+    
+
+                function attachSlack(taskKey, prepend){
+                    var key = taskKey;
+                    var task_url = '/opened_tasks/'+key
+                    var taskHTMLFormat = "<a type=\"button\" class=\"btn btn-primary btn-md\"> Join your team on slack <i class=\"fab fa-slack\"></i></a>"
+                    if(prepend ==true){
+                    $("#slack_id_not_yet").prepend(taskHTMLFormat)
+                    }else{
+                    $("#slack_id_not_yet").append(taskHTMLFormat)
+                    }
+                }
+    
+                function attachnoSlack(prepend){
+                    var taskHTMLFormat = "<a type=\"button\" class=\"btn btn-primary btn-md\"> View conversation on slack <i class=\"fab fa-slack\"></i></a>"
+                    if(prepend ==true){
+                    $("#slack_id").prepend(taskHTMLFormat)
+                    }else{
+                    $("#slack_id").append(taskHTMLFormat)
+                    }
+                }
+    
+                function parseSlack(){
+                    if (slack_user_id == null) {
+                        attachnoSlack()
+                    } else {
+                    // tasks exist, parse & display them
+                        taskKey = slack_user_id;
+                        attachSlack(slack_user_id);
+                    }
+                }
+    
+                function fetchSlack(url){
+                    var fetchUrl;
+                    if (!url){
+                        fetchUrl = "/api/user_slack_id/"+{{id}}
+                    }else{
+                        fetchUrl = url
+                    }
+                    $.ajax({
+                    url: fetchUrl,
+                    data: url,
+                    method: "GET",
+                    success: function(data){
+                    slack_user_id = data.user_slack_id
+                    parseSlack()
+                    },
+                    error: function(data){
+                    console.log("error")
+                    console.log(data)
+                    }
+                    })
+                }
+                fetchSlack()
+    
 
               var allData = function(url) {
                 var myVar = 0
@@ -290,6 +345,7 @@
                 document.getElementById('serverlistDataset').addEventListener('click', function() {
                     return allData("/api/issues/server/"+{{id}})
                 });
+    
             });
     
     
@@ -309,7 +365,7 @@
                 <li class="nav-item">
                     <a class="nav-link  js-scroll-trigger"  href="{{url_for('reports')}}"><i class="fas fa-file fa-2x" aria-hidden="true" ></i> Reports</a>
                 </li>
-                <!--li class="nav-item  dropdown">
+                <li class="nav-item  dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-history fa-2x" aria-hidden="true" ></i> History</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="/completed_tasks/maintainance">maintainance</a>
@@ -320,7 +376,7 @@
                             <a class="dropdown-item" href="/completed_taskshardware">hardware</a>
                             <a class="dropdown-item" href="/completed_tasksunix">unix</a>
                             <a class="dropdown-item" href="/completed_taskssecurity">security</a>
-                </li-->
+                </li>
                 <!--li class="nav-item">
                     <a class="nav-link  js-scroll-trigger"  href="{{url_for('portfolio')}}"><i class="fab fa-product-hunt fa-2x" aria-hidden="true" ></i> Portfolio</a>
                 </li-->
@@ -363,6 +419,14 @@
 
             <div class="container">
                 <div class="row align-items-center">
+                    <div class="col-lg-8" style="padding-top:50px;">
+                        <h4>This weeks team lead is: <span><font style="font-size: 1.5rem;font-weight: 200;">{{teamlead_name}}</font> </span></h4>
+                    </div>
+                    <div class="col-lg-2" style="padding-top:50px;">
+                        <ul class="list-group"  id="slack_id">       
+                        </ul>
+                    </div>
+                    
                     <hr>
 
                     <!-- Change password Modal -->
@@ -400,7 +464,7 @@
                     <div class="col-lg-4" style="padding-top:50px;">
                         <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
                             <div class="card-block">
-                                <h4 class="card-title" style="color:#6E2C00">Pending Tasks <span><i class="fa fa-exclamation-triangle"></i></span></h3>
+                                <h3 class="card-title">Pending Tasks <span><i class="fa fa-exclamation-triangle"></i></span></h3>
                                     <ul class="list-group"  style="padding-top:-50px;"  id="task-list">
                                     
                                     </ul>
@@ -410,7 +474,7 @@
                     <div class="col-lg-4" style="padding-top:50px;">
                             <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
                                 <div class="card-block">
-                                    <h4 class="card-title" style="color:#7D6608">Opened Tasks <span><i class="fas fa-unlock-alt"></i></span></h3>
+                                    <h3 class="card-title">Opened Tasks <span><i class="fa fa-hourglass-half"></i></span></h3>
                                     <ul class="list-group"  style="padding-top:-50px;"  id="opened-task-list">
                                         
                                     </ul>
@@ -421,8 +485,8 @@
                     <div class="col-lg-4" style="padding-top:50px;">
                             <div class="card" style="background-color: rgba(245, 245, 245, 0.4);padding:10px; color:#212F3C">
                                 <div class="card-block">
-                                    <h4 class="card-title" style="color:#145A32">Tasks Completed <span><i class="fas fa-lock"></i></span></h3>
-                                    <ul class="list-group"  style="padding-top:-50px;"  id="completed-task-list">
+                                    <h3 class="card-title">Tasks to evaluate <span><i class="fa fa-hourglass-half"></i></span></h3>
+                                    <ul class="list-group"  style="padding-top:-50px;"  id="evaluate-task-list">
                                         
                                     </ul>
                                 </div>

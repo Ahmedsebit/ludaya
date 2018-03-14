@@ -106,6 +106,7 @@ class User(db.Model):
     assignedtask = db.relationship(
         'AssignedTask', order_by='AssignedTask.id', cascade="all, delete-orphan")
     group = db.Column(db.Integer)
+    job_description = db.Column(db.String(256), nullable=True)
 
     def hash_password(self, entered_password):
         '''
