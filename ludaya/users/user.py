@@ -8,7 +8,6 @@ from validate_email import validate_email
 from ludaya import app
 from models import User, Groups, AssignedTask, assignedtask_schema, assignedtasks_schema
 from random import randrange
-from ludaya.users.groups import create_group, get_last_created_group
 from notifications.mail import send_mail
 from notifications.slack import add_user_to_channel, get_channel_id, get_user
 
@@ -36,14 +35,14 @@ def register():
     error = None
     if is_valid:
         user = User.query.filter_by(email=request.form['email']).first()
-        lastgroup = get_last_created_group()
+        # lastgroup = get_last_created_group()
         if not user:
             firstname = request.form['firstname']
             lastname = request.form['lastname']
             email = request.form['email']
             password = request.form['password']
             confirmpassword = request.form['confirmpassword']
-            job_description = request.form['job_description']
+            job_description = request.form['jobDescription']
             if email is None or password is None:
                 error = 'Empty email or password'
             elif password != confirmpassword:

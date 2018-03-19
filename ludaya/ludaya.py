@@ -46,10 +46,7 @@ def issues():
         completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
         opened_items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
         user = User.query.filter_by(id=id).first()
-        user_group = Groups.query.filter_by(id=user.group).first()
-        team_leader = User.query.filter_by(id=user_group.team_lead).first()
         name = user.firstname + ' ' + user.lastname
-        team_lead_names = team_leader.firstname + ' ' + team_leader.lastname
         groups_list = []
         groups_list_opened = []
         for i in items:
@@ -64,7 +61,6 @@ def issues():
                                opened=groups_opened,
                                id=id,
                                name=name,
-                               teamlead_name=team_lead_names,
                               )
     else:
         return redirect(url_for('user.home'))
