@@ -106,6 +106,8 @@ class User(db.Model):
         'AssignedTask', order_by='AssignedTask.id', cascade="all, delete-orphan")
     group = db.Column(db.Integer)
     job_description = db.Column(db.String(256), nullable=True)
+    status = db.Column(db.String(256), default="Active")
+    warnings = db.Column(db.Integer)
 
     def hash_password(self, entered_password):
         '''
@@ -183,6 +185,51 @@ class Groups(db.Model):
         retrieving all groups
         '''
         return Groups.query.filter_by(user_id = user_id).all()
+
+    def delete(self):
+        '''
+        deleting assignedtask
+        '''
+        db.session.delete(self)
+        db.session.commit()
+
+
+class MonthlyData(db.Model):
+    '''
+    This class represents the assignedtasks table.
+    '''
+    __tablename__ = 'monthlydata'
+
+    id = db.Column(db.Integer, primary_key=True)
+    month = db.Column(db.DateTime, default=db.func.current_timestamp())
+    avarage_time = db.Column(db.Integer)
+    avarage_quality = db.Column(db.Integer)
+    completion_rate = db.Column(db.Integer)
+    user_id = db.Column(db.Integer)
+    
+
+    def __init__(self, avarage_time, avarage_quality, completion_rate, user_id):
+        '''
+        initialize with avarage_time, avarage_quality, completion_rate, user_id
+        '''
+        self.avarage_time = avarage_time
+        self.avarage_quality = avarage_quality
+        self.completion_rate = completion_rate
+        self.user_id = user_id
+
+    def save(self):
+        '''
+        Saving new assignedtask
+        '''
+        db.session.add(self)
+        db.session.commit()
+
+    @staticmethod
+    def get_month_data(user_id):
+        '''
+        retrieving all groups
+        '''
+        return MonthlyData.query.filter_by(user_id = user_id).all()
 
     def delete(self):
         '''
