@@ -162,6 +162,24 @@ body {
     border-color: #212F3C;
     color: whitesmoke;
   }
+
+  #shiva{
+    width: 200px;
+    height: 200px;
+    background: #212F3C;
+    -moz-border-radius: 150px;
+    -webkit-border-radius: 150px;
+    border-radius: 150px;
+    float:right;
+    margin:5px;
+  }
+
+  .count{
+    line-height: 100px;
+    color:white;
+    margin-left:30px;
+    font-size:25px;
+  }
   
   .contact {
     background-color: whitesmoke;

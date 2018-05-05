@@ -10,7 +10,6 @@ import random
 import math
 import datetime as dt
 from flask_bootstrap import Bootstrap
-from tasks.alltasks import communication, electronics, hardware, mac, maintainance, networking, security, server, support, unix, windows
 from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
 
 from flask_marshmallow import Marshmallow
@@ -20,6 +19,8 @@ from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema
 
 from notifications.slack import get_user, get_channel_id
 from tasks.usertask import allocate_all_user_tasks, get_user_tasks
+# from tasks.allocate_tasks import list_length
+# from ludaya.users.groups import change_team_leader
 from random import randrange
 
 db = SQLAlchemy(app)
@@ -27,20 +28,6 @@ db = SQLAlchemy(app)
 api_blueprint = Blueprint(
     'api',__name__
 )
-
-
-@app.route('/api/issues/<string:category>/<int:id>', methods=['GET'])
-def get_all_category(category, id):
-    completed_items = AssignedTask.query.filter_by(status="completed", category =category, user_id=id).all()
-    opened_items = AssignedTask.query.filter_by(status="opened",  category =category, user_id=id).all()
-    
-    all = list_length(category)
-    
-    return jsonify({'completed':len(completed_items),
-                    'opened':len(opened_items),
-                    'all':len(all)}
-                    )
-
 
 @app.route('/api/issues/<int:id>', methods=['GET'])    
 def get_issues(id):
@@ -61,6 +48,19 @@ def get_issues(id):
             'groups':json.dumps(groups),
             'opened':json.dumps(groups_opened)
     })
+
+
+@app.route('/api/issues/<string:category>/<int:id>', methods=['GET'])
+def get_all_category(category, id):
+    completed_items = AssignedTask.query.filter_by(status="completed", category =category, user_id=id).all()
+    opened_items = AssignedTask.query.filter_by(status="opened",  category =category, user_id=id).all()
+    
+    # all = list_length(category)
+    
+    return jsonify({'completed':len(completed_items),
+                    'opened':len(opened_items),
+                    'all':100}
+                    )
 
 
 @app.route('/api/opened_issues/<int:id>', methods=['GET'])    
@@ -84,33 +84,18 @@ def get_opened_issues(id):
     })
 
 
-@app.route('/api/evaluate_task/<int:id>', methods=['GET'])    
-def evaluate_task(id):
-    items = AssignedTask.query.filter_by(status="completed", evaluated_status="not yet evaluated", evaluate_id=id).all()
+@app.route('/api/completed_task/<int:id>', methods=['GET'])    
+def completed_task(id):
+    items = AssignedTask.query.filter_by(status="completed").all()
     items_result = assignedtasks_schema.dump(items)
-    completed_items = AssignedTask.query.filter_by(status="completed", evaluated_status="not yet evaluated", evaluate_id=id).all()
-    opened_items = AssignedTask.query.filter_by(status="opened", evaluate_id=id).all()
     groups_list = []
     groups_list_opened = []
     for i in items:
         groups_list.append(i.category)
     groups = {x:groups_list.count(x) for x in groups_list}
-    for i in opened_items:
-        groups_list_opened.append(i.category)
-    groups_opened = {x:groups_list_opened.count(x) for x in groups_list_opened}
     return jsonify({
             'items':json.dumps(items_result.data, sort_keys=True, default=str),
             'groups':json.dumps(groups),
-            'opened':json.dumps(groups_opened)
-    })
-
-
-@app.route('/api/evaluate_tasks/<string:category>/<int:id>', methods=['GET'])
-def get_category_evaluate_tasks(category, id):
-    tasks = AssignedTask.query.filter_by(evaluate_id=id, status="completed", evaluated_status="not yet evaluated", category=category).all()
-    items_result = assignedtasks_schema.dump(tasks)
-    return jsonify({
-            'items':json.dumps(items_result.data)
     })
 
 
@@ -121,48 +106,6 @@ def get_category_completed_tasks(category, id):
     return jsonify({
             'items':json.dumps(items_result.data)
     })
-
-
-@app.route('/api/new_tasks/<int:task_id>/open', methods=['POST'])
-def post_open_tasks(task_id):
-        task = AssignedTask.query.filter_by(id=task_id).first()
-        if task:
-            task.status = 'opened'
-            task.date_opened = db.func.current_timestamp()
-            db.session.add(task)
-            db.session.commit()
-            response = jsonify({
-                                'id': task.id,
-                                'name': task.name,
-                                'date_created': task.date_created,
-                                'status':task.status
-                                })
-        else:
-            response = jsonify({'message': 'Item already exists in this bucketlist'})
-            
-        return response
-
-@app.route('/api/respond_tasks/<int:task_id>/open', methods=['POST'])
-def post_respond_tasks(task_id):
-        task = AssignedTask.query.filter_by(id=task_id).first()
-        group = Groups.query.filter_by(id=task.user_id).first()
-        if task:
-            response = request.form['answer']
-            task.user_answer = response
-            task.evaluate_id = group.team_leader
-            task.evaluate = 'not yet'
-            task.date_opened = db.func.current_timestamp()
-            task.save()
-            response = jsonify({
-                                'id': task.id,
-                                'name': task.name,
-                                'date_created': task.date_created,
-                                'status':task.status
-                                })
-        else:
-            response = jsonify({'message': 'Item already exists in this bucketlist'})
-            
-        return response
 
 
 @app.route('/api/opened_tasks/<string:category>/<int:id>', methods=['GET'])
@@ -220,105 +163,14 @@ def get_reports(id):
         resolution_avarage_time = "No tasks yet"
         response_avarage_time = "No tasks yet"
         user_satisfaction = "No tasks yet"
-
         lastsixmonths = last_six_months()
-    
-    
+
     return jsonify({'task_count':len(resolved_tasks), 
                     'resolution_avarage_time' : resolution_avarage_time, 
                     'response_avarage_time' : response_avarage_time,
                     'user_satisfaction' : user_satisfaction,
                     'lastsixmonths' : json.dumps(lastsixmonths),
-    })
- 
-
-@app.route('/api/resolved_reports/<int:id>', methods=['GET'])
-def resolved_report(id):
-    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
-    lastsixmonths = last_six_months()
-    electronics = get_closed_user_monthly_tasks(resolved_tasks, 'electronics')
-    hardware = get_closed_user_monthly_tasks(resolved_tasks, 'hardware')
-    mac = get_closed_user_monthly_tasks(resolved_tasks, 'mac')
-    maintainance = get_closed_user_monthly_tasks(resolved_tasks, 'maintainance')
-    networking = get_closed_user_monthly_tasks(resolved_tasks, 'networking')
-    security = get_closed_user_monthly_tasks(resolved_tasks, 'security')
-    server = get_closed_user_monthly_tasks(resolved_tasks, 'server')
-    support = get_closed_user_monthly_tasks(resolved_tasks, 'support')
-    unix = get_closed_user_monthly_tasks(resolved_tasks, 'unix')
-    windows = get_closed_user_monthly_tasks(resolved_tasks, 'windows')
-    return jsonify({
-            'lastsixmonths' : json.dumps(last_six_months()),
-            'electronics': json.dumps(electronics),
-            'hardware': json.dumps(hardware),
-            'mac': json.dumps(mac),
-            'maintainance': json.dumps(maintainance),
-            'networking': json.dumps(networking),
-            'security': json.dumps(security),
-            'server': json.dumps(server),
-            'support': json.dumps(support),
-            'unix': json.dumps(unix),
-            'windows': json.dumps(windows)
-    })
-
-
-@app.route('/api/opened_reports/<int:id>', methods=['GET'])
-def opened_report(id):
-    opened_tasks = AssignedTask.query.filter_by(user_id=id, status='opened').all()
-    resolved_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
-    opened_tasks = opened_tasks + resolved_tasks
-    lastsixmonths = last_six_months()
-    electronics = get_user_monthly_tasks(opened_tasks, 'electronics')
-    hardware = get_user_monthly_tasks(opened_tasks, 'hardware')
-    mac = get_user_monthly_tasks(opened_tasks, 'mac')
-    maintainance = get_user_monthly_tasks(opened_tasks, 'maintainance')
-    networking = get_user_monthly_tasks(opened_tasks, 'networking')
-    security = get_user_monthly_tasks(opened_tasks, 'security')
-    server = get_user_monthly_tasks(opened_tasks, 'server')
-    support = get_user_monthly_tasks(opened_tasks, 'support')
-    unix = get_user_monthly_tasks(opened_tasks, 'unix')
-    windows = get_user_monthly_tasks(opened_tasks, 'windows')
-    return jsonify({
-            'lastsixmonths' : json.dumps(last_six_months()),
-            'electronics': json.dumps(electronics),
-            'hardware': json.dumps(hardware),
-            'mac': json.dumps(mac),
-            'maintainance': json.dumps(maintainance),
-            'networking': json.dumps(networking),
-            'security': json.dumps(security),
-            'server': json.dumps(server),
-            'support': json.dumps(support),
-            'unix': json.dumps(unix),
-            'windows': json.dumps(windows)
-    })
-
-@app.route('/api/satisfaction_reports/<int:id>')
-def satisfaction_report(id):
-    opened_tasks = AssignedTask.query.filter_by(user_id=id, status='completed').all()
-    electronics = get_user_monthly_satisfaction(opened_tasks, 'electronics')
-    hardware = get_user_monthly_satisfaction(opened_tasks, 'hardware')
-    mac = get_user_monthly_satisfaction(opened_tasks, 'mac')
-    maintainance = get_user_monthly_satisfaction(opened_tasks, 'maintainance')
-    networking = get_user_monthly_satisfaction(opened_tasks, 'networking')
-    security = get_user_monthly_satisfaction(opened_tasks, 'security')
-    server = get_user_monthly_satisfaction(opened_tasks, 'server')
-    support = get_user_monthly_satisfaction(opened_tasks, 'support')
-    unix = get_user_monthly_satisfaction(opened_tasks, 'unix')
-    windows = get_user_monthly_satisfaction(opened_tasks, 'windows')
-    return jsonify({
-            'lastsixmonths' : json.dumps(last_six_months()),
-            'electronics': json.dumps(electronics),
-            'hardware': json.dumps(hardware),
-            'mac': json.dumps(mac),
-            'maintainance': json.dumps(maintainance),
-            'networking': json.dumps(networking),
-            'security': json.dumps(security),
-            'server': json.dumps(server),
-            'support': json.dumps(support),
-            'unix': json.dumps(unix),
-            'windows': json.dumps(windows)
-    })
-
-    
+    })    
 
 @app.route('/api/time_reports/opened/<int:id>')
 def opened_time_report(id):
@@ -347,31 +199,6 @@ def user_satisfaction(id):
     return jsonify({
         'user_satisfactionavarage':json.dumps(user_satisfactionavarage)
     })
-
-
-def list_length(category):
-    all = [
-        {'communication': communication},
-        {'electronics': electronics},
-        {'hardware': hardware},
-        {'mac': mac},
-        {'maintainance': maintainance},
-        {'networking': networking},
-        {'security': security},
-        {'server': server},
-        {'support': support},
-        {'unix': unix},
-        {'windows': windows}
-    ]
-    l = []
-    for item in all:
-        for key, value in item.items():
-            if key == category:
-                for i in value:
-                    for j in i.values()[0]:
-                        l.append(j)
-
-    return l
 
 
 @app.route('/api/user_monthly_tasks/')
@@ -444,25 +271,27 @@ def assign_task():
     })
 
 
-@app.route('/api/assigned_task/')
-def get_assigned_tasks():
-    tasks = AssignedTask.query.filter_by(category='mac', user_id=19)
-    task_list = []
-    task_name = []
-    for task in tasks:
-        task_name.append(task.group)
-        if len(task_list)>0:
-            for i in task_list:
-                if i['name'] in task_name:
-                    if i['name'] == task.group and task.name not in i['tasklist']:
-                        i['tasklist'].append(task.name)
-                else:
-                    task_list.append({'name':task.group, 'tasklist':[task.name]})
-        else:
-            task_list.append({'name':task.group, 'tasklist':[task.name]})
+@app.route('/api/all_tasks/', methods=['GET'])
+def all_tasks():
+    tasks = AssignedTask.query.all()
+    items_result = assignedtasks_schema.dump(tasks)
     return jsonify({
-        'task_list':json.dumps(task_list)
+            'items':json.dumps(items_result.data)
     })
+
+@app.route('/api/new_all_tasks/', methods=['POST'])
+def new_all_tasks():
+    allocate_all_user_tasks()
+    response = jsonify({'message': 'Item assigned'})
+            
+    return response
+
+@app.route('/api/change_team_lead/', methods=['POST'])
+def new_team_lead():
+    change_team_leader()
+    response = jsonify({'message': 'Item assigned'})
+    return response
+
 
 @app.route('/api/user_slack_id/<int:id>')
 def get_user_slack(id):

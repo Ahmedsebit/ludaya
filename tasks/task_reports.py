@@ -10,7 +10,7 @@ def last_six_months():
     if currentMonth < 6:
         remainingmonths = 6 - currentMonth
         for i in range(0, remainingmonths):
-            lastsixmonths.append(months[-i-1])
+            lastsixmonths.insert(0,months[-i-1])
         for i in range(0, currentMonth):
             lastsixmonths.append(months[i])
     if currentMonth == 6:

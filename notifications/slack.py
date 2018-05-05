@@ -74,5 +74,4 @@ def get_all_user():
     all_users = sc.api_call('users.list')
     return all_users['members'][1]['id']
 
-user = get_user('abyyyusuf@gmail.com')
-print(user)
+create_channel('ludaya_te_lu')

@@ -7,17 +7,17 @@ from models import AssignedTask, User
 from ludaya.ludaya import db
 from datetime import date
 
-from software import SOFTWARE as softwares
-from electronics import ELECTRONICS as electronics
-from hardware import HARDWARE as hardwares
-from mac import MAC as macs
-from maintainance import MAINTAINANCE as maintainances
-from networking import NETWORKING as networkings
-from security import SECURITY as securities
-from server import SERVER as servers
-from support import SUPPORT as supports
-from unix import UNIX as unixs
-from windows import WINDOWS as windows
+from tasks.software import SOFTWARE as softwares
+from tasks.electronics import ELECTRONICS as electronics
+from tasks.hardware import HARDWARE as hardwares
+from tasks.mac import MAC as macs
+from tasks.maintainance import MAINTAINANCE as maintainances
+from tasks.networking import NETWORKING as networkings
+from tasks.security import SECURITY as securities
+from tasks.server import SERVER as servers
+from tasks.support import SUPPORT as supports
+from tasks.unix import UNIX as unixs
+from tasks.windows import WINDOWS as windows
 
 from random import randrange
 
@@ -84,7 +84,7 @@ tasks = {
 
 def category_task(user_id):
     all_tasks = []
-    for key,value in tasks.iteritems():
+    for key,value in tasks.items():
         task = assign_task(user_id, key, value)
         task['name'] = key
         all_tasks.append(task)

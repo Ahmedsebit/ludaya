@@ -33,7 +33,6 @@ db = SQLAlchemy(app)
 
 from models import User, AssignedTask, assignedtask_schema, assignedtasks_schema, Groups
 from tasks.task_reports import last_six_months, get_user_monthly_tasks, get_user_monthly_satisfaction, get_user_avarage_time, get_user_avarage_satisfaction, get_closed_user_monthly_tasks, get_user_avarage_time_closed
-from tasks.usertask import allocate_all_user_tasks, get_user_tasks
 from random import randrange
 
 from notifications.slack import send_channel_messages
@@ -47,10 +46,7 @@ def issues():
         completed_items = AssignedTask.query.filter_by(status="completed", user_id=id).all()
         opened_items = AssignedTask.query.filter_by(status="opened", user_id=id).all()
         user = User.query.filter_by(id=id).first()
-        user_group = Groups.query.filter_by(id=user.group).first()
-        team_leader = User.query.filter_by(id=user_group.team_lead).first()
         name = user.firstname + ' ' + user.lastname
-        team_lead_names = team_leader.firstname + ' ' + team_leader.lastname
         groups_list = []
         groups_list_opened = []
         for i in items:
@@ -65,8 +61,22 @@ def issues():
                                opened=groups_opened,
                                id=id,
                                name=name,
-                               teamlead_name=team_lead_names,
                               )
+    else:
+        return redirect(url_for('user.home'))
+
+
+@app.route('/portfolio')
+def portfolio():
+    if 'username' in session:
+        username = session['username']
+        id = session['id']
+        user = User.query.filter_by(id=id).first()
+        
+        return render_template('portfolio.html', 
+                                id=id,
+                                firstName=user.firstname,
+                                secondName=user.lastname)
     else:
         return redirect(url_for('user.home'))
 
@@ -128,18 +138,13 @@ def open_tasks(task_id):
         user = User.query.filter_by(id=id).first()
         task = AssignedTask.query.filter_by(id=task_id).first()
         group = Groups.query.filter_by(id=user.group).first()
-        tasks = AssignedTask.query.filter_by(user_id=id, category='communication').all()
         task.status = 'opened'
         task.date_opened = db.func.current_timestamp()
         db.session.add(task)
         db.session.commit()
 
-        message = ' *'+'Task Opened'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
-        send_channel_messages(group.name, message)
-
-        my_task_category = task.category.upper()
-        for task in tasks:
-            task.tasks_id = task.name.replace(' ', '') + task.group.replace(' ', '')
+        # message = ' *'+'Task Opened'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
+        # send_channel_messages(group.name, message)
         flash('You have opened a new task')
         return redirect(url_for('issues'))
     else:
@@ -156,6 +161,7 @@ def close_task(task_id):
             user = User.query.filter_by(id=id).first()
             task = AssignedTask.query.filter_by(id=task_id).first()
             group = Groups.query.filter_by(id=user.group).first()
+            team_lead = User.query.filter_by(id=group.team_lead).first()
             task.user_answer = request.form['answer']
             
             task.date_resolved = db.func.current_timestamp()
@@ -164,9 +170,12 @@ def close_task(task_id):
             db.session.commit()
 
             message = ' *'+'Task Closed'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
-            send_channel_messages(group.name, message)
+            # send_channel_messages(group.name, message)
+            task_message = task.name + '\n' + 'Closed by: ' + user.firstname + ' ' + user.lastname
 
-            flash("The task is closed")
+            send_mail("New Tasks Closed", 'notification@ludaya.com', [team_lead.email], task_message)
+
+            flash("The task has been closed")
             return redirect(url_for('issues'))
     else:
         return redirect(url_for('user.home'))
@@ -182,15 +191,20 @@ def evaluate_new_task(task_id):
             user = User.query.filter_by(id=id).first()
             task = AssignedTask.query.filter_by(id=task_id).first()
             group = Groups.query.filter_by(id=user.group).first()
+
             task.evaluate_comment = request.form['comment']
             task.satisfaction = float(request.form['rating'])
             task.date_resolved = db.func.current_timestamp()
             task.evaluated_status = 'evaluated'
+
+            task_owner = User.query.filter_by(id=task.user_id).first()
             db.session.add(task)
             db.session.commit()
 
-            message = ' *'+'Task Evaluated'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
-            send_channel_messages(group.name, message)
+            # message = ' *'+'Task Evaluated'+'*\n'+'```'+'By:'+user.firstname.lower().title()+' '+ user.lastname.lower().title() +'\n'+task.name+'```'
+            # send_channel_messages(group.name, message)
+            task_message = task.name + '\n' + 'Evaluated by: ' +user.firstname + ' ' + user.lastname
+            send_mail("New Tasks Evaluated", 'notification@ludaya.com', [task_owner.email], task_message)
 
             flash("the task has been evaluated")
             return redirect(url_for('issues'))

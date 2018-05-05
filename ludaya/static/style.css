@@ -162,6 +162,23 @@ body {
     border-color: #212F3C;
     color: whitesmoke;
   }
+
+  #shiva{
+    width: 150px;
+    height: 150px;
+    background: #212F3C;
+    -moz-border-radius: 150px;
+    -webkit-border-radius: 150px;
+    border-radius: 150px;
+    float:center;
+    margin:5px;
+  }
+
+  .count{
+    line-height: 150px;
+    color:white;
+    font-size:25px;
+  }
   
   .contact {
     background-color: whitesmoke;
@@ -175,3 +192,28 @@ body {
     padding-left: 50px;
     padding-right: 50px;
   }
+
+  a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+  }
+
+  a:hover {
+      background-color: #ddd;
+      color: black;
+  }
+
+  .previous {
+      background-color: #f1f1f1;
+      color: #1B2631;
+  }
+
+  .next {
+      background-color: #4CAF50;
+      color: white;
+  }
+
+  .round {
+      border-radius: 50%;
+}

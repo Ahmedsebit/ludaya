@@ -8,29 +8,27 @@ from datetime import datetime
 import time
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from ludaya.users.user import user_blueprint
+from ludaya.users.user import user_blueprint 
 from ludaya.api.api_ludaya import api_blueprint
-from tasks.usertask import allocate_all_user_tasks, async_allocate_all_user_tasks
+from tasks.usertask import allocate_all_user_tasks
+from tasks.system_administrator.allocate_tasks import assign_system_admin_task
+from tasks.reviews import weekly_review, monthly_review
 app.register_blueprint(user_blueprint)
 app.register_blueprint(api_blueprint)
 
 
-# sched = BackgroundScheduler()
-# # sched.add_job(tick,'interval',seconds=3)
-# sched.start()
+sched = BackgroundScheduler()
+# sched.add_job(tick,'interval',seconds=3)
+sched.start()
 
-# @sched.scheduled_job('interval', seconds=3)
-# def tick2():
-#     sensor()
-
-# try:
-#     app
-# except (KeyboardInterrupt, SystemExit):
-#     sched.shutdown()
-
-# create_group()
-# allocate_all_user_tasks()
-# async_allocate_all_user_tasks()
+@sched.scheduled_job('interval', seconds=10800)
+def daily_schedule():
+    weekly_review()
+    print("Running weekly review")
+    monthly_review()
+    print("Running monthly reviews")
+    allocate_all_user_tasks()
+    print("Assigning tasks")
 
 
 if __name__ == '__main__':
